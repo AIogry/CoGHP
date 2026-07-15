@@ -20,6 +20,7 @@ from utils.log_utils import CsvLogger, get_exp_name, get_flag_dict, get_wandb_vi
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string('run_group', 'Debug', 'Run group.')
+flags.DEFINE_string('wandb_entity', None, 'W&B entity. None uses the account default.',)
 flags.DEFINE_integer('seed', 0, 'Random seed.')
 flags.DEFINE_string('env_name', 'antmaze-large-navigate-v0', 'Environment (dataset) name.')
 flags.DEFINE_string('save_dir', 'exp/', 'Save directory.')
@@ -45,7 +46,7 @@ config_flags.DEFINE_config_file('agent', 'agents/coghp.py', lock_config=False)
 def main(_):
     # Set up logger.
     exp_name = get_exp_name(FLAGS.seed)
-    setup_wandb(project='CoGHP', group=FLAGS.run_group, name=exp_name)
+    setup_wandb(entity=None, project='CoGHP', group=FLAGS.run_group, name=exp_name)
 
     FLAGS.save_dir = os.path.join(FLAGS.save_dir, wandb.run.project, FLAGS.run_group, exp_name)
     os.makedirs(FLAGS.save_dir, exist_ok=True)
