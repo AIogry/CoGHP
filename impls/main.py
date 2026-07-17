@@ -105,6 +105,15 @@ def main(_):
                 val_batch = val_dataset.sample(config['batch_size'])
                 _, val_info = agent.total_loss(val_batch, grad_params=None)
                 train_metrics.update({f'validation/{k}': v for k, v in val_info.items()})
+                if (
+                    hasattr(agent, 'validation_rollout_info')
+                    and (
+                        config.get('enable_hcoghp_diagnostics', False)
+                        or config.get('enable_free_running_validation', False)
+                    )
+                ):
+                    rollout_info = agent.validation_rollout_info(val_batch)
+                    train_metrics.update(rollout_info)
             train_metrics['time/epoch_time'] = (time.time() - last_time) / FLAGS.log_interval
             train_metrics['time/total_time'] = time.time() - first_time
             last_time = time.time()

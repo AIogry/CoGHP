@@ -15,6 +15,159 @@ from utils.networks import GCActor, GCDiscreteActor, GCValue, Identity, LengthNo
 class HCoGHPAgent(CoGHPAgent):
     """CoGHP agent with a shared-weight HRM-style actor mixer."""
 
+    def get_scheduled_sampling_prob(self, step):
+        """Return the linear scheduled sampling probability for the current training step."""
+        step = jnp.asarray(step, dtype=jnp.float32)
+        start = jnp.asarray(self.config.get('scheduled_sampling_start_step', 100000), dtype=jnp.float32)
+        end = jnp.asarray(self.config.get('scheduled_sampling_end_step', 300000), dtype=jnp.float32)
+        max_prob = jnp.asarray(self.config.get('scheduled_sampling_max_prob', 0.5), dtype=jnp.float32)
+        enabled = jnp.asarray(self.config.get('scheduled_sampling_enabled', False), dtype=jnp.float32)
+        progress = (step - start) / jnp.maximum(end - start, 1.0)
+        progress = jnp.clip(progress, 0.0, 1.0)
+        return enabled * max_prob * progress
+
+    def actor_loss(self, batch, grad_params, rng, scheduled_sampling_prob=0.0):
+        observations = batch['observations']
+        actions = batch['actions']
+        goals = batch['high_actor_goals']
+
+        obs_expand = jnp.expand_dims(observations, axis=1)
+        obs_expand = jnp.repeat(obs_expand, self.config['num_subgoals'], axis=1)
+        subgoals_reps = self.network.select('goal_rep')(
+            jnp.concatenate([obs_expand, batch['high_actor_targets']], axis=-1),
+            params=grad_params,
+        )
+
+        high_dist, low_dist, _, sampling_info = self.network.select('actor_mixer')(
+            observations,
+            goals,
+            rng,
+            subgoal_reps=subgoals_reps,
+            action_seq=actions,
+            params=grad_params,
+            scheduled_sampling_prob=scheduled_sampling_prob,
+            scheduled_sampling_use_mode=self.config.get('scheduled_sampling_use_mode', True),
+            scheduled_sampling_stop_gradient=self.config.get('scheduled_sampling_stop_gradient', True),
+            return_sampling_diagnostics=True,
+        )
+
+        if self.config['num_subgoals'] > 0:
+            high_actor_loss, high_actor_info = self.multi_high_actor_loss(batch, high_dist, obs_expand, grad_params)
+        else:
+            high_actor_loss = 0.0
+            high_actor_info = {}
+
+        low_actor_loss, low_actor_info = self.low_actor_loss(batch, low_dist)
+        actor_loss = high_actor_loss + low_actor_loss
+
+        return actor_loss, high_actor_info, low_actor_info, sampling_info
+
+    @jax.jit
+    def total_loss(self, batch, grad_params, rng=None):
+        info = {}
+        rng = rng if rng is not None else self.rng
+
+        value_loss, value_info = self.value_loss(batch, grad_params)
+        for k, v in value_info.items():
+            info[f'value/{k}'] = v
+
+        scheduled_sampling_prob = self.get_scheduled_sampling_prob(self.network.step)
+        actor_loss, high_actor_info, low_actor_info, sampling_info = self.actor_loss(
+            batch,
+            grad_params,
+            rng,
+            scheduled_sampling_prob=scheduled_sampling_prob,
+        )
+        for k, v in high_actor_info.items():
+            info[f'high_actor/{k}'] = v
+        for k, v in low_actor_info.items():
+            info[f'low_actor/{k}'] = v
+        for k, v in sampling_info.items():
+            if k == 'scheduled_sampling_prob':
+                info['scheduled_sampling/prob'] = v
+            elif k == 'scheduled_sampling_ratio':
+                info['scheduled_sampling/actual_ratio'] = v
+            elif k.startswith('scheduled_sampling_ratio_'):
+                token_idx = k.rsplit('_', 1)[-1]
+                info[f'scheduled_sampling/subgoal_{token_idx}_ratio'] = v
+
+        loss = value_loss + actor_loss
+        return loss, info
+
+    def validation_rollout_info(self, batch, rng=None):
+        """Compute teacher-forced and free-running validation diagnostics.
+
+        This method is read-only: it does not participate in the training loss
+        and does not change the actor forward contract used by updates.
+        """
+        rng = rng if rng is not None else self.rng
+        observations = batch['observations']
+        goals = batch['high_actor_goals']
+        obs_expand = jnp.expand_dims(observations, axis=1)
+        obs_expand = jnp.repeat(obs_expand, self.config['num_subgoals'], axis=1)
+        target_reps = self.network.select('goal_rep')(jnp.concatenate([obs_expand, batch['high_actor_targets']], axis=-1))
+
+        def collect(prefix, subgoal_reps, return_diagnostics=False):
+            result = self.network.select('actor_mixer')(
+                observations,
+                goals,
+                rng,
+                subgoal_reps=subgoal_reps,
+                action_seq=None,
+                return_diagnostics=return_diagnostics,
+                scheduled_sampling_prob=0.0,
+                return_sampling_diagnostics=False,
+            )
+            diagnostics = None
+            if return_diagnostics:
+                high_dist_list, low_dist, _, diagnostics = result
+            else:
+                high_dist_list, low_dist, _ = result
+
+            info = {}
+            subgoal_mses = []
+            for i, high_dist in enumerate(high_dist_list):
+                subgoal_mse = jnp.mean((high_dist.mode() - target_reps[:, i, :]) ** 2)
+                info[f'{prefix}/subgoal_{i}_mse'] = subgoal_mse
+                subgoal_mses.append(subgoal_mse)
+
+            if subgoal_mses:
+                info[f'{prefix}/high_actor/mse'] = jnp.mean(jnp.stack(subgoal_mses))
+
+            action_mse = jnp.mean((low_dist.mode() - batch['actions']) ** 2)
+            info[f'{prefix}/action_mse'] = action_mse
+            info[f'{prefix}/low_actor/mse'] = action_mse
+
+            if diagnostics is not None:
+                for key, value in diagnostics.items():
+                    info[f'diagnostics/{key}'] = value
+
+            return info
+
+        info = collect(
+            'validation_teacher',
+            subgoal_reps=target_reps,
+            return_diagnostics=self.config.get('enable_hcoghp_diagnostics', False),
+        )
+
+        if self.config.get('enable_free_running_validation', False):
+            free_info = collect('validation_free', subgoal_reps=None)
+            info.update(free_info)
+            if self.config['num_subgoals'] > 0:
+                info['validation_gap/high_actor_mse'] = (
+                    free_info['validation_free/high_actor/mse'] - info['validation_teacher/high_actor/mse']
+                )
+                for i in range(self.config['num_subgoals']):
+                    info[f'validation_gap/subgoal_{i}_mse'] = (
+                        free_info[f'validation_free/subgoal_{i}_mse'] - info[f'validation_teacher/subgoal_{i}_mse']
+                    )
+            info['validation_gap/low_actor_mse'] = (
+                free_info['validation_free/low_actor/mse'] - info['validation_teacher/low_actor/mse']
+            )
+            info['validation_gap/action_mse'] = free_info['validation_free/action_mse'] - info['validation_teacher/action_mse']
+
+        return info
+
     @classmethod
     def create(
         cls,
@@ -23,6 +176,9 @@ class HCoGHPAgent(CoGHPAgent):
         ex_actions,
         config,
     ):
+        if config.get('scheduled_sampling_schedule', 'linear') != 'linear':
+            raise ValueError('HCoGHP scheduled sampling currently supports only the linear schedule.')
+
         rng = jax.random.PRNGKey(seed)
         rng, init_rng = jax.random.split(rng, 2)
 
@@ -146,4 +302,13 @@ def get_config():
     config.agent_name = 'hcoghp'
     config.hrm_l_cycles = 2
     config.hrm_mix_scale = True
+    config.enable_hcoghp_diagnostics = False
+    config.enable_free_running_validation = False
+    config.scheduled_sampling_enabled = False
+    config.scheduled_sampling_start_step = 100000
+    config.scheduled_sampling_end_step = 300000
+    config.scheduled_sampling_max_prob = 0.5
+    config.scheduled_sampling_use_mode = True
+    config.scheduled_sampling_stop_gradient = True
+    config.scheduled_sampling_schedule = 'linear'
     return config

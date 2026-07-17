@@ -8,10 +8,13 @@ set -euo pipefail
 #
 # Optional:
 #   HCOGHP_L_CYCLES=4 bash scripts/train_hcoghp.sh all
+#   HCOGHP_DIAGNOSTICS=1 HCOGHP_FREE_VALIDATION=1 bash scripts/train_hcoghp.sh all
 
 TASK="${1:-all}"
 RUN_ID="sd000_$(date +%Y%m%d_%H%M%S)"
 L_CYCLES="${HCOGHP_L_CYCLES:-2}"
+ENABLE_DIAGNOSTICS="${HCOGHP_DIAGNOSTICS:-0}"
+ENABLE_FREE_VALIDATION="${HCOGHP_FREE_VALIDATION:-0}"
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DATA_ROOT="/data/qijunrong/06-RL/offline-rl"
@@ -30,6 +33,14 @@ COMMON_ARGS=(
   --save_dir="${DATA_ROOT}/exp"
   --agent.hrm_l_cycles="${L_CYCLES}"
 )
+
+if [[ "${ENABLE_DIAGNOSTICS}" == "1" ]]; then
+  COMMON_ARGS+=(--agent.enable_hcoghp_diagnostics=True)
+fi
+
+if [[ "${ENABLE_FREE_VALIDATION}" == "1" ]]; then
+  COMMON_ARGS+=(--agent.enable_free_running_validation=True)
+fi
 
 check_dataset_runtime() {
   local env_name="$1"

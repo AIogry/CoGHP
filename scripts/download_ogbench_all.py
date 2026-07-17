@@ -2,6 +2,7 @@
 import argparse
 import os
 import re
+import time
 import sys
 import urllib.parse
 import urllib.request
@@ -86,6 +87,8 @@ def main():
     parser.add_argument("--include_visual", action="store_true", help="Also download visual datasets.")
     parser.add_argument("--include_regex", default=None, help="Only download file names matching this regex.")
     parser.add_argument("--exclude_regex", default=None, help="Skip file names matching this regex.")
+    parser.add_argument("--retries", type=int, default=5, help="Retries per file before giving up.")
+    parser.add_argument("--retry_sleep", type=float, default=10.0, help="Seconds to sleep between retries.")
     parser.add_argument("--dry_run", action="store_true", help="Only print missing files.")
     args = parser.parse_args()
 
@@ -120,13 +123,22 @@ def main():
     for idx, (name, url, path, size) in enumerate(missing_or_incomplete, start=1):
         size_text = "unknown" if size is None else f"{size / 1024**3:.2f} GiB"
         print(f"[{idx}/{len(missing_or_incomplete)}] Downloading {name} ({size_text})", flush=True)
-        try:
-            download_file(url, path)
-        except Exception:
-            tmp_path = f"{path}.tmp"
-            if os.path.exists(tmp_path):
-                print(f"Partial file kept at {tmp_path}", file=sys.stderr)
-            raise
+        for attempt in range(1, args.retries + 1):
+            try:
+                download_file(url, path)
+                break
+            except Exception as exc:
+                tmp_path = f"{path}.tmp"
+                if os.path.exists(tmp_path):
+                    print(f"Partial file kept at {tmp_path}", file=sys.stderr, flush=True)
+                if attempt >= args.retries:
+                    raise
+                print(
+                    f"Retrying {name} after error ({attempt}/{args.retries}): {exc}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                time.sleep(args.retry_sleep)
 
     print("Done.")
 
