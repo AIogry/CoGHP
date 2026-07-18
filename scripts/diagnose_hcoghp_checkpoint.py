@@ -127,7 +127,12 @@ def main():
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument(
         '--output_dir',
-        default='/data/qijunrong/06-RL/offline-rl/exp/CoGHP/diagnostics',
+        default=os.path.join(
+            os.environ.get('DATA_ROOT', '/data/qijunrong/06-RL/offline-rl'),
+            'exp',
+            'CoGHP',
+            'diagnostics',
+        ),
     )
     args = parser.parse_args()
 

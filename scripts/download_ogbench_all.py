@@ -80,7 +80,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--dataset_dir",
-        default="/data/qijunrong/06-RL/offline-rl/data/raw_ogbench",
+        default=os.environ.get(
+            'OGBENCH_DATASET_DIR',
+            os.path.join(
+                os.environ.get('DATA_ROOT', '/data/qijunrong/06-RL/offline-rl'),
+                'data',
+                'raw_ogbench',
+            ),
+        ),
         help="Directory where OGBench .npz files are stored.",
     )
     parser.add_argument("--index_url", default=INDEX_URL)

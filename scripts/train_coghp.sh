@@ -10,10 +10,11 @@ TASK="${1:-all}"
 RUN_ID="sd000_$(date +%Y%m%d_%H%M%S)"
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DATA_ROOT="/data/qijunrong/06-RL/offline-rl"
+DATA_ROOT="${DATA_ROOT:-/data/qijunrong/06-RL/offline-rl}"
 IMPLS_DIR="${PROJECT_ROOT}/impls"
-LOG_DIR="${DATA_ROOT}/logs/coghp"
-DATASET_DIR="${DATA_ROOT}/data/raw_ogbench"
+LOG_DIR="${LOG_DIR:-${DATA_ROOT}/logs/coghp}"
+DATASET_DIR="${DATASET_DIR:-${DATA_ROOT}/data/raw_ogbench}"
+PYTHON="${PYTHON:-python}"
 export PYTHONPATH="${PROJECT_ROOT}:${IMPLS_DIR}:${PYTHONPATH:-}"
 export OGBENCH_DATASET_DIR="${DATASET_DIR}"
 
@@ -31,7 +32,7 @@ check_dataset_runtime() {
 
   (
     cd "${IMPLS_DIR}"
-    python -c "
+    "${PYTHON}" -c "
 import os
 import sys
 import ogbench
@@ -68,7 +69,7 @@ run_antmaze_large() {
     cd "${IMPLS_DIR}"
 
     CUDA_VISIBLE_DEVICES="${gpu_id}" \
-    python main.py \
+    "${PYTHON}" main.py \
       --run_group=antmaze_large_coghp \
       --env_name=antmaze-large-navigate-v0 \
       "${COMMON_ARGS[@]}" \
@@ -86,7 +87,7 @@ run_antmaze_giant() {
     cd "${IMPLS_DIR}"
 
     CUDA_VISIBLE_DEVICES="${gpu_id}" \
-    python main.py \
+    "${PYTHON}" main.py \
       --run_group=antmaze_giant_coghp \
       --env_name=antmaze-giant-navigate-v0 \
       "${COMMON_ARGS[@]}" \
