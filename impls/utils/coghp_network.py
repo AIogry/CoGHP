@@ -15,6 +15,7 @@ class MixerBlock(nn.Module):
     init_scale: float = 1e-2
 
     decay_alpha: float = 0.9
+    causal: bool = True
 
     def setup(self):
         self.token_dense1 = nn.Dense(self.hidden_dim_tokens, kernel_init=default_init())
@@ -22,14 +23,12 @@ class MixerBlock(nn.Module):
         self.channel_dense1 = nn.Dense(self.hidden_dim_channels, kernel_init=default_init())
         self.channel_dense2 = nn.Dense(self.embed_dim, kernel_init=default_init())
 
-        # Initialize learnable lower-triangular weight matrix
+        # Initialize learnable token-mixing weight matrix.
         self.tm_weights = self.param(
             'tm_weights',
             nn.initializers.normal(stddev=0.02),
             (self.num_tokens, self.num_tokens)
         )
-        # Apply lower-triangular mask (prevent contributions from future tokens)
-        self.tm_weights = jnp.tril(self.tm_weights)
 
     def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
         # x: (B, num_tokens, embed_dim)
@@ -41,7 +40,8 @@ class MixerBlock(nn.Module):
         y = self.token_dense2(y)
         y = jnp.transpose(y, (0, 2, 1))
 
-        y = jnp.einsum('btd,ts->bsd', y, self.tm_weights)
+        tm_weights = jnp.tril(self.tm_weights) if self.causal else self.tm_weights
+        y = jnp.einsum('btd,ts->bsd', y, tm_weights)
 
         x = x + y  # residual connection
 
@@ -81,6 +81,9 @@ class HierarchicalPolicyNetwork(nn.Module):
     enc_hidden: Sequence[int] = (128, 128)
 
     num_subgoals: int = 1
+    causal_mixer: bool = True
+    action_use_full_subgoal_chain: bool = True
+    share_mixer_weights: bool = False
 
     def setup(self):
         # Parameter for previous token embeddings:
@@ -88,11 +91,25 @@ class HierarchicalPolicyNetwork(nn.Module):
                                       nn.initializers.normal(stddev=0.1),
                                       (1, self.num_subgoals + 1, self.state_dim))
 
-        self.mixer_blocks = [MixerBlock(num_tokens=self.num_subgoals + 3,
-                       embed_dim=self.state_dim,
-                       hidden_dim_tokens=self.mixer_token_hidden,
-                       hidden_dim_channels=self.mixer_channel_hidden)
-                       for _ in range(self.num_mixer_blocks)]
+        if self.share_mixer_weights:
+            self.shared_mixer_block = MixerBlock(
+                num_tokens=self.num_subgoals + 3,
+                embed_dim=self.state_dim,
+                hidden_dim_tokens=self.mixer_token_hidden,
+                hidden_dim_channels=self.mixer_channel_hidden,
+                causal=self.causal_mixer,
+            )
+        else:
+            self.mixer_blocks = [
+                MixerBlock(
+                    num_tokens=self.num_subgoals + 3,
+                    embed_dim=self.state_dim,
+                    hidden_dim_tokens=self.mixer_token_hidden,
+                    hidden_dim_channels=self.mixer_channel_hidden,
+                    causal=self.causal_mixer,
+                )
+                for _ in range(self.num_mixer_blocks)
+            ]
         
         feature_embed = [MLP(hidden_dims=(*self.enc_hidden, self.state_dim), activate_final=False, layer_norm=True)]
         feature_embed.append(LengthNormalize())
@@ -136,17 +153,28 @@ class HierarchicalPolicyNetwork(nn.Module):
             
             else:
                 if subgoal_reps is not None:
-                    prev_embeds = jnp.concatenate([subgoal_reps[:, :token_dim, :], prev_embed_tokens[:, token_dim:, :]], axis=1)
+                    history_subgoals = subgoal_reps[:, :token_dim, :]
                 else:
-                    prev_embeds = jnp.concatenate([predicted_subgoals[:, :token_dim, :], prev_embed_tokens[:, token_dim:, :]], axis=1)
+                    history_subgoals = predicted_subgoals[:, :token_dim, :]
+
+                if token_dim == self.num_subgoals and not self.action_use_full_subgoal_chain:
+                    history_subgoals = prev_embed_tokens[:, :token_dim, :].at[:, token_dim - 1, :].set(
+                        history_subgoals[:, token_dim - 1, :]
+                    )
+
+                prev_embeds = jnp.concatenate([history_subgoals, prev_embed_tokens[:, token_dim:, :]], axis=1)
             
             x = jnp.concatenate([features, prev_embeds], axis=1)
 
             target_dim = features.shape[1] + token_dim + 1
 
             # Apply Mixer blocks.
-            for mixer_block in self.mixer_blocks:
-                x = mixer_block(x)
+            if self.share_mixer_weights:
+                for _ in range(self.num_mixer_blocks):
+                    x = self.shared_mixer_block(x)
+            else:
+                for mixer_block in self.mixer_blocks:
+                    x = mixer_block(x)
             
             target_token = x[:, target_dim-1, :]
 

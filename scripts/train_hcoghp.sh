@@ -15,6 +15,8 @@ RUN_ID="sd000_$(date +%Y%m%d_%H%M%S)"
 L_CYCLES="${HCOGHP_L_CYCLES:-2}"
 ENABLE_DIAGNOSTICS="${HCOGHP_DIAGNOSTICS:-0}"
 ENABLE_FREE_VALIDATION="${HCOGHP_FREE_VALIDATION:-0}"
+LARGE_GPU="${LARGE_GPU:-0}"
+GIANT_GPU="${GIANT_GPU:-1}"
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DATA_ROOT="${DATA_ROOT:-/data/qijunrong/06-RL/offline-rl}"
@@ -24,6 +26,8 @@ DATASET_DIR="${DATASET_DIR:-${DATA_ROOT}/data/raw_ogbench}"
 PYTHON="${PYTHON:-python}"
 export PYTHONPATH="${PROJECT_ROOT}:${IMPLS_DIR}:${PYTHONPATH:-}"
 export OGBENCH_DATASET_DIR="${DATASET_DIR}"
+export MUJOCO_GL="${MUJOCO_GL:-egl}"
+export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-egl}"
 
 mkdir -p "${LOG_DIR}"
 
@@ -115,21 +119,21 @@ run_antmaze_giant() {
 
 case "${TASK}" in
   large)
-    run_antmaze_large 0
+    run_antmaze_large "${LARGE_GPU}"
     ;;
 
   giant)
-    run_antmaze_giant 1
+    run_antmaze_giant "${GIANT_GPU}"
     ;;
 
   all)
-    echo "Starting HCoGHP AntMaze Large on GPU 0 with L_CYCLES=${L_CYCLES}..."
-    run_antmaze_large 0 \
+    echo "Starting HCoGHP AntMaze Large on GPU ${LARGE_GPU} with L_CYCLES=${L_CYCLES}..."
+    run_antmaze_large "${LARGE_GPU}" \
       > "${LOG_DIR}/antmaze_large_l${L_CYCLES}_${RUN_ID}.log" 2>&1 &
     LARGE_PID=$!
 
-    echo "Starting HCoGHP AntMaze Giant on GPU 1 with L_CYCLES=${L_CYCLES}..."
-    run_antmaze_giant 1 \
+    echo "Starting HCoGHP AntMaze Giant on GPU ${GIANT_GPU} with L_CYCLES=${L_CYCLES}..."
+    run_antmaze_giant "${GIANT_GPU}" \
       > "${LOG_DIR}/antmaze_giant_l${L_CYCLES}_${RUN_ID}.log" 2>&1 &
     GIANT_PID=$!
 

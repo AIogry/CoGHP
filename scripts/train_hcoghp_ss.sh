@@ -10,6 +10,8 @@ set -euo pipefail
 
 TASK="${1:-all}"
 RUN_ID="sd000_$(date +%Y%m%d_%H%M%S)"
+LARGE_GPU="${LARGE_GPU:-0}"
+GIANT_GPU="${GIANT_GPU:-1}"
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DATA_ROOT="${DATA_ROOT:-/data/qijunrong/06-RL/offline-rl}"
@@ -19,6 +21,8 @@ DATASET_DIR="${DATASET_DIR:-${DATA_ROOT}/data/raw_ogbench}"
 PYTHON="${PYTHON:-python}"
 export PYTHONPATH="${PROJECT_ROOT}:${IMPLS_DIR}:${PYTHONPATH:-}"
 export OGBENCH_DATASET_DIR="${DATASET_DIR}"
+export MUJOCO_GL="${MUJOCO_GL:-egl}"
+export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-egl}"
 
 mkdir -p "${LOG_DIR}"
 
@@ -130,13 +134,13 @@ run_all_for_prob() {
   local ss_label="$1"
   local ss_prob="$2"
 
-  echo "Starting AntMaze Large ${ss_label} on GPU 0..."
-  run_antmaze_large 0 "${ss_label}" "${ss_prob}" \
+  echo "Starting AntMaze Large ${ss_label} on GPU ${LARGE_GPU}..."
+  run_antmaze_large "${LARGE_GPU}" "${ss_label}" "${ss_prob}" \
     > "${LOG_DIR}/antmaze_large_${ss_label}_${RUN_ID}.log" 2>&1 &
   local large_pid=$!
 
-  echo "Starting AntMaze Giant ${ss_label} on GPU 1..."
-  run_antmaze_giant 1 "${ss_label}" "${ss_prob}" \
+  echo "Starting AntMaze Giant ${ss_label} on GPU ${GIANT_GPU}..."
+  run_antmaze_giant "${GIANT_GPU}" "${ss_label}" "${ss_prob}" \
     > "${LOG_DIR}/antmaze_giant_${ss_label}_${RUN_ID}.log" 2>&1 &
   local giant_pid=$!
 
@@ -151,26 +155,26 @@ run_all_for_prob() {
 
 case "${TASK}" in
   large_ss25)
-    echo "Starting AntMaze Large ss25 on GPU 0..."
-    run_antmaze_large 0 ss25 0.25 \
+    echo "Starting AntMaze Large ss25 on GPU ${LARGE_GPU}..."
+    run_antmaze_large "${LARGE_GPU}" ss25 0.25 \
       > "${LOG_DIR}/antmaze_large_ss25_${RUN_ID}.log" 2>&1
     echo "Log: ${LOG_DIR}/antmaze_large_ss25_${RUN_ID}.log"
     ;;
   large_ss50)
-    echo "Starting AntMaze Large ss50 on GPU 0..."
-    run_antmaze_large 0 ss50 0.5 \
+    echo "Starting AntMaze Large ss50 on GPU ${LARGE_GPU}..."
+    run_antmaze_large "${LARGE_GPU}" ss50 0.5 \
       > "${LOG_DIR}/antmaze_large_ss50_${RUN_ID}.log" 2>&1
     echo "Log: ${LOG_DIR}/antmaze_large_ss50_${RUN_ID}.log"
     ;;
   giant_ss25)
-    echo "Starting AntMaze Giant ss25 on GPU 1..."
-    run_antmaze_giant 1 ss25 0.25 \
+    echo "Starting AntMaze Giant ss25 on GPU ${GIANT_GPU}..."
+    run_antmaze_giant "${GIANT_GPU}" ss25 0.25 \
       > "${LOG_DIR}/antmaze_giant_ss25_${RUN_ID}.log" 2>&1
     echo "Log: ${LOG_DIR}/antmaze_giant_ss25_${RUN_ID}.log"
     ;;
   giant_ss50)
-    echo "Starting AntMaze Giant ss50 on GPU 1..."
-    run_antmaze_giant 1 ss50 0.5 \
+    echo "Starting AntMaze Giant ss50 on GPU ${GIANT_GPU}..."
+    run_antmaze_giant "${GIANT_GPU}" ss50 0.5 \
       > "${LOG_DIR}/antmaze_giant_ss50_${RUN_ID}.log" 2>&1
     echo "Log: ${LOG_DIR}/antmaze_giant_ss50_${RUN_ID}.log"
     ;;

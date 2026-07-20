@@ -365,6 +365,9 @@ class CoGHPAgent(flax.struct.PyTreeNode):
                 low_actor_head=low_actor_def,
                 enc_hidden=config['enc_hidden_dims'],
                 num_subgoals=config['num_subgoals'],
+                causal_mixer=config.get('causal_mixer', True),
+                action_use_full_subgoal_chain=config.get('action_use_full_subgoal_chain', True),
+                share_mixer_weights=config.get('share_mixer_weights', False),
             )
 
         network_info = dict(
@@ -430,6 +433,9 @@ def get_config():
             layer_norm=True,  # Whether to use layer normalization.
             action_chunk=ml_collections.config_dict.placeholder(int),
             num_subgoals=1,
+            causal_mixer=True,
+            action_use_full_subgoal_chain=True,
+            share_mixer_weights=False,
             gc_enc='concat',
             high_discount=0.8,
         )
