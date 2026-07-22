@@ -291,16 +291,17 @@ class GCValue(nn.Module):
 
         self.value_net = value_net
 
-    def __call__(self, observations, goals=None, actions=None):
+    def __call__(self, observations, goals=None, actions=None, goal_encoded=False):
         """Return the value/critic function.
 
         Args:
             observations: Observations.
             goals: Goals (optional).
             actions: Actions (optional).
+            goal_encoded: Whether ``goals`` already contains goal representations.
         """
         if self.gc_encoder is not None:
-            inputs = [self.gc_encoder(observations, goals)]
+            inputs = [self.gc_encoder(observations, goals, goal_encoded=goal_encoded)]
         else:
             inputs = [observations]
             if goals is not None:

@@ -20,17 +20,21 @@ from utils.log_utils import CsvLogger, get_exp_name, get_flag_dict, get_wandb_vi
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string('run_group', 'Debug', 'Run group.')
+flags.DEFINE_string('wandb_project', 'CoGHP', 'W&B project name and experiment subdirectory.')
 flags.DEFINE_string('wandb_entity', None, 'W&B entity. None uses the account default.',)
+flags.DEFINE_enum('wandb_mode', 'online', ['online', 'offline', 'disabled'], 'W&B logging mode.')
 flags.DEFINE_integer('seed', 0, 'Random seed.')
 flags.DEFINE_string('env_name', 'antmaze-large-navigate-v0', 'Environment (dataset) name.')
 flags.DEFINE_string('save_dir', 'exp/', 'Save directory.')
 flags.DEFINE_string('restore_path', None, 'Restore path.')
 flags.DEFINE_integer('restore_epoch', None, 'Restore epoch.')
+flags.DEFINE_bool('eval_only', False, 'Evaluate a restored checkpoint without applying a training update.')
 
 flags.DEFINE_integer('train_steps', 1000000, 'Number of training steps.')
 flags.DEFINE_integer('log_interval', 5000, 'Logging interval.')
 flags.DEFINE_integer('eval_interval', 100000, 'Evaluation interval.')
 flags.DEFINE_integer('save_interval', 1000000, 'Saving interval.')
+flags.DEFINE_integer('eval_seed', None, 'Base seed for deterministic evaluation. None derives it from --seed.')
 
 flags.DEFINE_integer('eval_tasks', None, 'Number of tasks to evaluate (None for all).')
 flags.DEFINE_integer('eval_episodes', 20, 'Number of episodes for each task.')
@@ -44,9 +48,18 @@ config_flags.DEFINE_config_file('agent', 'agents/coghp.py', lock_config=False)
 
 
 def main(_):
+    random.seed(FLAGS.seed)
+    np.random.seed(FLAGS.seed)
+
     # Set up logger.
     exp_name = get_exp_name(FLAGS.seed)
-    setup_wandb(entity=None, project='CoGHP', group=FLAGS.run_group, name=exp_name)
+    setup_wandb(
+        entity=FLAGS.wandb_entity,
+        project=FLAGS.wandb_project,
+        group=FLAGS.run_group,
+        name=exp_name,
+        mode=FLAGS.wandb_mode,
+    )
 
     FLAGS.save_dir = os.path.join(FLAGS.save_dir, wandb.run.project, FLAGS.run_group, exp_name)
     os.makedirs(FLAGS.save_dir, exist_ok=True)
@@ -57,6 +70,7 @@ def main(_):
     # Set up environment and dataset.
     config = FLAGS.agent
     env, train_dataset, val_dataset = make_env_and_datasets(FLAGS.env_name, frame_stack=config['frame_stack'])
+    eval_seed = FLAGS.eval_seed if FLAGS.eval_seed is not None else FLAGS.seed + 1000000
 
     dataset_class = {
         'GCDataset': GCDataset,
@@ -68,9 +82,6 @@ def main(_):
         val_dataset = dataset_class(Dataset.create(**val_dataset), config)
 
     # Initialize agent.
-    random.seed(FLAGS.seed)
-    np.random.seed(FLAGS.seed)
-
     example_batch = train_dataset.sample(1)
     if config['discrete']:
         # Fill with the maximum action to let the agent know the action space size.
@@ -87,6 +98,11 @@ def main(_):
     # Restore agent.
     if FLAGS.restore_path is not None:
         agent = restore_agent(agent, FLAGS.restore_path, FLAGS.restore_epoch)
+    if FLAGS.eval_only:
+        if FLAGS.restore_path is None or FLAGS.restore_epoch is None:
+            raise ValueError('--eval_only requires both --restore_path and --restore_epoch.')
+        FLAGS.train_steps = 1
+        FLAGS.eval_interval = 1
 
     # Train agent.
     train_logger = CsvLogger(os.path.join(FLAGS.save_dir, 'train.csv'))
@@ -95,11 +111,12 @@ def main(_):
     last_time = time.time()
     for i in tqdm.tqdm(range(1, FLAGS.train_steps + 1), smoothing=0.1, dynamic_ncols=True):
         # Update agent.
-        batch = train_dataset.sample(config['batch_size'])
-        agent, update_info = agent.update(batch)
+        if not FLAGS.eval_only:
+            batch = train_dataset.sample(config['batch_size'])
+            agent, update_info = agent.update(batch)
 
         # Log metrics.
-        if i % FLAGS.log_interval == 0:
+        if not FLAGS.eval_only and i % FLAGS.log_interval == 0:
             train_metrics = {f'training/{k}': v for k, v in update_info.items()}
             if val_dataset is not None:
                 val_batch = val_dataset.sample(config['batch_size'])
@@ -110,6 +127,7 @@ def main(_):
                     and (
                         config.get('enable_hcoghp_diagnostics', False)
                         or config.get('enable_free_running_validation', False)
+                        or config.get('enable_fm_diagnostics', False)
                     )
                 ):
                     rollout_info = agent.validation_rollout_info(val_batch)
@@ -144,6 +162,7 @@ def main(_):
                     video_frame_skip=FLAGS.video_frame_skip,
                     eval_temperature=FLAGS.eval_temperature,
                     eval_gaussian=FLAGS.eval_gaussian,
+                    seed=eval_seed + i * 1000 + task_id,
                 )
                 renders.extend(cur_renders)
                 metric_names = ['success']
@@ -164,7 +183,7 @@ def main(_):
             eval_logger.log(eval_metrics, step=i)
 
         # Save agent.
-        if i % FLAGS.save_interval == 0:
+        if not FLAGS.eval_only and i % FLAGS.save_interval == 0:
             save_agent(agent, FLAGS.save_dir, i)
 
     train_logger.close()

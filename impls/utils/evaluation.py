@@ -44,6 +44,7 @@ def evaluate(
     video_frame_skip=3,
     eval_temperature=0,
     eval_gaussian=None,
+    seed=None,
 ):
     """Evaluate the agent in the environment.
 
@@ -61,7 +62,10 @@ def evaluate(
     Returns:
         A tuple containing the statistics, trajectories, and rendered videos.
     """
-    actor_fn = supply_rng(agent.sample_actions, rng=jax.random.PRNGKey(np.random.randint(0, 2**32)))
+    if seed is None:
+        seed = np.random.randint(0, 2**32)
+    rng = np.random.default_rng(seed)
+    actor_fn = supply_rng(agent.sample_actions, rng=jax.random.PRNGKey(seed))
     trajs = []
     stats = defaultdict(list)
 
@@ -70,7 +74,8 @@ def evaluate(
         traj = defaultdict(list)
         should_render = i >= num_eval_episodes
 
-        observation, info = env.reset(options=dict(task_id=task_id, render_goal=should_render))
+        episode_seed = int(rng.integers(0, 2**31 - 1))
+        observation, info = env.reset(seed=episode_seed, options=dict(task_id=task_id, render_goal=should_render))
         goal = info.get('goal')
         goal_frame = info.get('goal_rendered')
         done = False
@@ -81,7 +86,7 @@ def evaluate(
             action = np.array(action)
             if not config.get('discrete'):
                 if eval_gaussian is not None:
-                    action = np.random.normal(action, eval_gaussian)
+                    action = rng.normal(action, eval_gaussian)
                 action = np.clip(action, -1, 1)
 
             next_observation, reward, terminated, truncated, info = env.step(action)

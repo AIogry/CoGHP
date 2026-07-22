@@ -55,6 +55,33 @@ python main.py --env_name=visual-antmaze-medium-navigate-v0 --train_steps=500000
 python main.py --env_name=visual-cube-single-noisy-v0 --train_steps=500000 --eval_episodes=50 --eval_on_cpu=0 --agent=agents/coghp.py --agent.encoder=impala_small --agent.high_alpha=3.0 --agent.low_actor_rep_grad=True --agent.low_alpha=3.0 --agent.p_aug=0.5 --agent.feature_dim=32 --agent.subgoal_steps=10
 ```
 
+# FM-CoGHP extension
+
+FM-CoGHP jointly generates the complete far-to-near latent subgoal chain with conditional flow matching. It can draw
+multiple chains and select one with the existing CoGHP value function or a local contrastive bridge critic.
+FM-CoGHP training outputs are stored under `${DATA_ROOT}/exp/FM_CoGHP/`.
+
+```shell
+# AntMaze Large (one subgoal).
+bash scripts/train_fm_coghp.sh large
+
+# AntMaze Giant (two subgoals, joint-chain setting).
+bash scripts/train_fm_coghp.sh giant
+
+# Select among four candidates with the local CRL critic.
+FLOW_SELECTOR=local_crl FLOW_CANDIDATES=4 bash scripts/train_fm_coghp.sh giant
+```
+
+Supported selectors are `none`, `coghp_value`, and `local_crl`. The same checkpoint can be evaluated with different
+selectors by restoring it with a different `--agent.flow_selector` override. Offline candidate diagnostics are
+available through `scripts/diagnose_fm_coghp_checkpoint.py`.
+
+Run the synthetic interface and gradient-boundary tests with:
+
+```shell
+JAX_PLATFORMS=cpu python -m unittest impls/test_fm_coghp.py -v
+```
+
 # Acknowledgments
 This code is based on [OGBench](https://github.com/seohongpark/ogbench) repository.
 

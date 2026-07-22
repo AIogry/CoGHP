@@ -16,7 +16,8 @@ set -euo pipefail
 #   COGHP_CAUSAL_MIXER=False bash scripts/train_coghp.sh antmaze_large
 
 TASK="${1:-all}"
-RUN_ID="sd000_$(date +%Y%m%d_%H%M%S)"
+SEED="${SEED:-0}"
+RUN_ID="sd$(printf '%03d' "${SEED}")_$(date +%Y%m%d_%H%M%S)"
 GPUS="${GPUS:-${CUDA_VISIBLE_DEVICES:-0 1}}"
 MAX_PARALLEL="${MAX_PARALLEL:-2}"
 LARGE_GPU="${LARGE_GPU:-0}"
@@ -55,12 +56,20 @@ export PYTHONPATH="${PROJECT_ROOT}:${IMPLS_DIR}:${PYTHONPATH:-}"
 export OGBENCH_DATASET_DIR="${DATASET_DIR}"
 export MUJOCO_GL="${MUJOCO_GL:-egl}"
 export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-egl}"
+export PYTHONHASHSEED="${PYTHONHASHSEED:-${SEED}}"
+
+if [[ "${DETERMINISTIC:-1}" == "1" ]]; then
+  if [[ "${XLA_FLAGS:-}" != *"--xla_gpu_deterministic_ops"* ]]; then
+    export XLA_FLAGS="${XLA_FLAGS:-} --xla_gpu_deterministic_ops"
+  fi
+fi
 
 mkdir -p "${LOG_DIR}"
 
 COMMON_ARGS=(
   --eval_episodes=50
   --video_episodes=0
+  --seed="${SEED}"
   --agent=agents/coghp.py
   --save_dir="${DATA_ROOT}/exp"
   --agent.causal_mixer="${COGHP_CAUSAL_MIXER}"
@@ -115,6 +124,15 @@ ALL_TASKS=(
   "${POINTMAZE_TASKS[@]}"
   "${ANTMAZE_TASKS[@]}"
   "${HUMANOIDMAZE_TASKS[@]}"
+)
+
+MAZE_LARGE_GIANT_TASKS=(
+  pointmaze_large
+  pointmaze_giant
+  antmaze_large
+  antmaze_giant
+  humanoidmaze_large
+  humanoidmaze_giant
 )
 
 check_dataset_runtime() {
@@ -245,6 +263,9 @@ tasks_for_group() {
     all)
       printf '%s\n' "${ALL_TASKS[@]}"
       ;;
+    maze_large_giant)
+      printf '%s\n' "${MAZE_LARGE_GIANT_TASKS[@]}"
+      ;;
     *)
       return 1
       ;;
@@ -329,6 +350,7 @@ print_tasks() {
   echo "  pointmaze"
   echo "  antmaze"
   echo "  humanoidmaze"
+  echo "  maze_large_giant"
   echo "  all"
   echo
   echo "Backward-compatible aliases:"

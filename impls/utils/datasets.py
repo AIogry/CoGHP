@@ -452,11 +452,18 @@ class MultiHGCDataset(GCDataset):
             high_traj_goal_idxs[:, None]
         )
 
-        # Process random goals (generate a single goal before computing the target)
+        # For random final goals, keep subgoal supervision grounded in the
+        # current trajectory and preserve the global far-to-near ordering.
+        # This matches HGCDataset and avoids clipping against an unrelated
+        # global dataset index (which can cross trajectory boundaries).
         high_random_goal_idxs = self.dataset.get_random_idxs(batch_size)
         high_random_target_idxs = np.minimum(
-            idxs[:, None] + (np.arange(1, self.config['num_subgoals'] + 1) * self.config['subgoal_steps']),
-            high_random_goal_idxs[:, None]
+            idxs[:, None]
+            + (
+                np.arange(self.config['num_subgoals'], 0, -1)
+                * self.config['subgoal_steps']
+            ),
+            final_state_idxs[:, None],
         )
 
         pick_random = np.random.rand(batch_size) < self.config['actor_p_randomgoal']
@@ -467,6 +474,25 @@ class MultiHGCDataset(GCDataset):
 
         batch['high_actor_goals'] = self.get_observations(high_goal_idxs)  # (B, feature)
         batch['high_actor_targets'] = self.get_observations(high_target_idxs)  # (B, num_subgoals, feature)
+
+        # Preserve sampling metadata for Flow diagnostics and contrastive
+        # false-negative masking. These integer arrays are never network inputs.
+        target_final_idxs = self.terminal_locs[
+            np.searchsorted(self.terminal_locs, high_target_idxs)
+        ]
+        batch['indices'] = np.asarray(idxs, dtype=np.int32)
+        batch['high_actor_goal_idxs'] = np.asarray(high_goal_idxs, dtype=np.int32)
+        batch['high_actor_target_idxs'] = np.asarray(high_target_idxs, dtype=np.int32)
+        batch['high_actor_target_offsets'] = np.asarray(
+            high_target_idxs - idxs[:, None],
+            dtype=np.int32,
+        )
+        batch['trajectory_initial_idxs'] = np.asarray(
+            self.initial_locs[np.searchsorted(self.initial_locs, idxs, side='right') - 1],
+            dtype=np.int32,
+        )
+        batch['trajectory_final_idxs'] = np.asarray(final_state_idxs, dtype=np.int32)
+        batch['high_actor_target_final_idxs'] = np.asarray(target_final_idxs, dtype=np.int32)
 
         if self.config['p_aug'] is not None and not evaluation:
             if np.random.rand() < self.config['p_aug']:
