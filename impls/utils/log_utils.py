@@ -68,7 +68,10 @@ def setup_wandb(
 ):
     """Set up Weights & Biases for logging."""
     wandb_output_dir = tempfile.mkdtemp()
-    tags = [group] if group is not None else None
+    # W&B limits each tag to 64 characters, while descriptive experiment
+    # group names may be longer. Keep the full group name for grouping and
+    # result paths, and truncate only its redundant tag representation.
+    tags = [group[:64]] if group is not None else None
 
     init_kwargs = dict(
         config=get_flag_dict(),

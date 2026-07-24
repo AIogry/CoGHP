@@ -368,6 +368,7 @@ class CoGHPAgent(flax.struct.PyTreeNode):
                 causal_mixer=config.get('causal_mixer', True),
                 action_use_full_subgoal_chain=config.get('action_use_full_subgoal_chain', True),
                 share_mixer_weights=config.get('share_mixer_weights', False),
+                separate_action_mixer=config.get('separate_action_mixer', False),
             )
 
         network_info = dict(
@@ -436,6 +437,7 @@ def get_config():
             causal_mixer=True,
             action_use_full_subgoal_chain=True,
             share_mixer_weights=False,
+            separate_action_mixer=False,
             gc_enc='concat',
             high_discount=0.8,
         )

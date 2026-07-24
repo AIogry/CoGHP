@@ -25,9 +25,17 @@ GIANT_GPU="${GIANT_GPU:-1}"
 COGHP_CAUSAL_MIXER="${COGHP_CAUSAL_MIXER:-True}"
 COGHP_ACTION_USE_FULL_SUBGOAL_CHAIN="${COGHP_ACTION_USE_FULL_SUBGOAL_CHAIN:-True}"
 COGHP_SHARE_MIXER_WEIGHTS="${COGHP_SHARE_MIXER_WEIGHTS:-False}"
+COGHP_SEPARATE_ACTION_MIXER="${COGHP_SEPARATE_ACTION_MIXER:-False}"
 RUN_SUFFIX="${RUN_SUFFIX:-}"
 
 BASE_TASK="${TASK}"
+if [[ "${TASK}" == *_separate_action_mixer_last_subgoal_action ]]; then
+  COGHP_SEPARATE_ACTION_MIXER=True
+  COGHP_ACTION_USE_FULL_SUBGOAL_CHAIN=False
+  RUN_SUFFIX="${RUN_SUFFIX:-_separate_action_mixer_last_subgoal_action}"
+  BASE_TASK="${BASE_TASK%_separate_action_mixer_last_subgoal_action}"
+fi
+
 if [[ "${TASK}" == *_no_causal ]]; then
   COGHP_CAUSAL_MIXER=False
   RUN_SUFFIX="${RUN_SUFFIX:-_no_causal}"
@@ -44,6 +52,12 @@ if [[ "${TASK}" == *_shared_mixer ]]; then
   COGHP_SHARE_MIXER_WEIGHTS=True
   RUN_SUFFIX="${RUN_SUFFIX:-_shared_mixer}"
   BASE_TASK="${BASE_TASK%_shared_mixer}"
+fi
+
+if [[ "${TASK}" == *_separate_action_mixer ]]; then
+  COGHP_SEPARATE_ACTION_MIXER=True
+  RUN_SUFFIX="${RUN_SUFFIX:-_separate_action_mixer}"
+  BASE_TASK="${BASE_TASK%_separate_action_mixer}"
 fi
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -75,6 +89,7 @@ COMMON_ARGS=(
   --agent.causal_mixer="${COGHP_CAUSAL_MIXER}"
   --agent.action_use_full_subgoal_chain="${COGHP_ACTION_USE_FULL_SUBGOAL_CHAIN}"
   --agent.share_mixer_weights="${COGHP_SHARE_MIXER_WEIGHTS}"
+  --agent.separate_action_mixer="${COGHP_SEPARATE_ACTION_MIXER}"
 )
 
 # task_key|env_name|num_subgoals|subgoal_steps|feature_dim|extra_agent_args

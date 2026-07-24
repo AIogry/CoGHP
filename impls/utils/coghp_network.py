@@ -84,6 +84,7 @@ class HierarchicalPolicyNetwork(nn.Module):
     causal_mixer: bool = True
     action_use_full_subgoal_chain: bool = True
     share_mixer_weights: bool = False
+    separate_action_mixer: bool = False
 
     def setup(self):
         # Parameter for previous token embeddings:
@@ -91,23 +92,35 @@ class HierarchicalPolicyNetwork(nn.Module):
                                       nn.initializers.normal(stddev=0.1),
                                       (1, self.num_subgoals + 1, self.state_dim))
 
-        if self.share_mixer_weights:
+        if self.separate_action_mixer and self.share_mixer_weights:
+            raise ValueError(
+                'separate_action_mixer and share_mixer_weights cannot both be enabled.'
+            )
+
+        mixer_kwargs = dict(
+            num_tokens=self.num_subgoals + 3,
+            embed_dim=self.state_dim,
+            hidden_dim_tokens=self.mixer_token_hidden,
+            hidden_dim_channels=self.mixer_channel_hidden,
+            causal=self.causal_mixer,
+        )
+
+        if self.separate_action_mixer:
+            # Preserve the original CoGHP sharing across all subgoal prediction
+            # steps, while giving primitive-action prediction its own mixer.
+            self.subgoal_mixer_blocks = [
+                MixerBlock(**mixer_kwargs) for _ in range(self.num_mixer_blocks)
+            ]
+            self.action_mixer_blocks = [
+                MixerBlock(**mixer_kwargs) for _ in range(self.num_mixer_blocks)
+            ]
+        elif self.share_mixer_weights:
             self.shared_mixer_block = MixerBlock(
-                num_tokens=self.num_subgoals + 3,
-                embed_dim=self.state_dim,
-                hidden_dim_tokens=self.mixer_token_hidden,
-                hidden_dim_channels=self.mixer_channel_hidden,
-                causal=self.causal_mixer,
+                **mixer_kwargs,
             )
         else:
             self.mixer_blocks = [
-                MixerBlock(
-                    num_tokens=self.num_subgoals + 3,
-                    embed_dim=self.state_dim,
-                    hidden_dim_tokens=self.mixer_token_hidden,
-                    hidden_dim_channels=self.mixer_channel_hidden,
-                    causal=self.causal_mixer,
-                )
+                MixerBlock(**mixer_kwargs)
                 for _ in range(self.num_mixer_blocks)
             ]
         
@@ -169,7 +182,14 @@ class HierarchicalPolicyNetwork(nn.Module):
             target_dim = features.shape[1] + token_dim + 1
 
             # Apply Mixer blocks.
-            if self.share_mixer_weights:
+            if self.separate_action_mixer:
+                if token_dim < self.num_subgoals:
+                    mixer_blocks = self.subgoal_mixer_blocks
+                else:
+                    mixer_blocks = self.action_mixer_blocks
+                for mixer_block in mixer_blocks:
+                    x = mixer_block(x)
+            elif self.share_mixer_weights:
                 for _ in range(self.num_mixer_blocks):
                     x = self.shared_mixer_block(x)
             else:
