@@ -66,10 +66,18 @@ def diagnose_run(run_dir, restore_epoch, num_batches, batch_size, output_dir, se
     config.enable_free_running_validation = True
 
     env_name = flags['env_name']
-    env, train_dataset, val_dataset = make_env_and_datasets(env_name, frame_stack=config['frame_stack'])
+    env, train_dataset, val_dataset = make_env_and_datasets(
+        env_name,
+        frame_stack=config['frame_stack'],
+        seed=seed,
+    )
     del train_dataset
     dataset_class = DATASET_CLASSES[config['dataset_class']]
-    val_dataset = dataset_class(Dataset.create(**val_dataset), config)
+    val_dataset = dataset_class(
+        Dataset.create(seed=seed, **val_dataset),
+        config,
+        rng=np.random.default_rng(seed),
+    )
 
     rng = jax.random.PRNGKey(seed)
     np.random.seed(seed)

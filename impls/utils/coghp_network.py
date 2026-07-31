@@ -136,7 +136,9 @@ class HierarchicalPolicyNetwork(nn.Module):
                  action_seq: Optional[jnp.ndarray] = None,
                  temperature: float = 1.0):
         
-        high_seed, low_seed = jax.random.split(seed)
+        actor_keys = jax.random.split(seed, self.num_subgoals + 1)
+        subgoal_keys = actor_keys[: self.num_subgoals]
+        action_key = actor_keys[-1]
 
         observations = jnp.expand_dims(observations, axis=1) # (B, 1, state_dim)
         if goals is not None:
@@ -201,12 +203,12 @@ class HierarchicalPolicyNetwork(nn.Module):
             if token_dim < self.num_subgoals:
                 high_dist = self.high_actor_head(target_token, temperature=temperature)
                 high_dist_list.append(high_dist)
-                goal_reps = high_dist.sample(seed=high_seed)
+                goal_reps = high_dist.sample(seed=subgoal_keys[token_dim])
 
                 predicted_subgoals = predicted_subgoals.at[:, token_dim, :].set(goal_reps)
 
             else:
                 low_dist = self.low_actor_head(target_token, temperature=temperature)  #(B, 1)
-                predicted_actions = low_dist.sample(seed=low_seed)  # (B, num_action_dims)
+                predicted_actions = low_dist.sample(seed=action_key)  # (B, num_action_dims)
                 
         return high_dist_list, low_dist, predicted_actions

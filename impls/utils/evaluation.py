@@ -16,6 +16,13 @@ def supply_rng(f, rng=jax.random.PRNGKey(0)):
     return wrapped
 
 
+def derive_seed(base_seed, *components):
+    """Derive a stable uint32 seed for an independent random stream."""
+    entropy = [int(base_seed) & 0xFFFFFFFF]
+    entropy.extend(int(component) & 0xFFFFFFFF for component in components)
+    return int(np.random.SeedSequence(entropy).generate_state(1, dtype=np.uint32)[0])
+
+
 def flatten(d, parent_key='', sep='.'):
     """Flatten a dictionary."""
     items = []
@@ -63,9 +70,7 @@ def evaluate(
         A tuple containing the statistics, trajectories, and rendered videos.
     """
     if seed is None:
-        seed = np.random.randint(0, 2**32)
-    rng = np.random.default_rng(seed)
-    actor_fn = supply_rng(agent.sample_actions, rng=jax.random.PRNGKey(seed))
+        seed = int(np.random.SeedSequence().generate_state(1, dtype=np.uint32)[0])
     trajs = []
     stats = defaultdict(list)
 
@@ -74,8 +79,17 @@ def evaluate(
         traj = defaultdict(list)
         should_render = i >= num_eval_episodes
 
-        episode_seed = int(rng.integers(0, 2**31 - 1))
-        observation, info = env.reset(seed=episode_seed, options=dict(task_id=task_id, render_goal=should_render))
+        # Keep environment, policy, and optional Gaussian action noise on
+        # independent per-episode streams. This prevents one episode's length
+        # from changing the action keys used by later episodes.
+        episode_seed = derive_seed(seed, i, 0)
+        actor_seed = derive_seed(seed, i, 1)
+        noise_rng = np.random.default_rng(derive_seed(seed, i, 2))
+        actor_fn = supply_rng(agent.sample_actions, rng=jax.random.PRNGKey(actor_seed))
+        observation, info = env.reset(
+            seed=episode_seed,
+            options=dict(task_id=task_id, render_goal=should_render),
+        )
         goal = info.get('goal')
         goal_frame = info.get('goal_rendered')
         done = False
@@ -86,7 +100,7 @@ def evaluate(
             action = np.array(action)
             if not config.get('discrete'):
                 if eval_gaussian is not None:
-                    action = rng.normal(action, eval_gaussian)
+                    action = noise_rng.normal(action, eval_gaussian)
                 action = np.clip(action, -1, 1)
 
             next_observation, reward, terminated, truncated, info = env.step(action)

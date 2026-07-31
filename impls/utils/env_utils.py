@@ -81,12 +81,13 @@ class FrameStackWrapper(gymnasium.Wrapper):
         return self.get_observation(), reward, terminated, truncated, info
 
 
-def make_env_and_datasets(dataset_name, frame_stack=None):
+def make_env_and_datasets(dataset_name, frame_stack=None, seed=None):
     """Make OGBench environment and datasets.
 
     Args:
         dataset_name: Name of the dataset.
         frame_stack: Number of frames to stack.
+        seed: Seed for the environment's initialization reset.
 
     Returns:
         A tuple of the environment, training dataset, and validation dataset.
@@ -99,6 +100,6 @@ def make_env_and_datasets(dataset_name, frame_stack=None):
     if frame_stack is not None:
         env = FrameStackWrapper(env, frame_stack)
 
-    env.reset()
+    env.reset(seed=seed)
 
     return env, train_dataset, val_dataset

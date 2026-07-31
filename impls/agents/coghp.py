@@ -217,8 +217,6 @@ class CoGHPAgent(flax.struct.PyTreeNode):
         temperature=1.0,
     ):
         """Sample actions from the actor network."""
-        high_seed, low_seed = jax.random.split(seed)
-
         observations = jnp.expand_dims(observations, axis=0)  # (1, D)
         
         if goals is not None:

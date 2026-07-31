@@ -53,10 +53,15 @@ def load_agent(run_dir, restore_epoch, seed, diagnostic_candidates):
     env, train_dataset, val_dataset = make_env_and_datasets(
         flags['env_name'],
         frame_stack=config['frame_stack'],
+        seed=seed,
     )
     del env, train_dataset
     dataset_class = DATASET_CLASSES[config['dataset_class']]
-    val_dataset = dataset_class(Dataset.create(**val_dataset), config)
+    val_dataset = dataset_class(
+        Dataset.create(seed=seed, **val_dataset),
+        config,
+        rng=np.random.default_rng(seed),
+    )
     example_batch = val_dataset.sample(1)
     agent = agents[config['agent_name']].create(
         seed,

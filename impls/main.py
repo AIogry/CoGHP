@@ -1,5 +1,6 @@
 import json
 import os
+import platform
 import random
 import time
 from collections import defaultdict
@@ -13,7 +14,7 @@ from agents import agents
 from ml_collections import config_flags
 from utils.datasets import Dataset, GCDataset, HGCDataset, MultiHGCDataset
 from utils.env_utils import make_env_and_datasets
-from utils.evaluation import evaluate
+from utils.evaluation import derive_seed, evaluate
 from utils.flax_utils import restore_agent, save_agent
 from utils.log_utils import CsvLogger, get_exp_name, get_flag_dict, get_wandb_video, setup_wandb
 
@@ -35,6 +36,19 @@ flags.DEFINE_integer('log_interval', 5000, 'Logging interval.')
 flags.DEFINE_integer('eval_interval', 100000, 'Evaluation interval.')
 flags.DEFINE_integer('save_interval', 1000000, 'Saving interval.')
 flags.DEFINE_integer('eval_seed', None, 'Base seed for deterministic evaluation. None derives it from --seed.')
+flags.DEFINE_integer('train_dataset_seed', None, 'Training dataset RNG seed. None derives it from --seed.')
+flags.DEFINE_integer('validation_dataset_seed', None, 'Validation dataset RNG seed. None derives it from --seed.')
+flags.DEFINE_integer('environment_seed', None, 'Environment initialization seed. None derives it from --seed.')
+flags.DEFINE_bool(
+    'fixed_validation_batch',
+    True,
+    'Reuse the same deterministically sampled validation batch at every logging step.',
+)
+flags.DEFINE_bool(
+    'require_deterministic_gpu',
+    True,
+    'Require XLA deterministic GPU operations when running on a GPU backend.',
+)
 
 flags.DEFINE_integer('eval_tasks', None, 'Number of tasks to evaluate (None for all).')
 flags.DEFINE_integer('eval_episodes', 20, 'Number of episodes for each task.')
@@ -50,6 +64,16 @@ config_flags.DEFINE_config_file('agent', 'agents/coghp.py', lock_config=False)
 def main(_):
     random.seed(FLAGS.seed)
     np.random.seed(FLAGS.seed)
+    if (
+        FLAGS.require_deterministic_gpu
+        and jax.default_backend() == 'gpu'
+        and '--xla_gpu_deterministic_ops' not in os.environ.get('XLA_FLAGS', '')
+    ):
+        raise RuntimeError(
+            'GPU reproducibility requires XLA_FLAGS to contain '
+            '--xla_gpu_deterministic_ops before Python starts. Use the '
+            'repository training scripts or set DETERMINISTIC=1.'
+        )
 
     # Set up logger.
     exp_name = get_exp_name(FLAGS.seed)
@@ -67,22 +91,76 @@ def main(_):
     with open(os.path.join(FLAGS.save_dir, 'flags.json'), 'w') as f:
         json.dump(flag_dict, f)
 
+    # Derive independent deterministic random streams. Explicit flags allow an
+    # experiment to hold one stream fixed while changing another.
+    train_dataset_seed = (
+        FLAGS.train_dataset_seed
+        if FLAGS.train_dataset_seed is not None
+        else derive_seed(FLAGS.seed, 1)
+    )
+    validation_dataset_seed = (
+        FLAGS.validation_dataset_seed
+        if FLAGS.validation_dataset_seed is not None
+        else derive_seed(FLAGS.seed, 2)
+    )
+    environment_seed = (
+        FLAGS.environment_seed
+        if FLAGS.environment_seed is not None
+        else derive_seed(FLAGS.seed, 3)
+    )
+    eval_seed = (
+        FLAGS.eval_seed
+        if FLAGS.eval_seed is not None
+        else derive_seed(FLAGS.seed, 4)
+    )
+
     # Set up environment and dataset.
     config = FLAGS.agent
-    env, train_dataset, val_dataset = make_env_and_datasets(FLAGS.env_name, frame_stack=config['frame_stack'])
-    eval_seed = FLAGS.eval_seed if FLAGS.eval_seed is not None else FLAGS.seed + 1000000
+    env, train_dataset, val_dataset = make_env_and_datasets(
+        FLAGS.env_name,
+        frame_stack=config['frame_stack'],
+        seed=environment_seed,
+    )
 
     dataset_class = {
         'GCDataset': GCDataset,
         'HGCDataset': HGCDataset,
         'MultiHGCDataset': MultiHGCDataset,
     }[config['dataset_class']]
-    train_dataset = dataset_class(Dataset.create(**train_dataset), config)
+    train_dataset = dataset_class(
+        Dataset.create(seed=train_dataset_seed, **train_dataset),
+        config,
+        rng=np.random.default_rng(train_dataset_seed),
+    )
     if val_dataset is not None:
-        val_dataset = dataset_class(Dataset.create(**val_dataset), config)
+        val_dataset = dataset_class(
+            Dataset.create(seed=validation_dataset_seed, **val_dataset),
+            config,
+            rng=np.random.default_rng(validation_dataset_seed),
+        )
+
+    reproducibility_info = {
+        'seed': FLAGS.seed,
+        'train_dataset_seed': train_dataset_seed,
+        'validation_dataset_seed': validation_dataset_seed,
+        'environment_seed': environment_seed,
+        'eval_seed': eval_seed,
+        'fixed_validation_batch': FLAGS.fixed_validation_batch,
+        'require_deterministic_gpu': FLAGS.require_deterministic_gpu,
+        'python_version': platform.python_version(),
+        'numpy_version': np.__version__,
+        'jax_version': jax.__version__,
+        'platform': platform.platform(),
+        'jax_devices': [str(device) for device in jax.devices()],
+        'pythonhashseed': os.environ.get('PYTHONHASHSEED'),
+        'xla_flags': os.environ.get('XLA_FLAGS'),
+    }
+    with open(os.path.join(FLAGS.save_dir, 'reproducibility.json'), 'w') as f:
+        json.dump(reproducibility_info, f, indent=2)
 
     # Initialize agent.
-    example_batch = train_dataset.sample(1)
+    # Agent shape initialization must not consume the training sampler's RNG.
+    example_batch = train_dataset.dataset.get_subset(np.array([0], dtype=np.int64))
     if config['discrete']:
         # Fill with the maximum action to let the agent know the action space size.
         example_batch['actions'] = np.full_like(example_batch['actions'], env.action_space.n - 1)
@@ -119,8 +197,26 @@ def main(_):
         if not FLAGS.eval_only and i % FLAGS.log_interval == 0:
             train_metrics = {f'training/{k}': v for k, v in update_info.items()}
             if val_dataset is not None:
-                val_batch = val_dataset.sample(config['batch_size'])
-                _, val_info = agent.total_loss(val_batch, grad_params=None)
+                if FLAGS.fixed_validation_batch:
+                    validation_rng = np.random.default_rng(validation_dataset_seed)
+                else:
+                    validation_rng = val_dataset.rng
+                val_batch = val_dataset.sample(
+                    config['batch_size'],
+                    evaluation=True,
+                    rng=validation_rng,
+                )
+                validation_key = jax.random.PRNGKey(
+                    derive_seed(validation_dataset_seed, 0)
+                )
+                validation_loss_key, validation_rollout_key = jax.random.split(
+                    validation_key
+                )
+                _, val_info = agent.total_loss(
+                    val_batch,
+                    grad_params=None,
+                    rng=validation_loss_key,
+                )
                 train_metrics.update({f'validation/{k}': v for k, v in val_info.items()})
                 if (
                     hasattr(agent, 'validation_rollout_info')
@@ -130,7 +226,10 @@ def main(_):
                         or config.get('enable_fm_diagnostics', False)
                     )
                 ):
-                    rollout_info = agent.validation_rollout_info(val_batch)
+                    rollout_info = agent.validation_rollout_info(
+                        val_batch,
+                        rng=validation_rollout_key,
+                    )
                     train_metrics.update(rollout_info)
             train_metrics['time/epoch_time'] = (time.time() - last_time) / FLAGS.log_interval
             train_metrics['time/total_time'] = time.time() - first_time
@@ -162,7 +261,8 @@ def main(_):
                     video_frame_skip=FLAGS.video_frame_skip,
                     eval_temperature=FLAGS.eval_temperature,
                     eval_gaussian=FLAGS.eval_gaussian,
-                    seed=eval_seed + i * 1000 + task_id,
+                    # Keep every checkpoint on the same task/episode set.
+                    seed=derive_seed(eval_seed, task_id),
                 )
                 renders.extend(cur_renders)
                 metric_names = ['success']
