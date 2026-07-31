@@ -13,7 +13,7 @@ from utils.networks import GCActor, GCDiscreteActor, GCValue, Identity, LengthNo
 
 
 class HCoGHPAgent(CoGHPAgent):
-    """CoGHP agent with a shared-weight HRM-style actor mixer."""
+    """CoGHP with outer autoregression and inner recurrent HRM state updates."""
 
     def get_scheduled_sampling_prob(self, step):
         """Return the linear scheduled sampling probability for the current training step."""
@@ -51,6 +51,9 @@ class HCoGHPAgent(CoGHPAgent):
             return_sampling_diagnostics=True,
         )
 
+        # Keep the original CoGHP high-level AWR objective. The actor network's
+        # hrm_gradient_mode controls only whether each stage's AWR graph crosses
+        # recurrent/token boundaries; it does not change this loss.
         if self.config['num_subgoals'] > 0:
             high_actor_loss, high_actor_info = self.multi_high_actor_loss(batch, high_dist, obs_expand, grad_params)
         else:
@@ -256,6 +259,10 @@ class HCoGHPAgent(CoGHPAgent):
         else:
             gc_enc = high_actor_encoder_def
 
+        readout_hidden_dim = config.get('subgoal_readout_hidden_dim', 0)
+        if readout_hidden_dim <= 0:
+            readout_hidden_dim = config['feature_dim'] * 2
+
         actor_mixer_def = HCoGHPPolicyNetwork(
             num_tokens=1,
             state_dim=config['feature_dim'],
@@ -270,8 +277,16 @@ class HCoGHPAgent(CoGHPAgent):
             low_actor_head=low_actor_def,
             enc_hidden=config['enc_hidden_dims'],
             num_subgoals=config['num_subgoals'],
+            causal_mixer=config.get('causal_mixer', True),
+            action_use_full_subgoal_chain=config.get('action_use_full_subgoal_chain', True),
             hrm_l_cycles=config['hrm_l_cycles'],
-            hrm_mix_scale=config['hrm_mix_scale'],
+            hrm_init_std=config.get('hrm_init_std', 0.1),
+            hrm_trainable_init=config.get('hrm_trainable_init', False),
+            hrm_low_num_blocks=config.get('hrm_low_num_blocks', 1),
+            hrm_high_num_blocks=config.get('hrm_high_num_blocks', 1),
+            subgoal_readout_hidden_dim=readout_hidden_dim,
+            enable_hcoghp_diagnostics=config.get('enable_hcoghp_diagnostics', False),
+            hrm_gradient_mode=config.get('hrm_gradient_mode', 'stage_truncated'),
         )
 
         network_info = dict(
@@ -301,7 +316,18 @@ def get_config():
     config = get_coghp_config()
     config.agent_name = 'hcoghp'
     config.hrm_l_cycles = 2
+    config.hrm_init_std = 0.1
+    config.hrm_trainable_init = False
+    config.hrm_low_num_blocks = 1
+    config.hrm_high_num_blocks = 1
+    # 0 means 2 * feature_dim, resolved after command-line overrides.
+    config.subgoal_readout_hidden_dim = 0
+    config.hrm_gradient_mode = 'stage_truncated'
+    # Deprecated compatibility flag; no longer controls the HRM computation.
     config.hrm_mix_scale = True
+    # Deprecated name from the previous prototype; the new network uses
+    # subgoal_readout_hidden_dim instead.
+    config.hrm_fusion_hidden_dim = 0
     config.enable_hcoghp_diagnostics = False
     config.enable_free_running_validation = False
     config.scheduled_sampling_enabled = False
