@@ -12,6 +12,10 @@ TASK="${1:-all}"
 RUN_ID="sd000_$(date +%Y%m%d_%H%M%S)"
 LARGE_GPU="${LARGE_GPU:-0}"
 GIANT_GPU="${GIANT_GPU:-1}"
+TRAINABLE_INIT="${HCOGHP_TRAINABLE_INIT:-True}"
+READOUT_MODE="${HCOGHP_READOUT_MODE:-residual}"
+RESIDUAL_ALPHA="${HCOGHP_RESIDUAL_ALPHA:-0.05}"
+STAGE_EMBED_CONTEXT="${HCOGHP_STAGE_EMBED_CONTEXT:-False}"
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DATA_ROOT="${DATA_ROOT:-/data/qijunrong/06-RL/offline-rl}"
@@ -28,10 +32,18 @@ mkdir -p "${LOG_DIR}"
 
 COMMON_ARGS=(
   --eval_episodes=50
+  --eval_temperature=0
   --video_episodes=0
   --agent=agents/hcoghp.py
   --save_dir="${DATA_ROOT}/exp"
+  --agent.hrm_h_cycles=2
   --agent.hrm_l_cycles=2
+  --agent.hrm_trainable_init="${TRAINABLE_INIT}"
+  --agent.hrm_readout_mode="${READOUT_MODE}"
+  --agent.hrm_readout_residual_alpha="${RESIDUAL_ALPHA}"
+  --agent.stage_embedding_in_context="${STAGE_EMBED_CONTEXT}"
+  --agent.segment_state_init_mode=carry
+  --agent.segment_carry_gradient_mode=detached
   --agent.scheduled_sampling_enabled=True
   --agent.scheduled_sampling_start_step=100000
   --agent.scheduled_sampling_end_step=300000

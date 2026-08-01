@@ -10,25 +10,48 @@ from utils.coghp_network import MixerBlock
 from utils.networks import LengthNormalize, MLP, default_init
 
 
-def apply_stage_gradient_boundary(
-    z_low: jnp.ndarray,
-    z_high: jnp.ndarray,
-    selected_subgoal_token: jnp.ndarray,
-    gradient_mode: str,
+def initialize_segment_states(
+    initial_z_low: jnp.ndarray,
+    initial_z_high: jnp.ndarray,
+    previous_z_low: Optional[jnp.ndarray],
+    previous_z_high: Optional[jnp.ndarray],
+    mode: str,
+    carry_gradient_mode: str = 'detached',
 ):
-    """Apply one consistent backward boundary without changing forward values."""
-    if gradient_mode == 'stage_truncated':
-        return (
-            jax.lax.stop_gradient(z_low),
-            jax.lax.stop_gradient(z_high),
-            jax.lax.stop_gradient(selected_subgoal_token),
+    """Choose one segment's initial states independently of token gradients.
+
+    ``reset`` always returns the learned/fixed model initial states. ``carry``
+    uses the previous segment's final forward values, while the currently
+    supported ``detached`` boundary prevents gradients from crossing between
+    segments. Keeping ``carry_gradient_mode`` separate makes a future
+    carry-with-full-BPTT ablation explicit rather than overloading ``mode``.
+    """
+    if mode not in ('reset', 'carry'):
+        raise ValueError(
+            f'Unknown segment_state_init_mode {mode!r}; expected '
+            "'reset' or 'carry'."
         )
-    if gradient_mode == 'full_bptt':
-        return z_low, z_high, selected_subgoal_token
-    raise ValueError(
-        f'Unknown hrm_gradient_mode {gradient_mode!r}; expected '
-        "'stage_truncated' or 'full_bptt'."
+    if carry_gradient_mode != 'detached':
+        raise ValueError(
+            'Only detached segment carry is currently supported; got '
+            f'{carry_gradient_mode!r}.'
+        )
+    if mode == 'reset' or previous_z_low is None or previous_z_high is None:
+        return initial_z_low, initial_z_high
+    return (
+        jax.lax.stop_gradient(previous_z_low),
+        jax.lax.stop_gradient(previous_z_high),
     )
+
+
+def apply_predicted_token_gradient_boundary(
+    predicted_subgoal: jnp.ndarray,
+    stop_gradient: bool,
+) -> jnp.ndarray:
+    """Apply only the configured predicted-prefix gradient boundary."""
+    if stop_gradient:
+        return jax.lax.stop_gradient(predicted_subgoal)
+    return predicted_subgoal
 
 
 class HRMLowMixerCell(nn.Module):
@@ -123,7 +146,7 @@ class HRMHighMixerCell(nn.Module):
 
 
 class SubgoalReadout(nn.Module):
-    """Map recurrent state and context to a subgoal actor representation."""
+    """Map context and the terminal low state to an HRM residual update."""
 
     state_dim: int
     hidden_dim: int
@@ -140,30 +163,33 @@ class SubgoalReadout(nn.Module):
         self,
         context: jnp.ndarray,
         z_low: jnp.ndarray,
-        z_high: jnp.ndarray,
         stage_embedding: jnp.ndarray,
     ) -> jnp.ndarray:
         readout_input = jnp.concatenate(
-            [context, z_low, z_high, stage_embedding],
+            [context, z_low, stage_embedding],
             axis=-1,
         )
         hidden = nn.gelu(self.hidden_dense(readout_input))
         if self.layer_norm:
             hidden = self.hidden_norm(hidden)
-        stage_rep = self.output_dense(hidden)
+        hrm_delta = self.output_dense(hidden)
         if self.layer_norm:
-            stage_rep = self.output_norm(stage_rep)
-        return stage_rep
+            hrm_delta = self.output_norm(hrm_delta)
+        return hrm_delta
 
 
 class HCoGHPPolicyNetwork(nn.Module):
     """CoGHP outer autoregression with HRM only for latent subgoals.
 
     A shared context Mixer stack reads each current query from the full CoGHP
-    token sequence. During the K subgoal stages, shared low/high HRM cells
-    update feature-level hidden states that both carry continuously between
-    stages. A shared SubgoalReadout maps context and hidden states to the
-    high-actor input.
+    token sequence. Each of the K subgoal segments runs multiple shared
+    high/low recurrent cycles and emits exactly one terminal subgoal
+    distribution. Segment state initialization is either reset or detached
+    forward carry. A shared SubgoalReadout sees the context and terminal low
+    state and predicts a scaled residual update on top of the direct CoGHP
+    context path; the high state can affect the prediction only through the
+    low-state updates that follow every high-state update. Stage embeddings are
+    restricted to the H/L cells and this terminal readout.
 
     The final action stage reuses only the context Mixer. It reads the action
     query after the selected subgoal chain has been written into the prefix and
@@ -189,18 +215,25 @@ class HCoGHPPolicyNetwork(nn.Module):
     num_subgoals: int = 1
     causal_mixer: bool = True
     action_use_full_subgoal_chain: bool = True
+    hrm_h_cycles: int = 2
     hrm_l_cycles: int = 2
     hrm_init_std: float = 0.1
-    hrm_trainable_init: bool = False
+    hrm_trainable_init: bool = True
     hrm_low_num_blocks: int = 1
     hrm_high_num_blocks: int = 1
     subgoal_readout_hidden_dim: int = 256
+    hrm_readout_mode: str = 'residual'
+    hrm_readout_residual_alpha: float = 0.05
+    stage_embedding_in_context: bool = False
     enable_hcoghp_diagnostics: bool = False
-    hrm_gradient_mode: str = 'stage_truncated'
+    segment_state_init_mode: str = 'carry'
+    segment_carry_gradient_mode: str = 'detached'
 
     def setup(self):
         if self.num_mixer_blocks < 1:
             raise ValueError('num_mixer_blocks must be at least 1.')
+        if self.hrm_h_cycles < 1:
+            raise ValueError('hrm_h_cycles must be at least 1.')
         if self.hrm_l_cycles < 1:
             raise ValueError('hrm_l_cycles must be at least 1.')
         if self.hrm_low_num_blocks < 1:
@@ -209,10 +242,22 @@ class HCoGHPPolicyNetwork(nn.Module):
             raise ValueError('hrm_high_num_blocks must be at least 1.')
         if self.subgoal_readout_hidden_dim < 1:
             raise ValueError('subgoal_readout_hidden_dim must be at least 1.')
-        if self.hrm_gradient_mode not in ('stage_truncated', 'full_bptt'):
+        if self.hrm_readout_residual_alpha < 0:
+            raise ValueError('hrm_readout_residual_alpha must be non-negative.')
+        if self.hrm_readout_mode not in ('residual', 'replace'):
             raise ValueError(
-                f'Unknown hrm_gradient_mode {self.hrm_gradient_mode!r}; expected '
-                "'stage_truncated' or 'full_bptt'."
+                'hrm_readout_mode must be residual or replace; got '
+                f'{self.hrm_readout_mode!r}.'
+            )
+        if self.segment_state_init_mode not in ('reset', 'carry'):
+            raise ValueError(
+                'segment_state_init_mode must be reset or carry; got '
+                f'{self.segment_state_init_mode!r}.'
+            )
+        if self.segment_carry_gradient_mode != 'detached':
+            raise ValueError(
+                'Only detached segment carry is currently supported; got '
+                f'{self.segment_carry_gradient_mode!r}.'
             )
 
         self.prev_tokens = self.param(
@@ -244,6 +289,9 @@ class HCoGHPPolicyNetwork(nn.Module):
             MixerBlock(**context_mixer_kwargs) for _ in range(self.num_mixer_blocks)
         ]
         self.stage_embedding = nn.Embed(
+            # The extra action-stage entry is unused by default, but retained
+            # so stage_embedding_in_context=True exactly reconstructs the
+            # previous context-conditioning ablation.
             num_embeddings=self.num_subgoals + 1,
             features=self.state_dim,
         )
@@ -266,6 +314,8 @@ class HCoGHPPolicyNetwork(nn.Module):
             hidden_dim=self.subgoal_readout_hidden_dim,
             layer_norm=self.layer_norm,
         )
+        if self.layer_norm:
+            self.residual_readout_norm = nn.LayerNorm()
         self.feature_embed = nn.Sequential(
             [
                 MLP(
@@ -345,10 +395,18 @@ class HCoGHPPolicyNetwork(nn.Module):
         self,
         token_sequence: jnp.ndarray,
         query_index: int,
-        stage_emb: jnp.ndarray,
+        stage_emb: Optional[jnp.ndarray] = None,
     ) -> jnp.ndarray:
-        # The stage identity modifies only the currently-read query token.
-        stage_tokens = token_sequence.at[:, query_index, :].add(stage_emb)
+        # Query position already identifies the autoregressive stage. By
+        # default, keep the stage embedding out of the CoGHP context path; it is
+        # consumed only by the recurrent H/L cells and terminal HRM readout.
+        stage_tokens = token_sequence
+        if self.stage_embedding_in_context:
+            if stage_emb is None:
+                raise ValueError(
+                    'stage_emb is required when stage_embedding_in_context=True.'
+                )
+            stage_tokens = stage_tokens.at[:, query_index, :].add(stage_emb)
         for context_mixer_block in self.context_mixer_blocks:
             stage_tokens = context_mixer_block(stage_tokens)
         return stage_tokens[:, query_index, :]
@@ -383,10 +441,10 @@ class HCoGHPPolicyNetwork(nn.Module):
         )
         prev_embed_tokens = jnp.tile(self.prev_tokens, (batch_size, 1, 1))
 
-        # Both states are initialized exactly once and carry only across the K
-        # subgoal stages. Teacher forcing changes token history, not this carry.
-        z_low = self._initial_state(self.z_l_init, batch_size)
-        z_high = self._initial_state(self.z_h_init, batch_size)
+        initial_z_low = self._initial_state(self.z_l_init, batch_size)
+        initial_z_high = self._initial_state(self.z_h_init, batch_size)
+        previous_final_z_low = None
+        previous_final_z_high = None
 
         high_dist_list = []
         diagnostics = {} if (return_diagnostics or return_sampling_diagnostics) else None
@@ -417,34 +475,75 @@ class HCoGHPPolicyNetwork(nn.Module):
                 stage_emb,
             )
 
-            z_low_before = z_low
-            z_high_before = z_high
-            z_low_stage = z_low
+            z_low_before, z_high_before = initialize_segment_states(
+                initial_z_low=initial_z_low,
+                initial_z_high=initial_z_high,
+                previous_z_low=previous_final_z_low,
+                previous_z_high=previous_final_z_high,
+                mode=self.segment_state_init_mode,
+                carry_gradient_mode=self.segment_carry_gradient_mode,
+            )
+
+            # Expose exact state traces only through Flax's optional
+            # intermediates collection. Normal training/evaluation does not
+            # materialize these batch-shaped arrays in diagnostics or logs.
+            self.sow('intermediates', 'segment_z_low_before', z_low_before)
+            self.sow('intermediates', 'segment_z_high_before', z_high_before)
+
+            # One segment is a complete HRM computation: each shared HighCell
+            # update is immediately followed by T shared LowCell refinements.
+            # There is no intermediate readout or supervision inside the loop.
+            z_low_stage = z_low_before
+            z_high_stage = z_high_before
             low_update_values = []
-            for _ in range(self.hrm_l_cycles):
-                old_z_low = z_low_stage
-                z_low_stage = self.low_cell(
+            high_update_values = []
+            for high_cycle_idx in range(self.hrm_h_cycles):
+                old_z_high = z_high_stage
+                z_high_stage = self.high_cell(
+                    z_high=z_high_stage,
                     z_low=z_low_stage,
-                    z_high=z_high_before,
                     context=context,
                     stage_embedding=stage_emb,
                 )
-                low_update_values.append(
-                    self._mean_relative_change(z_low_stage, old_z_low)
+                high_update_values.append(
+                    self._mean_relative_change(z_high_stage, old_z_high)
                 )
+                for low_cycle_idx in range(self.hrm_l_cycles):
+                    old_z_low = z_low_stage
+                    z_low_stage = self.low_cell(
+                        z_low=z_low_stage,
+                        z_high=z_high_stage,
+                        context=context,
+                        stage_embedding=stage_emb,
+                    )
+                    low_update_values.append(
+                        (
+                            high_cycle_idx,
+                            low_cycle_idx,
+                            self._mean_relative_change(z_low_stage, old_z_low),
+                        )
+                    )
 
-            z_high_stage = self.high_cell(
-                z_high=z_high_before,
-                z_low=z_low_stage,
+            final_z_low = z_low_stage
+            final_z_high = z_high_stage
+            self.sow('intermediates', 'segment_z_low_after', final_z_low)
+            self.sow('intermediates', 'segment_z_high_after', final_z_high)
+
+            # Exactly one terminal readout and one distribution per segment.
+            # final_z_high reaches the loss only through the last LowCell calls.
+            hrm_delta = self.subgoal_readout(
                 context=context,
+                z_low=final_z_low,
                 stage_embedding=stage_emb,
             )
-            stage_rep = self.subgoal_readout(
-                context=context,
-                z_low=z_low_stage,
-                z_high=z_high_stage,
-                stage_embedding=stage_emb,
-            )
+            residual_update = self.hrm_readout_residual_alpha * hrm_delta
+            if self.hrm_readout_mode == 'residual':
+                stage_rep = context + residual_update
+                if self.layer_norm:
+                    stage_rep = self.residual_readout_norm(stage_rep)
+            else:
+                # Exact pre-residual readout path for controlled ablations.
+                stage_rep = hrm_delta
             high_dist = self.high_actor_head(stage_rep, temperature=temperature)
             high_dist_list.append(high_dist)
 
@@ -456,18 +555,22 @@ class HCoGHPPolicyNetwork(nn.Module):
                 )
 
             if subgoal_reps is None:
-                selected_subgoal_token = predicted_token
+                # Pure free running always uses a detached predicted prefix.
+                history_token = apply_predicted_token_gradient_boundary(
+                    predicted_token,
+                    stop_gradient=True,
+                )
             else:
-                predicted_history_token = predicted_token
-                # The unified stage boundary below supersedes this legacy flag
-                # in stage_truncated mode. full_bptt deliberately keeps the
-                # prediction branch differentiable for the ablation.
+                predicted_history_token = apply_predicted_token_gradient_boundary(
+                    predicted_token,
+                    stop_gradient=scheduled_sampling_stop_gradient,
+                )
                 mask = jax.random.bernoulli(
                     mask_keys[subgoal_idx],
                     p=scheduled_sampling_prob,
                     shape=(batch_size, 1),
                 )
-                selected_subgoal_token = jnp.where(
+                history_token = jnp.where(
                     mask,
                     predicted_history_token,
                     subgoal_reps[:, subgoal_idx, :],
@@ -479,30 +582,24 @@ class HCoGHPPolicyNetwork(nn.Module):
                     ] = ratio
                     sampling_ratios.append(ratio)
 
-            # Current-stage AWR sees the untruncated high_dist above. Only the
-            # recurrent carry and selected token entering later stages are
-            # detached. Thus AWR defines the planner objective, while this
-            # boundary defines whether its graph crosses stage boundaries.
-            z_low, z_high, history_token = apply_stage_gradient_boundary(
-                z_low_stage,
-                z_high_stage,
-                selected_subgoal_token,
-                self.hrm_gradient_mode,
-            )
             history_subgoals = history_subgoals.at[:, subgoal_idx, :].set(
                 history_token
             )
+            previous_final_z_low = final_z_low
+            previous_final_z_high = final_z_high
 
             context_norm = self._mean_norm(context)
             z_low_change = self._mean_relative_change(
-                z_low_stage,
+                final_z_low,
                 z_low_before,
             )
             z_high_change = self._mean_relative_change(
-                z_high_stage,
+                final_z_high,
                 z_high_before,
             )
             readout_norm = self._mean_norm(stage_rep)
+            hrm_delta_norm = self._mean_norm(hrm_delta)
+            residual_update_norm = self._mean_norm(residual_update)
             context_norms.append(context_norm)
             z_low_changes.append(z_low_change)
             z_high_changes.append(z_high_change)
@@ -515,28 +612,70 @@ class HCoGHPPolicyNetwork(nn.Module):
                     z_low_before
                 )
                 diagnostics[f'{prefix}/z_low_after_norm'] = self._mean_norm(
-                    z_low_stage
+                    final_z_low
+                )
+                diagnostics[f'{prefix}/final_z_low_norm'] = self._mean_norm(
+                    final_z_low
                 )
                 diagnostics[f'{prefix}/z_low_relative_change'] = z_low_change
                 diagnostics[f'{prefix}/z_high_before_norm'] = self._mean_norm(
                     z_high_before
                 )
                 diagnostics[f'{prefix}/z_high_after_norm'] = self._mean_norm(
-                    z_high_stage
+                    final_z_high
+                )
+                diagnostics[f'{prefix}/final_z_high_norm'] = self._mean_norm(
+                    final_z_high
                 )
                 diagnostics[f'{prefix}/z_high_relative_change'] = z_high_change
                 diagnostics[f'{prefix}/z_low_high_cosine'] = self._mean_cosine(
-                    z_low_stage,
-                    z_high_stage,
+                    final_z_low,
+                    final_z_high,
                 )
                 diagnostics[f'{prefix}/subgoal_readout_norm'] = readout_norm
+                diagnostics[f'{prefix}/hrm_delta_norm'] = hrm_delta_norm
+                diagnostics[f'{prefix}/residual_update_norm'] = (
+                    residual_update_norm
+                )
+                diagnostics[f'{prefix}/residual_update_ratio'] = (
+                    residual_update_norm / (context_norm + 1e-8)
+                )
+                diagnostics[f'{prefix}/residual_alpha'] = jnp.asarray(
+                    self.hrm_readout_residual_alpha,
+                    dtype=jnp.float32,
+                )
+                diagnostics[f'{prefix}/readout_is_residual'] = jnp.asarray(
+                    self.hrm_readout_mode == 'residual',
+                    dtype=jnp.float32,
+                )
+                diagnostics[f'{prefix}/stage_embedding_in_context'] = (
+                    jnp.asarray(
+                        self.stage_embedding_in_context,
+                        dtype=jnp.float32,
+                    )
+                )
+                diagnostics[f'{prefix}/predicted_subgoal_norm'] = self._mean_norm(
+                    high_dist.mode()
+                )
                 diagnostics[f'{prefix}/stage_embedding_norm'] = self._mean_norm(
                     stage_emb
                 )
-                for low_idx, low_update in enumerate(low_update_values):
-                    diagnostics[f'{prefix}/low_update_{low_idx}'] = low_update
-                diagnostics[f'{prefix}/carry_truncated'] = jnp.asarray(
-                    self.hrm_gradient_mode == 'stage_truncated',
+                for high_idx, high_update in enumerate(high_update_values):
+                    diagnostics[
+                        f'{prefix}/high_cycle_{high_idx}/relative_change'
+                    ] = high_update
+                for high_idx, low_idx, low_update in low_update_values:
+                    diagnostics[
+                        f'{prefix}/high_cycle_{high_idx}/low_cycle_{low_idx}/relative_change'
+                    ] = low_update
+                diagnostics[f'{prefix}/state_init_is_carry'] = jnp.asarray(
+                    self.segment_state_init_mode == 'carry',
+                    dtype=jnp.float32,
+                )
+                diagnostics[f'{prefix}/segment_boundary_detached'] = jnp.asarray(
+                    subgoal_idx > 0
+                    and self.segment_state_init_mode == 'carry'
+                    and self.segment_carry_gradient_mode == 'detached',
                     dtype=jnp.float32,
                 )
 
@@ -565,7 +704,12 @@ class HCoGHPPolicyNetwork(nn.Module):
             axis=1,
         )
         action_query_index = features.shape[1] + self.num_subgoals
-        action_stage_emb = self._stage_embedding(self.num_subgoals, batch_size)
+        action_stage_emb = None
+        if self.stage_embedding_in_context:
+            action_stage_emb = self._stage_embedding(
+                self.num_subgoals,
+                batch_size,
+            )
         action_context = self._context_from_query(
             action_token_sequence,
             action_query_index,
@@ -576,22 +720,39 @@ class HCoGHPPolicyNetwork(nn.Module):
 
         if return_diagnostics:
             diagnostics['action/context_norm'] = self._mean_norm(action_context)
-            diagnostics['action/stage_embedding_norm'] = self._mean_norm(
-                action_stage_emb
-            )
+            if action_stage_emb is not None:
+                diagnostics['action/stage_embedding_norm'] = self._mean_norm(
+                    action_stage_emb
+                )
             diagnostics['action/action_mode_norm'] = self._mean_norm(low_dist.mode())
             diagnostics['hrm/num_stages'] = jnp.asarray(
                 self.num_subgoals,
                 dtype=jnp.float32,
             )
-            diagnostics['hrm/gradient_mode_is_stage_truncated'] = jnp.asarray(
-                self.hrm_gradient_mode == 'stage_truncated',
+            diagnostics['hrm/h_cycles'] = jnp.asarray(
+                self.hrm_h_cycles,
+                dtype=jnp.float32,
+            )
+            diagnostics['hrm/l_cycles'] = jnp.asarray(
+                self.hrm_l_cycles,
+                dtype=jnp.float32,
+            )
+            diagnostics['hrm/state_init_is_carry'] = jnp.asarray(
+                self.segment_state_init_mode == 'carry',
+                dtype=jnp.float32,
+            )
+            diagnostics['hrm/segment_carry_is_detached'] = jnp.asarray(
+                self.segment_carry_gradient_mode == 'detached',
                 dtype=jnp.float32,
             )
             if self.num_subgoals > 0:
                 diagnostics['hrm/context_norm'] = jnp.mean(jnp.stack(context_norms))
-                diagnostics['hrm/z_low_final_norm'] = self._mean_norm(z_low)
-                diagnostics['hrm/z_high_final_norm'] = self._mean_norm(z_high)
+                diagnostics['hrm/z_low_final_norm'] = self._mean_norm(
+                    previous_final_z_low
+                )
+                diagnostics['hrm/z_high_final_norm'] = self._mean_norm(
+                    previous_final_z_high
+                )
                 diagnostics['hrm/z_low_stage_change'] = jnp.mean(
                     jnp.stack(z_low_changes)
                 )

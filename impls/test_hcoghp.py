@@ -1,5 +1,6 @@
-"""Synthetic tests for autoregressive-subgoal HCoGHP."""
+"""Synthetic tests for segment-based autoregressive HCoGHP."""
 
+import inspect
 import pathlib
 import sys
 import unittest
@@ -14,9 +15,12 @@ IMPLS_DIR = pathlib.Path(__file__).resolve().parent
 if str(IMPLS_DIR) not in sys.path:
     sys.path.insert(0, str(IMPLS_DIR))
 
+from agents.hcoghp import get_config  # noqa: E402
 from utils.hcoghp_network import (  # noqa: E402
     HCoGHPPolicyNetwork,
-    apply_stage_gradient_boundary,
+    SubgoalReadout,
+    apply_predicted_token_gradient_boundary,
+    initialize_segment_states,
 )
 from utils.networks import GCActor  # noqa: E402
 
@@ -30,7 +34,12 @@ def make_network(
     num_subgoals,
     trainable_init=False,
     full_chain=True,
-    gradient_mode='stage_truncated',
+    state_init_mode='carry',
+    h_cycles=2,
+    l_cycles=2,
+    residual_alpha=0.05,
+    readout_mode='residual',
+    stage_embedding_in_context=False,
 ):
     return HCoGHPPolicyNetwork(
         num_tokens=1,
@@ -60,13 +69,18 @@ def make_network(
         num_subgoals=num_subgoals,
         causal_mixer=True,
         action_use_full_subgoal_chain=full_chain,
-        hrm_l_cycles=2,
+        hrm_h_cycles=h_cycles,
+        hrm_l_cycles=l_cycles,
         hrm_init_std=0.1,
         hrm_trainable_init=trainable_init,
         hrm_low_num_blocks=1,
         hrm_high_num_blocks=1,
         subgoal_readout_hidden_dim=16,
-        hrm_gradient_mode=gradient_mode,
+        hrm_readout_mode=readout_mode,
+        hrm_readout_residual_alpha=residual_alpha,
+        stage_embedding_in_context=stage_embedding_in_context,
+        segment_state_init_mode=state_init_mode,
+        segment_carry_gradient_mode='detached',
     )
 
 
@@ -111,25 +125,218 @@ def assert_finite_tree(test_case, tree):
     )
 
 
+def run_with_state_trace(network, params, subgoal_reps):
+    observations, goals, _ = synthetic_inputs(network.num_subgoals)
+    outputs, mutable = network.apply(
+        {'params': params},
+        observations,
+        goals,
+        jax.random.PRNGKey(2),
+        subgoal_reps=subgoal_reps,
+        return_diagnostics=True,
+        mutable=['intermediates'],
+    )
+    trace = mutable['intermediates']
+    return outputs, {
+        'low_before': trace['segment_z_low_before'],
+        'high_before': trace['segment_z_high_before'],
+        'low_after': trace['segment_z_low_after'],
+        'high_after': trace['segment_z_high_after'],
+    }
+
+
 class HCoGHPPolicyNetworkTest(unittest.TestCase):
-    def test_current_stage_awr_path_trains_all_planner_modules(self):
+    def test_reset_initializes_every_segment_from_model_state(self):
+        num_subgoals = 2
+        network = make_network(num_subgoals, state_init_mode='reset')
+        params = initialize(network, num_subgoals)
+        _, _, subgoals = synthetic_inputs(num_subgoals)
+        _, trace = run_with_state_trace(network, params, subgoals)
+
+        expected_low = jnp.tile(params['z_l_init'], (BATCH_SIZE, 1))
+        expected_high = jnp.tile(params['z_h_init'], (BATCH_SIZE, 1))
+        self.assertEqual(len(trace['low_before']), num_subgoals)
+        for segment_idx in range(num_subgoals):
+            np.testing.assert_array_equal(
+                trace['low_before'][segment_idx],
+                expected_low,
+            )
+            np.testing.assert_array_equal(
+                trace['high_before'][segment_idx],
+                expected_high,
+            )
+
+        self.assertFalse(
+            np.allclose(trace['low_before'][1], trace['low_after'][0])
+        )
+        self.assertFalse(
+            np.allclose(trace['high_before'][1], trace['high_after'][0])
+        )
+
+    def test_carry_uses_previous_values_and_detaches_boundary(self):
+        num_subgoals = 2
+        network = make_network(num_subgoals, state_init_mode='carry')
+        params = initialize(network, num_subgoals)
+        _, _, subgoals = synthetic_inputs(num_subgoals)
+        _, trace = run_with_state_trace(network, params, subgoals)
+
+        np.testing.assert_array_equal(trace['low_before'][1], trace['low_after'][0])
+        np.testing.assert_array_equal(
+            trace['high_before'][1],
+            trace['high_after'][0],
+        )
+
+        initial_low = jnp.zeros((BATCH_SIZE, STATE_DIM))
+        initial_high = jnp.ones((BATCH_SIZE, STATE_DIM))
+        previous_low = jnp.arange(BATCH_SIZE * STATE_DIM, dtype=jnp.float32).reshape(
+            BATCH_SIZE,
+            STATE_DIM,
+        )
+        previous_high = previous_low + 0.5
+
+        def next_segment_loss(low, high):
+            next_low, next_high = initialize_segment_states(
+                initial_low,
+                initial_high,
+                low,
+                high,
+                mode='carry',
+                carry_gradient_mode='detached',
+            )
+            return jnp.sum(next_low**2) + jnp.sum(next_high**2)
+
+        low_grad, high_grad = jax.grad(
+            next_segment_loss,
+            argnums=(0, 1),
+        )(previous_low, previous_high)
+        np.testing.assert_array_equal(low_grad, 0.0)
+        np.testing.assert_array_equal(high_grad, 0.0)
+
+    def test_readout_has_only_three_inputs(self):
+        signature = inspect.signature(SubgoalReadout.__call__)
+        self.assertEqual(
+            tuple(signature.parameters),
+            ('self', 'context', 'z_low', 'stage_embedding'),
+        )
+
         network = make_network(num_subgoals=1)
+        params = initialize(network, num_subgoals=1)
+        readout_kernel = params['subgoal_readout']['hidden_dense']['kernel']
+        self.assertEqual(readout_kernel.shape[0], 3 * STATE_DIM)
+
+    def test_stage_embedding_is_excluded_from_context_by_default(self):
+        token_sequence = jnp.arange(
+            BATCH_SIZE * 4 * STATE_DIM,
+            dtype=jnp.float32,
+        ).reshape(BATCH_SIZE, 4, STATE_DIM)
+        stage_a = jnp.zeros((BATCH_SIZE, STATE_DIM))
+        stage_b = jnp.ones((BATCH_SIZE, STATE_DIM)) * 100.0
+
+        def context_for(network, params, stage_emb):
+            return network.apply(
+                {'params': params},
+                token_sequence,
+                2,
+                stage_emb,
+                method=network._context_from_query,
+            )
+
+        default_network = make_network(
+            num_subgoals=1,
+            stage_embedding_in_context=False,
+        )
+        default_params = initialize(default_network, num_subgoals=1)
+        np.testing.assert_array_equal(
+            context_for(default_network, default_params, stage_a),
+            context_for(default_network, default_params, stage_b),
+        )
+
+        legacy_network = make_network(
+            num_subgoals=1,
+            stage_embedding_in_context=True,
+        )
+        legacy_params = initialize(legacy_network, num_subgoals=1)
+        self.assertFalse(
+            np.allclose(
+                context_for(legacy_network, legacy_params, stage_a),
+                context_for(legacy_network, legacy_params, stage_b),
+            )
+        )
+
+    def test_residual_readout_uses_configured_alpha(self):
+        network = make_network(num_subgoals=1, residual_alpha=0.05)
+        params = initialize(network, num_subgoals=1)
+        observations, goals, subgoals = synthetic_inputs(num_subgoals=1)
+        _, _, _, diagnostics = network.apply(
+            {'params': params},
+            observations,
+            goals,
+            jax.random.PRNGKey(12),
+            subgoal_reps=subgoals,
+            return_diagnostics=True,
+        )
+        self.assertAlmostEqual(float(diagnostics['stage_0/residual_alpha']), 0.05)
+        self.assertEqual(float(diagnostics['stage_0/readout_is_residual']), 1.0)
+        self.assertEqual(
+            float(diagnostics['stage_0/stage_embedding_in_context']),
+            0.0,
+        )
+        self.assertIn('stage_0/hrm_delta_norm', diagnostics)
+        self.assertIn('stage_0/residual_update_norm', diagnostics)
+        self.assertIn('stage_0/residual_update_ratio', diagnostics)
+        self.assertGreater(float(diagnostics['stage_0/hrm_delta_norm']), 0.0)
+        self.assertGreater(
+            float(diagnostics['stage_0/residual_update_norm']),
+            0.0,
+        )
+
+    def test_terminal_loss_reaches_high_cell_through_final_low_state(self):
+        network = make_network(
+            num_subgoals=1,
+            h_cycles=2,
+            l_cycles=2,
+        )
         params = initialize(network, num_subgoals=1)
         observations, goals, subgoals = synthetic_inputs(num_subgoals=1)
 
-        def stage_loss(current_params):
+        def terminal_loss(current_params):
             high_dists, _, _ = network.apply(
                 {'params': current_params},
                 observations,
                 goals,
-                jax.random.PRNGKey(10),
+                jax.random.PRNGKey(3),
                 subgoal_reps=subgoals,
             )
             return -jnp.mean(high_dists[0].log_prob(subgoals[:, 0, :]))
 
-        grads = jax.grad(stage_loss)(params)
+        grads = jax.grad(terminal_loss)(params)
+        self.assertGreater(tree_norm(grads['high_cell']), 0.0)
+        self.assertGreater(tree_norm(grads['low_cell']), 0.0)
+
+    def test_terminal_loss_full_bptt_trains_entire_segment(self):
+        network = make_network(
+            num_subgoals=1,
+            trainable_init=True,
+            h_cycles=2,
+            l_cycles=2,
+        )
+        params = initialize(network, num_subgoals=1)
+        observations, goals, subgoals = synthetic_inputs(num_subgoals=1)
+
+        def terminal_loss(current_params):
+            high_dists, _, _ = network.apply(
+                {'params': current_params},
+                observations,
+                goals,
+                jax.random.PRNGKey(4),
+                subgoal_reps=subgoals,
+            )
+            return -jnp.mean(high_dists[0].log_prob(subgoals[:, 0, :]))
+
+        grads = jax.grad(terminal_loss)(params)
         for module_name in (
             'context_mixer_blocks_0',
+            'context_mixer_blocks_1',
             'low_cell',
             'high_cell',
             'subgoal_readout',
@@ -138,305 +345,172 @@ class HCoGHPPolicyNetworkTest(unittest.TestCase):
             assert_finite_tree(self, grads[module_name])
             self.assertGreater(tree_norm(grads[module_name]), 0.0)
 
-    def test_stage_boundary_truncates_low_high_and_token_gradients(self):
-        z_low = jnp.arange(BATCH_SIZE * STATE_DIM, dtype=jnp.float32).reshape(
-            BATCH_SIZE,
-            STATE_DIM,
-        ) / 10.0
-        z_high = z_low + 0.25
-        token = z_low - 0.5
+        # With one segment and trainable initial states, these gradients prove
+        # that the terminal loss reaches the beginning of the recurrent graph.
+        self.assertGreater(float(jnp.linalg.norm(grads['z_l_init'])), 0.0)
+        self.assertGreater(float(jnp.linalg.norm(grads['z_h_init'])), 0.0)
 
-        def next_stage_loss(low, high, selected, mode):
-            next_low, next_high, next_token = apply_stage_gradient_boundary(
-                low,
-                high,
-                selected,
-                mode,
-            )
-            return (
-                jnp.sum(next_low**2)
-                + jnp.sum(next_high**2)
-                + jnp.sum(next_token**2)
-            )
-
-        truncated_grads = jax.grad(
-            lambda low, high, selected: next_stage_loss(
-                low,
-                high,
-                selected,
-                'stage_truncated',
-            ),
-            argnums=(0, 1, 2),
-        )(z_low, z_high, token)
-        self.assertTrue(
-            all(np.allclose(np.asarray(grad), 0.0) for grad in truncated_grads)
+    def test_one_terminal_distribution_per_segment(self):
+        num_subgoals = 3
+        h_cycles = 3
+        l_cycles = 2
+        network = make_network(
+            num_subgoals,
+            h_cycles=h_cycles,
+            l_cycles=l_cycles,
         )
-
-        full_grads = jax.grad(
-            lambda low, high, selected: next_stage_loss(
-                low,
-                high,
-                selected,
-                'full_bptt',
-            ),
-            argnums=(0, 1, 2),
-        )(z_low, z_high, token)
-        self.assertTrue(
-            all(float(jnp.linalg.norm(grad)) > 0.0 for grad in full_grads)
-        )
-
-    def test_shapes_teacher_forcing_free_running_and_diagnostics(self):
-        for num_subgoals in (0, 1, 2):
-            with self.subTest(num_subgoals=num_subgoals):
-                network = make_network(num_subgoals)
-                params = initialize(network, num_subgoals)
-                observations, goals, subgoals = synthetic_inputs(num_subgoals)
-
-                for teacher_targets in (subgoals, None):
-                    outputs = network.apply(
-                        {'params': params},
-                        observations,
-                        goals,
-                        jax.random.PRNGKey(2),
-                        subgoal_reps=teacher_targets,
-                        return_diagnostics=True,
-                    )
-                    high_dists, low_dist, actions, diagnostics = outputs
-                    self.assertEqual(len(high_dists), num_subgoals)
-                    for high_dist in high_dists:
-                        self.assertEqual(
-                            high_dist.mode().shape,
-                            (BATCH_SIZE, STATE_DIM),
-                        )
-                    self.assertEqual(
-                        low_dist.mode().shape,
-                        (BATCH_SIZE, ACTION_DIM),
-                    )
-                    self.assertEqual(actions.shape, (BATCH_SIZE, ACTION_DIM))
-                    self.assertEqual(
-                        float(diagnostics['hrm/num_stages']),
-                        num_subgoals,
-                    )
-                    self.assertIn('action/context_norm', diagnostics)
-                    self.assertIn('action/action_mode_norm', diagnostics)
-                    if num_subgoals > 0:
-                        self.assertIn(
-                            'stage_0/subgoal_readout_norm',
-                            diagnostics,
-                        )
-                    assert_finite_tree(self, diagnostics)
-
-    def test_low_and_high_states_carry_between_subgoal_stages(self):
-        num_subgoals = 2
-        network = make_network(num_subgoals)
         params = initialize(network, num_subgoals)
         observations, goals, subgoals = synthetic_inputs(num_subgoals)
-        _, _, _, diagnostics = network.apply(
+        high_dists, _, _, diagnostics = network.apply(
             {'params': params},
             observations,
             goals,
-            jax.random.PRNGKey(3),
+            jax.random.PRNGKey(5),
             subgoal_reps=subgoals,
             return_diagnostics=True,
         )
 
-        expected_low_init_norm = jnp.mean(
-            jnp.linalg.norm(
-                jnp.tile(params['z_l_init'], (BATCH_SIZE, 1)),
-                axis=-1,
-            )
-        )
-        expected_high_init_norm = jnp.mean(
-            jnp.linalg.norm(
-                jnp.tile(params['z_h_init'], (BATCH_SIZE, 1)),
-                axis=-1,
-            )
-        )
-        np.testing.assert_allclose(
-            np.asarray(diagnostics['stage_0/z_low_before_norm']),
-            np.asarray(expected_low_init_norm),
-            rtol=0.0,
-            atol=0.0,
-        )
-        np.testing.assert_allclose(
-            np.asarray(diagnostics['stage_0/z_high_before_norm']),
-            np.asarray(expected_high_init_norm),
-            rtol=0.0,
-            atol=0.0,
-        )
-        for stage in range(1, num_subgoals):
-            np.testing.assert_allclose(
-                np.asarray(diagnostics[f'stage_{stage}/z_low_before_norm']),
-                np.asarray(
-                    diagnostics[f'stage_{stage - 1}/z_low_after_norm']
-                ),
-                rtol=0.0,
-                atol=0.0,
-            )
-            self.assertFalse(
-                np.allclose(
-                    np.asarray(diagnostics[f'stage_{stage}/z_low_before_norm']),
-                    np.asarray(expected_low_init_norm),
-                )
-            )
-            np.testing.assert_allclose(
-                np.asarray(diagnostics[f'stage_{stage}/z_high_before_norm']),
-                np.asarray(
-                    diagnostics[f'stage_{stage - 1}/z_high_after_norm']
-                ),
-                rtol=0.0,
-                atol=0.0,
-            )
+        self.assertEqual(len(high_dists), num_subgoals)
+        for distribution in high_dists:
+            self.assertEqual(distribution.mode().shape, (BATCH_SIZE, STATE_DIM))
+        for segment_idx in range(num_subgoals):
+            high_keys = [
+                key
+                for key in diagnostics
+                if key.startswith(f'stage_{segment_idx}/high_cycle_')
+                and key.endswith('/relative_change')
+                and '/low_cycle_' not in key
+            ]
+            low_keys = [
+                key
+                for key in diagnostics
+                if key.startswith(f'stage_{segment_idx}/high_cycle_')
+                and '/low_cycle_' in key
+            ]
+            self.assertEqual(len(high_keys), h_cycles)
+            self.assertEqual(len(low_keys), h_cycles * l_cycles)
+        self.assertFalse(any('cycle_loss' in key for key in diagnostics))
+        self.assertFalse(any('cycle_prediction' in key for key in diagnostics))
 
-    def test_action_stage_does_not_run_hrm(self):
-        num_subgoals = 2
-        network = make_network(num_subgoals)
-        params = initialize(network, num_subgoals)
-        observations, goals, subgoals = synthetic_inputs(num_subgoals)
-        _, _, _, diagnostics = network.apply(
-            {'params': params},
-            observations,
-            goals,
-            jax.random.PRNGKey(4),
-            subgoal_reps=subgoals,
-            return_diagnostics=True,
-        )
+    def test_predicted_prefix_boundary_is_independent(self):
+        predicted = jnp.arange(
+            BATCH_SIZE * STATE_DIM,
+            dtype=jnp.float32,
+        ).reshape(BATCH_SIZE, STATE_DIM)
 
-        self.assertFalse(
-            any(key.startswith(f'stage_{num_subgoals}/') for key in diagnostics)
-        )
-        self.assertTrue(any(key.startswith('action/') for key in diagnostics))
-        self.assertEqual(float(diagnostics['hrm/num_stages']), num_subgoals)
+        detached_grad = jax.grad(
+            lambda value: jnp.sum(
+                apply_predicted_token_gradient_boundary(value, True) ** 2
+            )
+        )(predicted)
+        open_grad = jax.grad(
+            lambda value: jnp.sum(
+                apply_predicted_token_gradient_boundary(value, False) ** 2
+            )
+        )(predicted)
+        np.testing.assert_array_equal(detached_grad, 0.0)
+        self.assertGreater(float(jnp.linalg.norm(open_grad)), 0.0)
 
-        # Under pure teacher forcing the action token chain is independent of
-        # HRM outputs, so action-only gradients cannot reach HRM/readout params.
-        def action_objective(current_params):
+    def test_free_running_prefix_is_detached_from_action_loss(self):
+        network = make_network(num_subgoals=2)
+        params = initialize(network, num_subgoals=2)
+        observations, goals, _ = synthetic_inputs(num_subgoals=2)
+
+        def action_loss(current_params):
             _, low_dist, _ = network.apply(
                 {'params': current_params},
                 observations,
                 goals,
-                jax.random.PRNGKey(5),
-                subgoal_reps=subgoals,
-                scheduled_sampling_prob=0.0,
+                jax.random.PRNGKey(6),
+                subgoal_reps=None,
+                scheduled_sampling_stop_gradient=False,
             )
             return jnp.sum(low_dist.mode())
 
-        grads = jax.grad(action_objective)(params)
-        for module_name in ('low_cell', 'high_cell', 'subgoal_readout'):
-            self.assertEqual(tree_norm(grads[module_name]), 0.0)
-        self.assertGreater(tree_norm(grads['context_mixer_blocks_0']), 0.0)
+        grads = jax.grad(action_loss)(params)
+        self.assertEqual(tree_norm(grads['high_actor_head']), 0.0)
+        self.assertEqual(tree_norm(grads['high_cell']), 0.0)
+        self.assertEqual(tree_norm(grads['low_cell']), 0.0)
+        self.assertEqual(tree_norm(grads['subgoal_readout']), 0.0)
         self.assertGreater(tree_norm(grads['low_actor_head']), 0.0)
 
-    def test_action_loss_cannot_cross_detached_subgoal_prefix(self):
-        num_subgoals = 2
-        observations, goals, subgoals = synthetic_inputs(num_subgoals)
+    def test_scheduled_sampling_stop_gradient_flag_is_honored(self):
+        network = make_network(num_subgoals=1)
+        params = initialize(network, num_subgoals=1)
+        observations, goals, subgoals = synthetic_inputs(num_subgoals=1)
 
-        def action_input_gradient(mode):
-            network = make_network(num_subgoals, gradient_mode=mode)
-            params = initialize(network, num_subgoals)
-
-            def action_loss(explicit_subgoals):
+        def action_grad(stop_gradient):
+            def action_loss(current_params):
                 _, low_dist, _ = network.apply(
-                    {'params': params},
+                    {'params': current_params},
                     observations,
                     goals,
-                    jax.random.PRNGKey(11),
-                    subgoal_reps=explicit_subgoals,
-                    scheduled_sampling_prob=0.0,
+                    jax.random.PRNGKey(7),
+                    subgoal_reps=subgoals,
+                    scheduled_sampling_prob=1.0,
+                    scheduled_sampling_use_mode=True,
+                    scheduled_sampling_stop_gradient=stop_gradient,
                 )
                 return jnp.sum(low_dist.mode())
 
-            return jax.grad(action_loss)(subgoals)
+            return jax.grad(action_loss)(params)
 
-        truncated_grad = action_input_gradient('stage_truncated')
-        np.testing.assert_array_equal(np.asarray(truncated_grad), 0.0)
-        full_bptt_grad = action_input_gradient('full_bptt')
-        self.assertGreater(float(jnp.linalg.norm(full_bptt_grad)), 0.0)
+        detached_grads = action_grad(True)
+        open_grads = action_grad(False)
+        self.assertEqual(tree_norm(detached_grads['high_actor_head']), 0.0)
+        self.assertGreater(tree_norm(open_grads['high_actor_head']), 0.0)
 
-    def test_gradient_modes_have_identical_forward_values(self):
+    def test_reset_carry_teacher_free_shapes_and_action_interface(self):
         num_subgoals = 2
-        truncated_network = make_network(
-            num_subgoals,
-            gradient_mode='stage_truncated',
-        )
-        full_network = make_network(num_subgoals, gradient_mode='full_bptt')
-        params = initialize(truncated_network, num_subgoals)
         observations, goals, subgoals = synthetic_inputs(num_subgoals)
+        expected_shapes = None
 
-        def run(network):
-            high_dists, low_dist, actions, diagnostics = network.apply(
-                {'params': params},
-                observations,
-                goals,
-                jax.random.PRNGKey(12),
-                subgoal_reps=subgoals,
-                scheduled_sampling_prob=1.0,
-                return_diagnostics=True,
+        for state_init_mode in ('reset', 'carry'):
+            network = make_network(
+                num_subgoals,
+                state_init_mode=state_init_mode,
             )
-            return (
-                jnp.stack([dist.mode() for dist in high_dists], axis=1),
-                low_dist.mode(),
-                actions,
-                diagnostics,
-            )
-
-        truncated_high, truncated_low, truncated_actions, truncated_info = run(
-            truncated_network
-        )
-        full_high, full_low, full_actions, full_info = run(full_network)
-        np.testing.assert_array_equal(truncated_high, full_high)
-        np.testing.assert_array_equal(truncated_low, full_low)
-        np.testing.assert_array_equal(truncated_actions, full_actions)
-
-        for stage in range(num_subgoals):
-            for metric in (
-                'z_low_before_norm',
-                'z_low_after_norm',
-                'z_high_before_norm',
-                'z_high_after_norm',
-            ):
-                np.testing.assert_array_equal(
-                    truncated_info[f'stage_{stage}/{metric}'],
-                    full_info[f'stage_{stage}/{metric}'],
+            params = initialize(network, num_subgoals)
+            for teacher_targets in (subgoals, None):
+                high_dists, low_dist, actions, diagnostics = network.apply(
+                    {'params': params},
+                    observations,
+                    goals,
+                    jax.random.PRNGKey(8),
+                    subgoal_reps=teacher_targets,
+                    return_diagnostics=True,
                 )
-            self.assertEqual(
-                float(truncated_info[f'stage_{stage}/carry_truncated']),
-                1.0,
-            )
-            self.assertEqual(
-                float(full_info[f'stage_{stage}/carry_truncated']),
-                0.0,
-            )
-        self.assertEqual(
-            float(truncated_info['hrm/gradient_mode_is_stage_truncated']),
-            1.0,
-        )
-        self.assertEqual(
-            float(full_info['hrm/gradient_mode_is_stage_truncated']),
-            0.0,
-        )
+                shapes = (
+                    tuple(dist.mode().shape for dist in high_dists),
+                    low_dist.mode().shape,
+                    actions.shape,
+                )
+                if expected_shapes is None:
+                    expected_shapes = shapes
+                self.assertEqual(shapes, expected_shapes)
+                self.assertEqual(len(high_dists), num_subgoals)
+                self.assertEqual(low_dist.mode().shape, (BATCH_SIZE, ACTION_DIM))
+                self.assertEqual(actions.shape, (BATCH_SIZE, ACTION_DIM))
+                for segment_idx in range(num_subgoals):
+                    for metric in (
+                        'predicted_subgoal_norm',
+                        'final_z_low_norm',
+                        'final_z_high_norm',
+                    ):
+                        self.assertIn(
+                            f'stage_{segment_idx}/{metric}',
+                            diagnostics,
+                        )
+                assert_finite_tree(self, diagnostics)
 
-    def test_stage_embedding_shape_identity_and_parameter_sharing(self):
-        num_subgoals = 2
-        network = make_network(num_subgoals)
-        params = initialize(network, num_subgoals)
-        embedding = params['stage_embedding']['embedding']
-        self.assertEqual(embedding.shape, (num_subgoals + 1, STATE_DIM))
-        self.assertFalse(np.allclose(np.asarray(embedding[0]), np.asarray(embedding[1])))
-        self.assertFalse(np.allclose(np.asarray(embedding[1]), np.asarray(embedding[2])))
-
+    def test_cells_and_readout_share_parameters_across_cycles_and_segments(self):
+        network = make_network(num_subgoals=2, h_cycles=3, l_cycles=2)
+        params = initialize(network, num_subgoals=2)
         flat_paths = {
             '/'.join(path)
             for path in flax.traverse_util.flatten_dict(params).keys()
         }
-        for module_name in (
-            'context_mixer_blocks_0',
-            'context_mixer_blocks_1',
-            'stage_embedding',
-            'low_cell',
-            'high_cell',
-            'subgoal_readout',
-        ):
+        for module_name in ('low_cell', 'high_cell', 'subgoal_readout'):
             self.assertTrue(
                 any(path.startswith(f'{module_name}/') for path in flat_paths)
             )
@@ -444,9 +518,8 @@ class HCoGHPPolicyNetworkTest(unittest.TestCase):
             'low_cell_1',
             'high_cell_1',
             'subgoal_readout_1',
-            'action_low_cell',
-            'action_high_cell',
-            'action_stage_embedding',
+            'cycle_readout',
+            'cycle_actor',
         )
         self.assertFalse(
             any(
@@ -456,181 +529,33 @@ class HCoGHPPolicyNetworkTest(unittest.TestCase):
             )
         )
 
-    def test_subgoal_distribution_uses_readout(self):
-        num_subgoals = 2
-        network = make_network(num_subgoals)
-        params = initialize(network, num_subgoals)
-        observations, goals, subgoals = synthetic_inputs(num_subgoals)
-
-        def subgoal_objective(current_params):
-            high_dists, _, _ = network.apply(
-                {'params': current_params},
-                observations,
-                goals,
-                jax.random.PRNGKey(6),
-                subgoal_reps=subgoals,
-            )
-            return sum(jnp.sum(dist.mode()) for dist in high_dists)
-
-        grads = jax.grad(subgoal_objective)(params)
-        assert_finite_tree(self, grads['subgoal_readout'])
-        self.assertGreater(tree_norm(grads['subgoal_readout']), 0.0)
-        self.assertGreater(tree_norm(grads['high_actor_head']), 0.0)
-
-    def test_scheduled_sampling_endpoints(self):
-        num_subgoals = 2
-        network = make_network(num_subgoals)
-        params = initialize(network, num_subgoals)
-        observations, goals, subgoals = synthetic_inputs(num_subgoals)
-
-        for probability, expected_ratio in ((0.0, 0.0), (1.0, 1.0)):
-            with self.subTest(probability=probability):
-                high_dists, low_dist, actions, diagnostics = network.apply(
-                    {'params': params},
-                    observations,
-                    goals,
-                    jax.random.PRNGKey(7),
-                    subgoal_reps=subgoals,
-                    scheduled_sampling_prob=probability,
-                    scheduled_sampling_use_mode=True,
-                    scheduled_sampling_stop_gradient=True,
-                    return_sampling_diagnostics=True,
-                )
-                self.assertEqual(len(high_dists), num_subgoals)
-                self.assertEqual(
-                    low_dist.mode().shape,
-                    (BATCH_SIZE, ACTION_DIM),
-                )
-                self.assertEqual(actions.shape, (BATCH_SIZE, ACTION_DIM))
-                assert_finite_tree(self, diagnostics)
-                self.assertAlmostEqual(
-                    float(diagnostics['scheduled_sampling_ratio']),
-                    expected_ratio,
-                )
-                for stage in range(num_subgoals):
-                    self.assertAlmostEqual(
-                        float(
-                            diagnostics[
-                                f'scheduled_sampling_ratio_{stage}'
-                            ]
-                        ),
-                        expected_ratio,
-                    )
-
-                def downstream_loss(explicit_subgoals):
-                    downstream_high, downstream_low, _ = network.apply(
-                        {'params': params},
-                        observations,
-                        goals,
-                        jax.random.PRNGKey(7),
-                        subgoal_reps=explicit_subgoals,
-                        scheduled_sampling_prob=probability,
-                        scheduled_sampling_use_mode=True,
-                        scheduled_sampling_stop_gradient=False,
-                    )
-                    return (
-                        jnp.sum(downstream_high[-1].mode())
-                        + jnp.sum(downstream_low.mode())
-                    )
-
-                selected_token_input_grad = jax.grad(downstream_loss)(subgoals)
-                np.testing.assert_array_equal(
-                    np.asarray(selected_token_input_grad),
-                    0.0,
-                )
-
-    def test_teacher_forced_awr_style_losses_are_finite(self):
-        num_subgoals = 2
-        network = make_network(num_subgoals)
-        params = initialize(network, num_subgoals)
-        observations, goals, subgoals = synthetic_inputs(num_subgoals)
-        target_actions = jnp.zeros((BATCH_SIZE, ACTION_DIM), dtype=jnp.float32)
-
-        def awr_style_loss(current_params):
-            high_dists, low_dist, _ = network.apply(
-                {'params': current_params},
-                observations,
-                goals,
-                jax.random.PRNGKey(13),
-                subgoal_reps=subgoals,
-                scheduled_sampling_prob=0.0,
-            )
-            high_loss = -sum(
-                jnp.mean(dist.log_prob(subgoals[:, idx, :]))
-                for idx, dist in enumerate(high_dists)
-            )
-            low_loss = -jnp.mean(low_dist.log_prob(target_actions))
-            return high_loss + low_loss
-
-        loss, grads = jax.value_and_grad(awr_style_loss)(params)
-        self.assertTrue(np.isfinite(float(loss)))
-        assert_finite_tree(self, grads)
-        self.assertGreater(tree_norm(grads), 0.0)
-
-    def test_fixed_initial_states_have_zero_gradient(self):
-        num_subgoals = 2
-        network = make_network(num_subgoals, trainable_init=False)
-        params = initialize(network, num_subgoals)
-        observations, goals, subgoals = synthetic_inputs(num_subgoals)
-
-        def objective(current_params):
-            high_dists, low_dist, _ = network.apply(
-                {'params': current_params},
-                observations,
-                goals,
-                jax.random.PRNGKey(8),
-                subgoal_reps=subgoals,
-            )
-            return (
-                sum(jnp.sum(dist.mode()) for dist in high_dists)
-                + jnp.sum(low_dist.mode())
-            )
-
-        grads = jax.grad(objective)(params)
-        np.testing.assert_array_equal(np.asarray(grads['z_l_init']), 0.0)
-        np.testing.assert_array_equal(np.asarray(grads['z_h_init']), 0.0)
-        other_grads = {
-            key: value
-            for key, value in grads.items()
-            if key not in ('z_l_init', 'z_h_init')
-        }
-        assert_finite_tree(self, other_grads)
-        self.assertGreater(tree_norm(other_grads), 0.0)
-
-    def test_forward_is_jittable(self):
+    def test_forward_is_jittable_for_reset_and_carry(self):
         num_subgoals = 2
         observations, goals, subgoals = synthetic_inputs(num_subgoals)
-
-        for gradient_mode in ('stage_truncated', 'full_bptt'):
-            with self.subTest(gradient_mode=gradient_mode):
+        for state_init_mode in ('reset', 'carry'):
+            with self.subTest(state_init_mode=state_init_mode):
                 network = make_network(
                     num_subgoals,
-                    gradient_mode=gradient_mode,
+                    state_init_mode=state_init_mode,
                 )
                 params = initialize(network, num_subgoals)
 
                 @jax.jit
                 def run(current_params, obs, goal, teacher_subgoals, key):
-                    high_dists, low_dist, actions, diagnostics = network.apply(
+                    high_dists, low_dist, actions = network.apply(
                         {'params': current_params},
                         obs,
                         goal,
                         key,
                         subgoal_reps=teacher_subgoals,
-                        return_diagnostics=True,
-                    )
-                    high_modes = jnp.stack(
-                        [dist.mode() for dist in high_dists],
-                        axis=1,
                     )
                     return (
-                        high_modes,
+                        jnp.stack([dist.mode() for dist in high_dists], axis=1),
                         low_dist.mode(),
                         actions,
-                        diagnostics['action/context_norm'],
                     )
 
-                high_modes, low_mode, actions, action_context_norm = run(
+                high_modes, low_mode, actions = run(
                     params,
                     observations,
                     goals,
@@ -643,17 +568,53 @@ class HCoGHPPolicyNetworkTest(unittest.TestCase):
                 )
                 self.assertEqual(low_mode.shape, (BATCH_SIZE, ACTION_DIM))
                 self.assertEqual(actions.shape, (BATCH_SIZE, ACTION_DIM))
-                self.assertTrue(np.isfinite(np.asarray(action_context_norm)))
 
-    def test_unknown_gradient_mode_is_rejected(self):
-        network = make_network(num_subgoals=1, gradient_mode='unknown')
-        observations, goals, _ = synthetic_inputs(num_subgoals=1)
-        with self.assertRaisesRegex(ValueError, 'Unknown hrm_gradient_mode'):
-            network.init(
-                jax.random.PRNGKey(14),
+    def test_temperature_zero_matches_deterministic_free_running(self):
+        network = make_network(num_subgoals=2)
+        params = initialize(network, num_subgoals=2)
+        observations, goals, _ = synthetic_inputs(num_subgoals=2)
+
+        def second_subgoal(key, temperature):
+            high_dists, _, _ = network.apply(
+                {'params': params},
                 observations,
                 goals,
-                jax.random.PRNGKey(15),
+                key,
+                subgoal_reps=None,
+                temperature=temperature,
+            )
+            return high_dists[1].mode()
+
+        zero_a = second_subgoal(jax.random.PRNGKey(13), 0.0)
+        zero_b = second_subgoal(jax.random.PRNGKey(14), 0.0)
+        noisy_a = second_subgoal(jax.random.PRNGKey(13), 1.0)
+        noisy_b = second_subgoal(jax.random.PRNGKey(14), 1.0)
+        np.testing.assert_array_equal(zero_a, zero_b)
+        self.assertFalse(np.allclose(noisy_a, noisy_b))
+
+    def test_config_and_invalid_modes(self):
+        config = get_config()
+        self.assertEqual(config.hrm_h_cycles, 2)
+        self.assertEqual(config.hrm_l_cycles, 2)
+        self.assertEqual(config.segment_state_init_mode, 'carry')
+        self.assertEqual(config.segment_carry_gradient_mode, 'detached')
+        self.assertTrue(config.hrm_trainable_init)
+        self.assertEqual(config.hrm_readout_mode, 'residual')
+        self.assertEqual(config.hrm_readout_residual_alpha, 0.05)
+        self.assertFalse(config.stage_embedding_in_context)
+        self.assertNotIn('hrm_gradient_mode', config)
+
+        observations, goals, _ = synthetic_inputs(num_subgoals=1)
+        invalid_network = make_network(
+            num_subgoals=1,
+            state_init_mode='unknown',
+        )
+        with self.assertRaisesRegex(ValueError, 'segment_state_init_mode'):
+            invalid_network.init(
+                jax.random.PRNGKey(10),
+                observations,
+                goals,
+                jax.random.PRNGKey(11),
             )
 
 

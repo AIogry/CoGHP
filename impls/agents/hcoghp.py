@@ -51,9 +51,10 @@ class HCoGHPAgent(CoGHPAgent):
             return_sampling_diagnostics=True,
         )
 
-        # Keep the original CoGHP high-level AWR objective. The actor network's
-        # hrm_gradient_mode controls only whether each stage's AWR graph crosses
-        # recurrent/token boundaries; it does not change this loss.
+        # Keep the original CoGHP high-level AWR objective. The network returns
+        # exactly one terminal distribution per subgoal segment, so this is
+        # exactly one high-level AWR term per segment. Each term backpropagates
+        # through every H/L cycle inside that segment.
         if self.config['num_subgoals'] > 0:
             high_actor_loss, high_actor_info = self.multi_high_actor_loss(batch, high_dist, obs_expand, grad_params)
         else:
@@ -110,13 +111,19 @@ class HCoGHPAgent(CoGHPAgent):
         obs_expand = jnp.repeat(obs_expand, self.config['num_subgoals'], axis=1)
         target_reps = self.network.select('goal_rep')(jnp.concatenate([obs_expand, batch['high_actor_targets']], axis=-1))
 
-        def collect(prefix, subgoal_reps, return_diagnostics=False):
+        def collect(
+            prefix,
+            subgoal_reps,
+            temperature,
+            return_diagnostics=False,
+        ):
             result = self.network.select('actor_mixer')(
                 observations,
                 goals,
                 rng,
                 subgoal_reps=subgoal_reps,
                 action_seq=None,
+                temperature=temperature,
                 return_diagnostics=return_diagnostics,
                 scheduled_sampling_prob=0.0,
                 return_sampling_diagnostics=False,
@@ -143,18 +150,28 @@ class HCoGHPAgent(CoGHPAgent):
 
             if diagnostics is not None:
                 for key, value in diagnostics.items():
-                    info[f'diagnostics/{key}'] = value
+                    info[f'{prefix}/diagnostics/{key}'] = value
 
             return info
 
         info = collect(
             'validation_teacher',
             subgoal_reps=target_reps,
+            temperature=0.0,
             return_diagnostics=self.config.get('enable_hcoghp_diagnostics', False),
         )
 
         if self.config.get('enable_free_running_validation', False):
-            free_info = collect('validation_free', subgoal_reps=None)
+            free_info = collect(
+                'validation_free',
+                subgoal_reps=None,
+                # Match the deterministic policy used by benchmark rollout.
+                temperature=0.0,
+                return_diagnostics=self.config.get(
+                    'enable_hcoghp_diagnostics',
+                    False,
+                ),
+            )
             info.update(free_info)
             if self.config['num_subgoals'] > 0:
                 info['validation_gap/high_actor_mse'] = (
@@ -169,6 +186,33 @@ class HCoGHPAgent(CoGHPAgent):
             )
             info['validation_gap/action_mse'] = free_info['validation_free/action_mse'] - info['validation_teacher/action_mse']
 
+        if self.config.get('enable_noisy_free_running_validation', False):
+            noisy_temperature = self.config.get(
+                'noisy_free_running_temperature',
+                1.0,
+            )
+            noisy_info = collect(
+                'validation_noisy_free',
+                subgoal_reps=None,
+                temperature=noisy_temperature,
+                return_diagnostics=False,
+            )
+            info.update(noisy_info)
+            if self.config['num_subgoals'] > 0:
+                info['validation_noisy_gap/high_actor_mse'] = (
+                    noisy_info['validation_noisy_free/high_actor/mse']
+                    - info['validation_teacher/high_actor/mse']
+                )
+                for i in range(self.config['num_subgoals']):
+                    info[f'validation_noisy_gap/subgoal_{i}_mse'] = (
+                        noisy_info[f'validation_noisy_free/subgoal_{i}_mse']
+                        - info[f'validation_teacher/subgoal_{i}_mse']
+                    )
+            info['validation_noisy_gap/action_mse'] = (
+                noisy_info['validation_noisy_free/action_mse']
+                - info['validation_teacher/action_mse']
+            )
+
         return info
 
     @classmethod
@@ -181,6 +225,10 @@ class HCoGHPAgent(CoGHPAgent):
     ):
         if config.get('scheduled_sampling_schedule', 'linear') != 'linear':
             raise ValueError('HCoGHP scheduled sampling currently supports only the linear schedule.')
+        if config.get('segment_state_init_mode', 'carry') not in ('reset', 'carry'):
+            raise ValueError('segment_state_init_mode must be reset or carry.')
+        if config.get('segment_carry_gradient_mode', 'detached') != 'detached':
+            raise ValueError('Only detached segment carry is currently supported.')
 
         rng = jax.random.PRNGKey(seed)
         rng, init_rng = jax.random.split(rng, 2)
@@ -279,14 +327,28 @@ class HCoGHPAgent(CoGHPAgent):
             num_subgoals=config['num_subgoals'],
             causal_mixer=config.get('causal_mixer', True),
             action_use_full_subgoal_chain=config.get('action_use_full_subgoal_chain', True),
+            hrm_h_cycles=config['hrm_h_cycles'],
             hrm_l_cycles=config['hrm_l_cycles'],
             hrm_init_std=config.get('hrm_init_std', 0.1),
-            hrm_trainable_init=config.get('hrm_trainable_init', False),
+            hrm_trainable_init=config.get('hrm_trainable_init', True),
             hrm_low_num_blocks=config.get('hrm_low_num_blocks', 1),
             hrm_high_num_blocks=config.get('hrm_high_num_blocks', 1),
             subgoal_readout_hidden_dim=readout_hidden_dim,
+            hrm_readout_mode=config.get('hrm_readout_mode', 'residual'),
+            hrm_readout_residual_alpha=config.get(
+                'hrm_readout_residual_alpha',
+                0.05,
+            ),
+            stage_embedding_in_context=config.get(
+                'stage_embedding_in_context',
+                False,
+            ),
             enable_hcoghp_diagnostics=config.get('enable_hcoghp_diagnostics', False),
-            hrm_gradient_mode=config.get('hrm_gradient_mode', 'stage_truncated'),
+            segment_state_init_mode=config.get('segment_state_init_mode', 'carry'),
+            segment_carry_gradient_mode=config.get(
+                'segment_carry_gradient_mode',
+                'detached',
+            ),
         )
 
         network_info = dict(
@@ -315,14 +377,21 @@ class HCoGHPAgent(CoGHPAgent):
 def get_config():
     config = get_coghp_config()
     config.agent_name = 'hcoghp'
+    config.hrm_h_cycles = 2
     config.hrm_l_cycles = 2
     config.hrm_init_std = 0.1
-    config.hrm_trainable_init = False
+    config.hrm_trainable_init = True
     config.hrm_low_num_blocks = 1
     config.hrm_high_num_blocks = 1
     # 0 means 2 * feature_dim, resolved after command-line overrides.
     config.subgoal_readout_hidden_dim = 0
-    config.hrm_gradient_mode = 'stage_truncated'
+    config.hrm_readout_mode = 'residual'
+    config.hrm_readout_residual_alpha = 0.05
+    config.stage_embedding_in_context = False
+    config.segment_state_init_mode = 'carry'
+    # Kept separate from state initialization so carry + full-BPTT can be
+    # introduced explicitly later. This version supports detached carry only.
+    config.segment_carry_gradient_mode = 'detached'
     # Deprecated compatibility flag; no longer controls the HRM computation.
     config.hrm_mix_scale = True
     # Deprecated name from the previous prototype; the new network uses
@@ -330,6 +399,8 @@ def get_config():
     config.hrm_fusion_hidden_dim = 0
     config.enable_hcoghp_diagnostics = False
     config.enable_free_running_validation = False
+    config.enable_noisy_free_running_validation = False
+    config.noisy_free_running_temperature = 1.0
     config.scheduled_sampling_enabled = False
     config.scheduled_sampling_start_step = 100000
     config.scheduled_sampling_end_step = 300000
