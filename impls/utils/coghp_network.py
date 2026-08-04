@@ -107,7 +107,13 @@ class HierarchicalPolicyNetwork(nn.Module):
 
         if self.separate_action_mixer:
             # Preserve the original CoGHP sharing across all subgoal prediction
-            # steps, while giving primitive-action prediction its own mixer.
+            # steps, while giving primitive-action prediction its own mixer
+            # and query.  Observation/goal feature encoding remains shared.
+            self.action_query_token = self.param(
+                'action_query_token',
+                nn.initializers.normal(stddev=0.1),
+                (1, 1, self.state_dim),
+            )
             self.subgoal_mixer_blocks = [
                 MixerBlock(**mixer_kwargs) for _ in range(self.num_mixer_blocks)
             ]
@@ -177,7 +183,19 @@ class HierarchicalPolicyNetwork(nn.Module):
                         history_subgoals[:, token_dim - 1, :]
                     )
 
-                prev_embeds = jnp.concatenate([history_subgoals, prev_embed_tokens[:, token_dim:, :]], axis=1)
+                if token_dim == self.num_subgoals and self.separate_action_mixer:
+                    action_query = jnp.tile(
+                        self.action_query_token,
+                        (B, 1, 1),
+                    )
+                    future_tokens = action_query
+                else:
+                    future_tokens = prev_embed_tokens[:, token_dim:, :]
+
+                prev_embeds = jnp.concatenate(
+                    [history_subgoals, future_tokens],
+                    axis=1,
+                )
             
             x = jnp.concatenate([features, prev_embeds], axis=1)
 

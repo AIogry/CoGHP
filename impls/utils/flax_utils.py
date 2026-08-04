@@ -58,6 +58,9 @@ class TrainState(flax.struct.PyTreeNode):
         apply_fn: Apply function of the model.
         model_def: Model definition.
         params: Parameters of the model.
+        model_state: Immutable non-parameter Flax variable collections, such
+            as ``constants``.  These variables are passed to ``Module.apply``
+            but are not differentiated or optimized.
         tx: optax optimizer.
         opt_state: Optimizer state.
     """
@@ -66,22 +69,28 @@ class TrainState(flax.struct.PyTreeNode):
     apply_fn: Any = nonpytree_field()
     model_def: Any = nonpytree_field()
     params: Any
+    model_state: Any
     tx: Any = nonpytree_field()
     opt_state: Any
 
     @classmethod
-    def create(cls, model_def, params, tx=None, **kwargs):
+    def create(cls, model_def, params, tx=None, model_state=None, **kwargs):
         """Create a new train state."""
         if tx is not None:
             opt_state = tx.init(params)
         else:
             opt_state = None
+        if model_state is None:
+            model_state = flax.core.freeze({})
+        else:
+            model_state = flax.core.freeze(model_state)
 
         return cls(
             step=1,
             apply_fn=model_def.apply,
             model_def=model_def,
             params=params,
+            model_state=model_state,
             tx=tx,
             opt_state=opt_state,
             **kwargs,
@@ -105,7 +114,7 @@ class TrainState(flax.struct.PyTreeNode):
         """
         if params is None:
             params = self.params
-        variables = {'params': params}
+        variables = {'params': params, **self.model_state}
         if method is not None:
             method_name = getattr(self.model_def, method)
         else:
@@ -195,7 +204,23 @@ def restore_agent(agent, restore_path, restore_epoch):
     with open(restore_path, 'rb') as f:
         load_dict = pickle.load(f)
 
-    agent = flax.serialization.from_state_dict(agent, load_dict['agent'])
+    loaded_agent_state = load_dict['agent']
+    current_agent_state = flax.serialization.to_state_dict(agent)
+    # Checkpoints created before TrainState stored non-parameter collections do
+    # not contain ``model_state``.  Empty/current collections are the only
+    # sensible fallback for those legacy checkpoints.
+    if (
+        isinstance(loaded_agent_state, Mapping)
+        and isinstance(current_agent_state, Mapping)
+        and 'network' in loaded_agent_state
+        and 'network' in current_agent_state
+        and 'model_state' not in loaded_agent_state['network']
+    ):
+        loaded_agent_state['network']['model_state'] = (
+            current_agent_state['network']['model_state']
+        )
+
+    agent = flax.serialization.from_state_dict(agent, loaded_agent_state)
 
     print(f'Restored from {restore_path}')
 

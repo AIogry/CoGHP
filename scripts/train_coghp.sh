@@ -14,6 +14,7 @@ set -euo pipefail
 # Optional:
 #   GPUS="0 1 2 3" MAX_PARALLEL=4 bash scripts/train_coghp.sh all
 #   COGHP_CAUSAL_MIXER=False bash scripts/train_coghp.sh antmaze_large
+#   bash scripts/train_coghp.sh antmaze_giant_split_action_baseline
 
 TASK="${1:-all}"
 SEED="${SEED:-0}"
@@ -27,8 +28,25 @@ COGHP_ACTION_USE_FULL_SUBGOAL_CHAIN="${COGHP_ACTION_USE_FULL_SUBGOAL_CHAIN:-True
 COGHP_SHARE_MIXER_WEIGHTS="${COGHP_SHARE_MIXER_WEIGHTS:-False}"
 COGHP_SEPARATE_ACTION_MIXER="${COGHP_SEPARATE_ACTION_MIXER:-False}"
 RUN_SUFFIX="${RUN_SUFFIX:-}"
+TRAIN_STEPS="${TRAIN_STEPS:-1000000}"
+LOG_INTERVAL="${LOG_INTERVAL:-5000}"
+EVAL_INTERVAL="${EVAL_INTERVAL:-100000}"
+SAVE_INTERVAL="${SAVE_INTERVAL:-1000000}"
+EVAL_EPISODES="${EVAL_EPISODES:-50}"
+EVAL_ON_CPU="${EVAL_ON_CPU:-1}"
+BATCH_SIZE="${BATCH_SIZE:-256}"
+WANDB_MODE="${WANDB_MODE:-online}"
+WANDB_PROJECT="${COGHP_WANDB_PROJECT:-CoGHP}"
 
 BASE_TASK="${TASK}"
+if [[ "${TASK}" == *_split_action_baseline ]]; then
+  COGHP_SEPARATE_ACTION_MIXER=True
+  COGHP_ACTION_USE_FULL_SUBGOAL_CHAIN=True
+  COGHP_SHARE_MIXER_WEIGHTS=False
+  RUN_SUFFIX="${RUN_SUFFIX:-_split_action_baseline}"
+  BASE_TASK="${BASE_TASK%_split_action_baseline}"
+fi
+
 if [[ "${TASK}" == *_separate_action_mixer_last_subgoal_action ]]; then
   COGHP_SEPARATE_ACTION_MIXER=True
   COGHP_ACTION_USE_FULL_SUBGOAL_CHAIN=False
@@ -65,7 +83,7 @@ DATA_ROOT="${DATA_ROOT:-/data/qijunrong/06-RL/offline-rl}"
 IMPLS_DIR="${PROJECT_ROOT}/impls"
 LOG_DIR="${LOG_DIR:-${DATA_ROOT}/logs/coghp}"
 DATASET_DIR="${DATASET_DIR:-${DATA_ROOT}/data/raw_ogbench}"
-PYTHON="${PYTHON:-python}"
+PYTHON="${PYTHON:-/home/eai/Tools/miniforge3/envs/brain_nav/bin/python}"
 export PYTHONPATH="${PROJECT_ROOT}:${IMPLS_DIR}:${PYTHONPATH:-}"
 export OGBENCH_DATASET_DIR="${DATASET_DIR}"
 export MUJOCO_GL="${MUJOCO_GL:-egl}"
@@ -81,7 +99,14 @@ fi
 mkdir -p "${LOG_DIR}"
 
 COMMON_ARGS=(
-  --eval_episodes=50
+  --wandb_project="${WANDB_PROJECT}"
+  --wandb_mode="${WANDB_MODE}"
+  --train_steps="${TRAIN_STEPS}"
+  --log_interval="${LOG_INTERVAL}"
+  --eval_interval="${EVAL_INTERVAL}"
+  --save_interval="${SAVE_INTERVAL}"
+  --eval_episodes="${EVAL_EPISODES}"
+  --eval_on_cpu="${EVAL_ON_CPU}"
   --video_episodes=0
   --seed="${SEED}"
   --agent=agents/coghp.py
@@ -90,6 +115,7 @@ COMMON_ARGS=(
   --agent.action_use_full_subgoal_chain="${COGHP_ACTION_USE_FULL_SUBGOAL_CHAIN}"
   --agent.share_mixer_weights="${COGHP_SHARE_MIXER_WEIGHTS}"
   --agent.separate_action_mixer="${COGHP_SEPARATE_ACTION_MIXER}"
+  --agent.batch_size="${BATCH_SIZE}"
 )
 
 # task_key|env_name|num_subgoals|subgoal_steps|feature_dim|extra_agent_args
@@ -373,6 +399,9 @@ print_tasks() {
   echo "  large -> antmaze_large"
   echo "  giant -> antmaze_giant"
   echo "  teleport -> antmaze_teleport"
+  echo
+  echo "Clean planner/action-split baseline:"
+  echo "  <task>_split_action_baseline"
 }
 
 run_group_or_task() {

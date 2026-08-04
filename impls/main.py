@@ -224,6 +224,7 @@ def main(_):
                         config.get('enable_hcoghp_diagnostics', False)
                         or config.get('enable_free_running_validation', False)
                         or config.get('enable_fm_diagnostics', False)
+                        or config.get('enable_action_hrm_validation', False)
                     )
                 ):
                     rollout_info = agent.validation_rollout_info(

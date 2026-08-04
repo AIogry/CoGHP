@@ -1,9 +1,11 @@
 from agents.coghp import CoGHPAgent
 from agents.fm_coghp import FMCoGHPAgent
 from agents.hcoghp import HCoGHPAgent
+from agents.hrm_action_coghp import HRMActionCoGHPAgent
 
 agents = dict(
     coghp=CoGHPAgent,
     fm_coghp=FMCoGHPAgent,
     hcoghp=HCoGHPAgent,
+    hrm_action_coghp=HRMActionCoGHPAgent,
 )
