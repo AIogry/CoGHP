@@ -1,9 +1,10 @@
-"""Faithful Flax port of the standalone HRM-Mini architecture.
+"""Flax HRM-Mini core plus isolated action-core Mixer variants.
 
-This module mirrors ``hrm-mini/arch/layers.py`` and
-``hrm-mini/arch/hrm.py`` without adding CoGHP-specific concepts.  In
-particular, it deliberately contains no subgoal stages, action residuals,
-stage embeddings, actor heads, or context-vector compression.
+The original HRM pieces mirror ``hrm-mini/arch/layers.py`` and
+``hrm-mini/arch/hrm.py``.  CoGHP-compatible GELU blocks are implemented here
+once so feed-forward, single-state, and HRM action cores can share exactly the
+same H/L block code.  The module still contains no subgoal stages, action
+residuals, stage embeddings, actor heads, or context-vector compression.
 
 The port preserves the architectural details that matter for an HRM core:
 
@@ -37,6 +38,40 @@ CosSin = Tuple[Array, Array]
 Carry = Mapping[str, Array]
 
 
+HRM_BLOCK_TYPES = frozenset(
+    {
+        'swiglu_rmsnorm',
+        'coghp_gelu',
+        'gelu_layernorm',
+    }
+)
+ACTION_CORE_TYPES = frozenset(
+    {
+        'matched_feedforward',
+        'single_state_iterative',
+        'hrm',
+    }
+)
+_ATTENTION_BLOCK_TYPE = 'attention'
+
+
+def _resolve_block_type(
+    block_type: Optional[str],
+    is_mlp_mixer: bool,
+) -> str:
+    """Resolve the new block selector while preserving the legacy bool API."""
+
+    if block_type in (None, '', 'auto', 'legacy'):
+        return 'swiglu_rmsnorm' if is_mlp_mixer else _ATTENTION_BLOCK_TYPE
+    allowed_block_types = HRM_BLOCK_TYPES | {_ATTENTION_BLOCK_TYPE}
+    if block_type not in allowed_block_types:
+        raise ValueError(
+            f'Unknown HRM block type {block_type!r}; expected one of '
+            f'{sorted(allowed_block_types)}.'
+        )
+    return block_type
+
+
 @dataclass(frozen=True, kw_only=True)
 class TransformerConfig:
     """Configuration fields from HRM-Mini's ``TransformerConfig``."""
@@ -51,6 +86,10 @@ class TransformerConfig:
     rope_theta: float
     is_mlp_mixer: bool = False
     mlp_mixer_intermediate_size: int = 256
+    block_type: Optional[str] = None
+    token_hidden: int = 32
+    channel_hidden: int = 32
+    layernorm_affine: bool = True
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -224,6 +263,162 @@ class SwiGLU(nn.Module):
         )(hidden)
 
 
+def _coghp_default_init(scale: float = 1.0):
+    """Independent copy of CoGHP's default dense-kernel initializer."""
+
+    return nn.initializers.variance_scaling(scale, 'fan_avg', 'uniform')
+
+
+class CoGHPMixerBlock(nn.Module):
+    """Exact local mirror of CoGHP's GELU MixerBlock.
+
+    This implementation intentionally lives in ``hrm.py``.  It mirrors the
+    Dense biases, initialization, additional ``tm_weights`` matrix, causal
+    triangular projection, token/channel mixing, and residual placement of
+    ``utils.coghp_network.MixerBlock`` without importing that class.
+    """
+
+    seq_len: int
+    hidden_size: int
+    token_hidden: int
+    channel_hidden: int
+    is_causal: bool = True
+    param_dtype: Any = jnp.float32
+
+    @nn.compact
+    def __call__(self, x: Array) -> Array:
+        if x.ndim != 3 or x.shape[-2:] != (
+            self.seq_len,
+            self.hidden_size,
+        ):
+            raise ValueError(
+                f'Expected [B, {self.seq_len}, {self.hidden_size}], got '
+                f'{x.shape}.'
+            )
+
+        token_update = jnp.swapaxes(x, -1, -2)
+        token_update = nn.Dense(
+            self.token_hidden,
+            param_dtype=self.param_dtype,
+            kernel_init=_coghp_default_init(),
+            name='token_dense1',
+        )(token_update)
+        token_update = nn.gelu(token_update)
+        token_update = nn.Dense(
+            self.seq_len,
+            param_dtype=self.param_dtype,
+            kernel_init=_coghp_default_init(),
+            name='token_dense2',
+        )(token_update)
+        token_update = jnp.swapaxes(token_update, -1, -2)
+
+        tm_weights = self.param(
+            'tm_weights',
+            nn.initializers.normal(stddev=0.02),
+            (self.seq_len, self.seq_len),
+            self.param_dtype,
+        )
+        if self.is_causal:
+            tm_weights = jnp.tril(tm_weights)
+        token_update = jnp.einsum(
+            'btd,ts->bsd',
+            token_update,
+            tm_weights,
+        )
+        x = x + token_update
+
+        channel_update = nn.Dense(
+            self.channel_hidden,
+            param_dtype=self.param_dtype,
+            kernel_init=_coghp_default_init(),
+            name='channel_dense1',
+        )(x)
+        channel_update = nn.gelu(channel_update)
+        channel_update = nn.Dense(
+            self.hidden_size,
+            param_dtype=self.param_dtype,
+            kernel_init=_coghp_default_init(),
+            name='channel_dense2',
+        )(channel_update)
+        return x + channel_update
+
+
+class GELULayerNormMixerBlock(nn.Module):
+    """HRM-style GELU Mixer with affine-optional post-LayerNorm.
+
+    The two residual branches stay in the same order and normalization
+    locations as the official SwiGLU/RMSNorm HRM Mixer.  Unlike
+    :class:`CoGHPMixerBlock`, this HRM-style control deliberately has no
+    additional ``tm_weights`` projection.
+    """
+
+    seq_len: int
+    hidden_size: int
+    token_hidden: int
+    channel_hidden: int
+    norm_eps: float = 1e-6
+    layernorm_affine: bool = True
+    param_dtype: Any = jnp.float32
+
+    @nn.compact
+    def __call__(self, x: Array) -> Array:
+        if x.shape[-2:] != (self.seq_len, self.hidden_size):
+            raise ValueError(
+                f'Expected [..., {self.seq_len}, {self.hidden_size}], got '
+                f'{x.shape}.'
+            )
+
+        token_input = jnp.swapaxes(x, -1, -2)
+        token_update = nn.Dense(
+            self.token_hidden,
+            dtype=x.dtype,
+            param_dtype=self.param_dtype,
+            kernel_init=_coghp_default_init(),
+            name='token_dense1',
+        )(token_input)
+        token_update = nn.gelu(token_update)
+        token_update = nn.Dense(
+            self.seq_len,
+            dtype=x.dtype,
+            param_dtype=self.param_dtype,
+            kernel_init=_coghp_default_init(),
+            name='token_dense2',
+        )(token_update)
+        token_output = nn.LayerNorm(
+            epsilon=self.norm_eps,
+            use_bias=self.layernorm_affine,
+            use_scale=self.layernorm_affine,
+            dtype=x.dtype,
+            param_dtype=self.param_dtype,
+            name='token_norm',
+        )(token_input + token_update)
+        x = jnp.swapaxes(token_output, -1, -2)
+
+        channel_update = nn.Dense(
+            self.channel_hidden,
+            dtype=x.dtype,
+            param_dtype=self.param_dtype,
+            kernel_init=_coghp_default_init(),
+            name='channel_dense1',
+        )(x)
+        channel_update = nn.gelu(channel_update)
+        channel_update = nn.Dense(
+            self.hidden_size,
+            dtype=x.dtype,
+            param_dtype=self.param_dtype,
+            kernel_init=_coghp_default_init(),
+            name='channel_dense2',
+        )(channel_update)
+        return nn.LayerNorm(
+            epsilon=self.norm_eps,
+            use_bias=self.layernorm_affine,
+            use_scale=self.layernorm_affine,
+            dtype=x.dtype,
+            param_dtype=self.param_dtype,
+            name='channel_norm',
+        )(x + channel_update)
+
+
 class RotaryEmbedding(nn.Module):
     """Stateless rotary embedding table used by the attention backbone."""
 
@@ -377,12 +572,20 @@ class Transformer(nn.Module):
     rope_theta: float = 10000.0
     is_mlp_mixer: bool = False
     mlp_mixer_intermediate_size: int = 256
+    block_type: Optional[str] = None
+    token_hidden: int = 32
+    channel_hidden: int = 32
+    layernorm_affine: bool = True
     param_dtype: Any = jnp.float32
 
     @nn.compact
     def __call__(self, hidden_states: Array) -> Array:
+        resolved_block_type = _resolve_block_type(
+            self.block_type,
+            self.is_mlp_mixer,
+        )
         cos_sin = None
-        if not self.is_mlp_mixer:
+        if resolved_block_type == _ATTENTION_BLOCK_TYPE:
             cos_sin = RotaryEmbedding(
                 dim=self.head_dim,
                 max_position_embeddings=self.seq_len,
@@ -392,23 +595,61 @@ class Transformer(nn.Module):
 
         output = hidden_states
         for layer_idx in range(self.num_layers):
-            output = TransformerBlock(
-                seq_len=self.seq_len,
-                hidden_size=self.hidden_size,
-                intermediate_size=self.intermediate_size,
-                head_dim=self.head_dim,
-                is_causal=self.is_causal,
-                norm_eps=self.norm_eps,
-                is_mlp_mixer=self.is_mlp_mixer,
-                mlp_mixer_intermediate_size=self.mlp_mixer_intermediate_size,
-                param_dtype=self.param_dtype,
-                name=f'layers_{layer_idx}',
-            )(output, cos_sin=cos_sin)
+            layer_name = f'layers_{layer_idx}'
+            if resolved_block_type == 'coghp_gelu':
+                output = CoGHPMixerBlock(
+                    seq_len=self.seq_len,
+                    hidden_size=self.hidden_size,
+                    token_hidden=self.token_hidden,
+                    channel_hidden=self.channel_hidden,
+                    is_causal=self.is_causal,
+                    param_dtype=self.param_dtype,
+                    name=layer_name,
+                )(output)
+            elif resolved_block_type == 'gelu_layernorm':
+                output = GELULayerNormMixerBlock(
+                    seq_len=self.seq_len,
+                    hidden_size=self.hidden_size,
+                    token_hidden=self.token_hidden,
+                    channel_hidden=self.channel_hidden,
+                    norm_eps=self.norm_eps,
+                    layernorm_affine=self.layernorm_affine,
+                    param_dtype=self.param_dtype,
+                    name=layer_name,
+                )(output)
+            else:
+                output = TransformerBlock(
+                    seq_len=self.seq_len,
+                    hidden_size=self.hidden_size,
+                    intermediate_size=self.intermediate_size,
+                    head_dim=self.head_dim,
+                    is_causal=self.is_causal,
+                    norm_eps=self.norm_eps,
+                    is_mlp_mixer=(
+                        resolved_block_type == 'swiglu_rmsnorm'
+                    ),
+                    mlp_mixer_intermediate_size=(
+                        self.mlp_mixer_intermediate_size
+                    ),
+                    param_dtype=self.param_dtype,
+                    name=layer_name,
+                )(output, cos_sin=cos_sin)
         return output
 
 
 class HRMCore(nn.Module):
-    """Continuous-input HRM core corresponding to HRM-Mini's recurrence."""
+    """Shared-block action core with feed-forward, single-state, or HRM flow.
+
+    ``L_level`` and ``H_level`` are always two independent instances of the
+    same :class:`Transformer` configuration.  Keeping those serialized names
+    preserves existing HRM checkpoints; conceptually they are ``B_L`` and
+    ``B_H`` for every ``core_type``.
+
+    The single-state control starts from ``u_0 = 0``, injects the fixed input
+    before every low update, and never injects it directly into a high update:
+    ``u <- B_L(u + x)`` and ``u <- B_H(u)``.  Consequently H1L1 is exactly
+    ``B_H(B_L(x))``, the same computation as ``matched_feedforward``.
+    """
 
     seq_len: int
     num_layers: int
@@ -418,11 +659,16 @@ class HRMCore(nn.Module):
     is_causal: bool
     h_cycles: int
     l_cycles: int
+    core_type: str = 'hrm'
     bptt: bool = True
     norm_eps: float = 1e-6
     rope_theta: float = 10000.0
     is_mlp_mixer: bool = False
     mlp_mixer_intermediate_size: int = 256
+    block_type: Optional[str] = None
+    token_hidden: int = 32
+    channel_hidden: int = 32
+    layernorm_affine: bool = True
     forward_dtype: Any = jnp.float32
     param_dtype: Any = jnp.float32
 
@@ -431,11 +677,39 @@ class HRMCore(nn.Module):
             raise ValueError('seq_len, hidden_size, and num_layers must be positive.')
         if self.h_cycles < 1 or self.l_cycles < 1:
             raise ValueError('h_cycles and l_cycles must both be positive.')
-        if not self.is_mlp_mixer:
+        if self.core_type not in ACTION_CORE_TYPES:
+            raise ValueError(
+                f'Unknown action core type {self.core_type!r}; expected one '
+                f'of {sorted(ACTION_CORE_TYPES)}.'
+            )
+        resolved_block_type = _resolve_block_type(
+            self.block_type,
+            self.is_mlp_mixer,
+        )
+        if (
+            self.core_type != 'hrm'
+            and resolved_block_type == _ATTENTION_BLOCK_TYPE
+        ):
+            raise ValueError(
+                'matched_feedforward and single_state_iterative support only '
+                f'Mixer blocks {sorted(HRM_BLOCK_TYPES)}.'
+            )
+        if resolved_block_type == _ATTENTION_BLOCK_TYPE:
             if self.head_dim < 1 or self.hidden_size % self.head_dim != 0:
                 raise ValueError(
                     'Attention HRM requires head_dim to divide hidden_size.'
                 )
+        elif resolved_block_type == 'swiglu_rmsnorm':
+            if self.mlp_mixer_intermediate_size < 1:
+                raise ValueError(
+                    'mlp_mixer_intermediate_size must be positive for '
+                    'swiglu_rmsnorm.'
+                )
+        elif self.token_hidden < 1 or self.channel_hidden < 1:
+            raise ValueError(
+                'token_hidden and channel_hidden must be positive for '
+                f'{resolved_block_type}.'
+            )
 
         level_kwargs = dict(
             seq_len=self.seq_len,
@@ -448,37 +722,46 @@ class HRMCore(nn.Module):
             rope_theta=self.rope_theta,
             is_mlp_mixer=self.is_mlp_mixer,
             mlp_mixer_intermediate_size=self.mlp_mixer_intermediate_size,
+            block_type=self.block_type,
+            token_hidden=self.token_hidden,
+            channel_hidden=self.channel_hidden,
+            layernorm_affine=self.layernorm_affine,
             param_dtype=self.param_dtype,
         )
         self.H_level = Transformer(**level_kwargs, name='H_level')
         self.L_level = Transformer(**level_kwargs, name='L_level')
 
-        # PyTorch buffers are represented as a non-trainable Flax collection.
-        # The vectors broadcast across batch and sequence dimensions, exactly
-        # as in HRM-Mini.
-        self.zH_init = self.variable(
-            'constants',
-            'zH_init',
-            lambda: approximate_truncated_normal(1.0)(
-                self.make_rng('params'),
-                (self.hidden_size,),
-                self.forward_dtype,
-            ),
-        )
-        self.zL_init = self.variable(
-            'constants',
-            'zL_init',
-            lambda: approximate_truncated_normal(1.0)(
-                self.make_rng('params'),
-                (self.hidden_size,),
-                self.forward_dtype,
-            ),
-        )
+        if self.core_type == 'hrm':
+            # PyTorch buffers are represented as a non-trainable Flax
+            # collection.  The vectors broadcast across batch and sequence
+            # dimensions, exactly as in HRM-Mini.
+            self.zH_init = self.variable(
+                'constants',
+                'zH_init',
+                lambda: approximate_truncated_normal(1.0)(
+                    self.make_rng('params'),
+                    (self.hidden_size,),
+                    self.forward_dtype,
+                ),
+            )
+            self.zL_init = self.variable(
+                'constants',
+                'zL_init',
+                lambda: approximate_truncated_normal(1.0)(
+                    self.make_rng('params'),
+                    (self.hidden_size,),
+                    self.forward_dtype,
+                ),
+            )
 
     def initial_carry(self, batch_shape: Tuple[int, ...]) -> dict[str, Array]:
-        """Broadcast the fixed HRM initial vectors to a sequence-shaped carry."""
+        """Create only the transient state required by the selected core."""
 
         shape = (*batch_shape, self.seq_len, self.hidden_size)
+        if self.core_type == 'matched_feedforward':
+            return {}
+        if self.core_type == 'single_state_iterative':
+            return {'u': jnp.zeros(shape, dtype=self.forward_dtype)}
         return {
             'z_H': jnp.broadcast_to(self.zH_init.value, shape),
             'z_L': jnp.broadcast_to(self.zL_init.value, shape),
@@ -497,6 +780,38 @@ class HRMCore(nn.Module):
             )
         if carry is None:
             carry = self.initial_carry(x.shape[:-2])
+
+        if self.core_type == 'matched_feedforward':
+            low_output = self.L_level(x)
+            output = self.H_level(low_output)
+            return {}, output
+
+        if self.core_type == 'single_state_iterative':
+            if 'u' not in carry:
+                raise ValueError(
+                    'single_state_iterative carry must contain only state u.'
+                )
+            u = carry['u'].astype(self.forward_dtype)
+            if u.shape != x.shape:
+                raise ValueError(
+                    f'Single-state carry and input shapes must match; got '
+                    f'x={x.shape}, u={u.shape}.'
+                )
+
+            # The operation word is (L^l_cycles, H)^h_cycles.  As in HRM,
+            # truncated mode cuts history immediately before the final L/H
+            # pair, while the shared final pair remains differentiable.
+            for iteration in range(self.h_cycles * self.l_cycles - 1):
+                u = self.L_level(u + x)
+                if (iteration + 1) % self.l_cycles == 0:
+                    u = self.H_level(u)
+
+            if not self.bptt:
+                u = jax.lax.stop_gradient(u)
+
+            u = self.L_level(u + x)
+            u = self.H_level(u)
+            return {'u': jax.lax.stop_gradient(u)}, u
 
         z_H = carry['z_H'].astype(self.forward_dtype)
         z_L = carry['z_L'].astype(self.forward_dtype)
@@ -546,6 +861,10 @@ class HRM(nn.Module):
     rope_theta: float = 10000.0
     is_mlp_mixer: bool = False
     mlp_mixer_intermediate_size: int = 256
+    block_type: Optional[str] = None
+    token_hidden: int = 32
+    channel_hidden: int = 32
+    layernorm_affine: bool = True
     forward_dtype: Any = jnp.float32
     param_dtype: Any = jnp.float32
 
@@ -571,6 +890,10 @@ class HRM(nn.Module):
             rope_theta=self.rope_theta,
             is_mlp_mixer=self.is_mlp_mixer,
             mlp_mixer_intermediate_size=self.mlp_mixer_intermediate_size,
+            block_type=self.block_type,
+            token_hidden=self.token_hidden,
+            channel_hidden=self.channel_hidden,
+            layernorm_affine=self.layernorm_affine,
             forward_dtype=self.forward_dtype,
             param_dtype=self.param_dtype,
             name='core',
@@ -602,12 +925,16 @@ class HRM(nn.Module):
 
 
 __all__ = [
+    'ACTION_CORE_TYPES',
     'Attention',
     'Carry',
     'CastedLinear',
     'CastedScaledEmbedding',
+    'CoGHPMixerBlock',
     'CosSin',
+    'GELULayerNormMixerBlock',
     'HRM',
+    'HRM_BLOCK_TYPES',
     'HRMConfig',
     'HRMCore',
     'MLP',

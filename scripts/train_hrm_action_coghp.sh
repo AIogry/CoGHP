@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Train the clean HRM-Action-CoGHP implementation.
+# Train the shared-block Action-Core-CoGHP implementation.
 #
-# The action branch always performs exactly one outer HRM call.  H/L cycles
-# below configure the recurrence inside that single module call.
+# The action branch always performs exactly one outer core call.  The core
+# topology and its shared H/L block family are selected independently.
 #
 # Example:
 #   SEED=0 GPU_ID=0 ACTION_HRM_BACKBONE=mixer \
@@ -23,11 +23,24 @@ ACTION_HRM_L_CYCLES="${ACTION_HRM_L_CYCLES:-2}"
 ACTION_HRM_BPTT="${ACTION_HRM_BPTT:-True}"
 ACTION_HRM_IS_CAUSAL="${ACTION_HRM_IS_CAUSAL:-True}"
 ACTION_HRM_MIXER_INTERMEDIATE_SIZE="${ACTION_HRM_MIXER_INTERMEDIATE_SIZE:-256}"
+ACTION_CORE_TYPE="${ACTION_CORE_TYPE:-hrm}"
+ACTION_BLOCK_TYPE="${ACTION_BLOCK_TYPE:-}"
+HRM_BLOCK_TYPE="${HRM_BLOCK_TYPE:-}"
+ACTION_HRM_BLOCK_TYPE="${ACTION_HRM_BLOCK_TYPE:-}"
+HRM_TOKEN_HIDDEN="${HRM_TOKEN_HIDDEN:-${ACTION_HRM_TOKEN_HIDDEN:-32}}"
+HRM_CHANNEL_HIDDEN="${HRM_CHANNEL_HIDDEN:-${ACTION_HRM_CHANNEL_HIDDEN:-32}}"
+HRM_MIXER_INTERMEDIATE_SIZE="${HRM_MIXER_INTERMEDIATE_SIZE:-${ACTION_HRM_MIXER_INTERMEDIATE_SIZE}}"
+HRM_LAYERNORM_AFFINE="${HRM_LAYERNORM_AFFINE:-${ACTION_HRM_LAYERNORM_AFFINE:-True}}"
 ACTION_HRM_NORM_EPS="${ACTION_HRM_NORM_EPS:-1e-6}"
 ACTION_HRM_ROPE_THETA="${ACTION_HRM_ROPE_THETA:-10000.0}"
 ACTION_HRM_FORWARD_DTYPE="${ACTION_HRM_FORWARD_DTYPE:-float32}"
 ACTION_CHAIN_SOURCE="${ACTION_CHAIN_SOURCE:-teacher}"
 RUN_TAG="${RUN_TAG:-}"
+RUN_GROUP_OVERRIDE="${RUN_GROUP_OVERRIDE:-}"
+CHECKPOINT_SIGNATURE_REQUIRED="${CHECKPOINT_SIGNATURE_REQUIRED:-False}"
+EXPERIMENT_GIT_COMMIT="${EXPERIMENT_GIT_COMMIT:-}"
+EXPERIMENT_CODE_SIGNATURE="${EXPERIMENT_CODE_SIGNATURE:-}"
+EXPECTED_ACTION_CORE_PARAMS="${EXPECTED_ACTION_CORE_PARAMS:--1}"
 
 TRAIN_STEPS="${TRAIN_STEPS:-1000000}"
 LOG_INTERVAL="${LOG_INTERVAL:-5000}"
@@ -47,11 +60,64 @@ LOG_DIR="${LOG_DIR:-${DATA_ROOT}/logs/hrm_action_coghp}"
 PYTHON="${PYTHON:-/home/eai/Tools/miniforge3/envs/brain_nav/bin/python}"
 SKIP_DATASET_CHECK="${HRM_ACTION_SKIP_DATASET_CHECK:-0}"
 
+if [[ -n "${HRM_BLOCK_TYPE}" && -n "${ACTION_HRM_BLOCK_TYPE}" \
+  && "${HRM_BLOCK_TYPE}" != "${ACTION_HRM_BLOCK_TYPE}" ]]; then
+  echo "HRM_BLOCK_TYPE conflicts with legacy ACTION_HRM_BLOCK_TYPE." >&2
+  exit 2
+fi
+HRM_BLOCK_TYPE="${HRM_BLOCK_TYPE:-${ACTION_HRM_BLOCK_TYPE}}"
+
+case "${ACTION_CORE_TYPE}" in
+  matched_feedforward|single_state_iterative|hrm) ;;
+  *)
+    echo "ACTION_CORE_TYPE must be matched_feedforward, single_state_iterative, or hrm." >&2
+    exit 2
+    ;;
+esac
 case "${ACTION_HRM_BACKBONE}" in
-  mixer) ACTION_HRM_IS_MLP_MIXER=True ;;
-  attention|attn) ACTION_HRM_IS_MLP_MIXER=False; ACTION_HRM_BACKBONE=attention ;;
+  mixer)
+    ACTION_HRM_IS_MLP_MIXER=True
+    if [[ -n "${ACTION_BLOCK_TYPE}" && -n "${HRM_BLOCK_TYPE}" \
+      && "${HRM_BLOCK_TYPE}" != "legacy" \
+      && "${ACTION_BLOCK_TYPE}" != "${HRM_BLOCK_TYPE}" ]]; then
+      echo "ACTION_BLOCK_TYPE conflicts with legacy HRM_BLOCK_TYPE." >&2
+      exit 2
+    fi
+    if [[ "${HRM_BLOCK_TYPE}" == "legacy" ]]; then
+      HRM_BLOCK_TYPE=""
+    fi
+    ACTION_BLOCK_TYPE="${ACTION_BLOCK_TYPE:-${HRM_BLOCK_TYPE:-swiglu_rmsnorm}}"
+    HRM_BLOCK_TYPE="${ACTION_BLOCK_TYPE}"
+    ;;
+  attention|attn)
+    if [[ "${ACTION_CORE_TYPE}" != "hrm" ]]; then
+      echo "Legacy attention is supported only with ACTION_CORE_TYPE=hrm." >&2
+      exit 2
+    fi
+    ACTION_HRM_IS_MLP_MIXER=False
+    ACTION_HRM_BACKBONE=attention
+    if [[ -n "${ACTION_BLOCK_TYPE}" && "${ACTION_BLOCK_TYPE}" != "attention" ]]; then
+      echo "ACTION_BLOCK_TYPE must be unset or attention for the legacy attention backbone." >&2
+      exit 2
+    fi
+    if [[ -n "${HRM_BLOCK_TYPE}" && "${HRM_BLOCK_TYPE}" != "legacy" ]]; then
+      echo "HRM_BLOCK_TYPE only selects Mixer blocks; leave it unset for attention." >&2
+      exit 2
+    fi
+    ACTION_BLOCK_TYPE=attention
+    HRM_BLOCK_TYPE=legacy
+    ;;
   *) echo "ACTION_HRM_BACKBONE must be mixer or attention." >&2; exit 2 ;;
 esac
+if [[ "${ACTION_HRM_BACKBONE}" == "mixer" ]]; then
+  case "${ACTION_BLOCK_TYPE}" in
+    swiglu_rmsnorm|coghp_gelu|gelu_layernorm) ;;
+    *)
+      echo "ACTION_BLOCK_TYPE must be swiglu_rmsnorm, coghp_gelu, or gelu_layernorm." >&2
+      exit 2
+      ;;
+  esac
+fi
 case "${ACTION_HRM_BPTT}" in
   True|False) ;;
   *) echo "ACTION_HRM_BPTT must be True or False." >&2; exit 2 ;;
@@ -60,10 +126,27 @@ case "${ACTION_HRM_IS_CAUSAL}" in
   True|False) ;;
   *) echo "ACTION_HRM_IS_CAUSAL must be True or False." >&2; exit 2 ;;
 esac
+case "${HRM_LAYERNORM_AFFINE}" in
+  True|False) ;;
+  *) echo "HRM_LAYERNORM_AFFINE must be True or False." >&2; exit 2 ;;
+esac
 case "${ACTION_CHAIN_SOURCE}" in
   teacher|predicted) ;;
   *) echo "ACTION_CHAIN_SOURCE must be teacher or predicted." >&2; exit 2 ;;
 esac
+case "${CHECKPOINT_SIGNATURE_REQUIRED}" in
+  True|False) ;;
+  *) echo "CHECKPOINT_SIGNATURE_REQUIRED must be True or False." >&2; exit 2 ;;
+esac
+if [[ "${CHECKPOINT_SIGNATURE_REQUIRED}" == "True" \
+  && -z "${EXPERIMENT_GIT_COMMIT}" ]]; then
+  echo "EXPERIMENT_GIT_COMMIT is required for signed checkpoints." >&2
+  exit 2
+fi
+if ! [[ "${EXPECTED_ACTION_CORE_PARAMS}" =~ ^-?[0-9]+$ ]]; then
+  echo "EXPECTED_ACTION_CORE_PARAMS must be an integer." >&2
+  exit 2
+fi
 case "${ACTION_HRM_FORWARD_DTYPE}" in
   float32|bfloat16) ;;
   *) echo "ACTION_HRM_FORWARD_DTYPE must be float32 or bfloat16." >&2; exit 2 ;;
@@ -74,7 +157,10 @@ for value in \
   "${ACTION_HRM_HEAD_DIM}" \
   "${ACTION_HRM_H_CYCLES}" \
   "${ACTION_HRM_L_CYCLES}" \
-  "${ACTION_HRM_MIXER_INTERMEDIATE_SIZE}"; do
+  "${ACTION_HRM_MIXER_INTERMEDIATE_SIZE}" \
+  "${HRM_TOKEN_HIDDEN}" \
+  "${HRM_CHANNEL_HIDDEN}" \
+  "${HRM_MIXER_INTERMEDIATE_SIZE}"; do
   if ! [[ "${value}" =~ ^[1-9][0-9]*$ ]]; then
     echo "HRM integer settings must all be positive; got ${value}." >&2
     exit 2
@@ -156,15 +242,55 @@ else
   bptt_tag="truncated"
 fi
 if [[ "${ACTION_HRM_BACKBONE}" == "mixer" ]]; then
-  capacity_tag="mi${ACTION_HRM_MIXER_INTERMEDIATE_SIZE}"
+  case "${ACTION_BLOCK_TYPE}" in
+    swiglu_rmsnorm)
+      # Preserve the historical default run-group format.
+      capacity_tag="mi${HRM_MIXER_INTERMEDIATE_SIZE}"
+      ;;
+    coghp_gelu)
+      capacity_tag="cg_th${HRM_TOKEN_HIDDEN}_ch${HRM_CHANNEL_HIDDEN}"
+      ;;
+    gelu_layernorm)
+      if [[ "${HRM_LAYERNORM_AFFINE}" == "True" ]]; then
+        affine_tag="aff1"
+      else
+        affine_tag="aff0"
+      fi
+      capacity_tag="gln_th${HRM_TOKEN_HIDDEN}_ch${HRM_CHANNEL_HIDDEN}_${affine_tag}"
+      ;;
+  esac
 else
   capacity_tag="ff${ACTION_HRM_INTERMEDIATE_SIZE}_hd${ACTION_HRM_HEAD_DIM}"
 fi
-RUN_GROUP="${TASK_KEY}_hrm_action_${ACTION_HRM_BACKBONE}"
-RUN_GROUP+="_o1_n${ACTION_HRM_NUM_LAYERS}_h${ACTION_HRM_H_CYCLES}_l${ACTION_HRM_L_CYCLES}"
-RUN_GROUP+="_${capacity_tag}_${bptt_tag}_${ACTION_CHAIN_SOURCE}_s${SEED}"
+case "${ACTION_CORE_TYPE}" in
+  hrm)
+    # Preserve all historical HRM run-group names.
+    RUN_GROUP="${TASK_KEY}_hrm_action_${ACTION_HRM_BACKBONE}"
+    RUN_GROUP+="_o1_n${ACTION_HRM_NUM_LAYERS}_h${ACTION_HRM_H_CYCLES}_l${ACTION_HRM_L_CYCLES}"
+    RUN_GROUP+="_${capacity_tag}_${bptt_tag}_${ACTION_CHAIN_SOURCE}_s${SEED}"
+    low_block_calls=$((ACTION_HRM_H_CYCLES * ACTION_HRM_L_CYCLES))
+    high_block_calls="${ACTION_HRM_H_CYCLES}"
+    ;;
+  single_state_iterative)
+    RUN_GROUP="${TASK_KEY}_single_state_action_mixer"
+    RUN_GROUP+="_o1_n${ACTION_HRM_NUM_LAYERS}_h${ACTION_HRM_H_CYCLES}_l${ACTION_HRM_L_CYCLES}"
+    RUN_GROUP+="_${capacity_tag}_${bptt_tag}_${ACTION_CHAIN_SOURCE}_s${SEED}"
+    low_block_calls=$((ACTION_HRM_H_CYCLES * ACTION_HRM_L_CYCLES))
+    high_block_calls="${ACTION_HRM_H_CYCLES}"
+    ;;
+  matched_feedforward)
+    RUN_GROUP="${TASK_KEY}_matched_ff_action_mixer"
+    RUN_GROUP+="_o1_n${ACTION_HRM_NUM_LAYERS}_${capacity_tag}"
+    RUN_GROUP+="_${ACTION_CHAIN_SOURCE}_s${SEED}"
+    low_block_calls=1
+    high_block_calls=1
+    ;;
+esac
 if [[ -n "${RUN_TAG}" ]]; then
   RUN_GROUP+="_${RUN_TAG}"
+fi
+if [[ -n "${RUN_GROUP_OVERRIDE}" ]]; then
+  RUN_GROUP="${RUN_GROUP_OVERRIDE}"
 fi
 if [[ "${#RUN_GROUP}" -gt 128 ]]; then
   echo "Generated W&B group exceeds 128 characters: ${RUN_GROUP}" >&2
@@ -173,7 +299,11 @@ fi
 
 echo "Starting ${RUN_GROUP} on GPU ${GPU_ID}"
 echo "Action token sequence: [observation, goal, ${NUM_SUBGOALS} subgoals, action query]"
-echo "Outer HRM cycles: 1"
+echo "Action core: ${ACTION_CORE_TYPE}; outer calls: 1; B_L/B_H calls: ${low_block_calls}/${high_block_calls}"
+echo "Action block: ${ACTION_BLOCK_TYPE} (token_hidden=${HRM_TOKEN_HIDDEN}, channel_hidden=${HRM_CHANNEL_HIDDEN}, mixer_intermediate=${HRM_MIXER_INTERMEDIATE_SIZE}, layernorm_affine=${HRM_LAYERNORM_AFFINE})"
+if [[ "${ACTION_CORE_TYPE}" == "matched_feedforward" ]]; then
+  echo "Matched feed-forward ignores H/L cycle and BPTT settings by design."
+fi
 echo "Results: ${OUTPUT_ROOT}/${WANDB_PROJECT}/${RUN_GROUP}"
 (
   cd "${PROJECT_ROOT}/impls"
@@ -193,6 +323,9 @@ echo "Results: ${OUTPUT_ROOT}/${WANDB_PROJECT}/${RUN_GROUP}"
     --eval_temperature=0 \
     --video_episodes=0 \
     --eval_on_cpu="${EVAL_ON_CPU}" \
+    --checkpoint_signature_required="${CHECKPOINT_SIGNATURE_REQUIRED}" \
+    --experiment_git_commit="${EXPERIMENT_GIT_COMMIT}" \
+    --experiment_code_signature="${EXPERIMENT_CODE_SIGNATURE}" \
     --fixed_validation_batch=True \
     --require_deterministic_gpu=True \
     --agent.batch_size="${BATCH_SIZE}" \
@@ -208,6 +341,14 @@ echo "Results: ${OUTPUT_ROOT}/${WANDB_PROJECT}/${RUN_GROUP}"
     --agent.action_hrm_is_causal="${ACTION_HRM_IS_CAUSAL}" \
     --agent.action_hrm_is_mlp_mixer="${ACTION_HRM_IS_MLP_MIXER}" \
     --agent.action_hrm_mlp_mixer_intermediate_size="${ACTION_HRM_MIXER_INTERMEDIATE_SIZE}" \
+    --agent.action_core_type="${ACTION_CORE_TYPE}" \
+    --agent.action_block_type="${ACTION_BLOCK_TYPE}" \
+    --agent.hrm_block_type="${HRM_BLOCK_TYPE}" \
+    --agent.hrm_token_hidden="${HRM_TOKEN_HIDDEN}" \
+    --agent.hrm_channel_hidden="${HRM_CHANNEL_HIDDEN}" \
+    --agent.hrm_mixer_intermediate_size="${HRM_MIXER_INTERMEDIATE_SIZE}" \
+    --agent.hrm_layernorm_affine="${HRM_LAYERNORM_AFFINE}" \
+    --agent.expected_action_core_params="${EXPECTED_ACTION_CORE_PARAMS}" \
     --agent.action_hrm_norm_eps="${ACTION_HRM_NORM_EPS}" \
     --agent.action_hrm_rope_theta="${ACTION_HRM_ROPE_THETA}" \
     --agent.action_hrm_forward_dtype="${ACTION_HRM_FORWARD_DTYPE}" \

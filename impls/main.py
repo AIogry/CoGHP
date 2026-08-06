@@ -15,7 +15,11 @@ from ml_collections import config_flags
 from utils.datasets import Dataset, GCDataset, HGCDataset, MultiHGCDataset
 from utils.env_utils import make_env_and_datasets
 from utils.evaluation import derive_seed, evaluate
-from utils.flax_utils import restore_agent, save_agent
+from utils.flax_utils import (
+    build_checkpoint_metadata,
+    restore_agent,
+    save_agent,
+)
 from utils.log_utils import CsvLogger, get_exp_name, get_flag_dict, get_wandb_video, setup_wandb
 
 FLAGS = flags.FLAGS
@@ -30,6 +34,21 @@ flags.DEFINE_string('save_dir', 'exp/', 'Save directory.')
 flags.DEFINE_string('restore_path', None, 'Restore path.')
 flags.DEFINE_integer('restore_epoch', None, 'Restore epoch.')
 flags.DEFINE_bool('eval_only', False, 'Evaluate a restored checkpoint without applying a training update.')
+flags.DEFINE_bool(
+    'checkpoint_signature_required',
+    False,
+    'Require checkpoint architecture metadata and reject mismatched restores.',
+)
+flags.DEFINE_string(
+    'experiment_git_commit',
+    None,
+    'Source git commit recorded in checkpoint metadata.',
+)
+flags.DEFINE_string(
+    'experiment_code_signature',
+    None,
+    'Hash of the synchronized source files recorded in checkpoint metadata.',
+)
 
 flags.DEFINE_integer('train_steps', 1000000, 'Number of training steps.')
 flags.DEFINE_integer('log_interval', 5000, 'Logging interval.')
@@ -116,6 +135,25 @@ def main(_):
 
     # Set up environment and dataset.
     config = FLAGS.agent
+    if FLAGS.checkpoint_signature_required and not FLAGS.experiment_git_commit:
+        raise ValueError(
+            '--experiment_git_commit is required when checkpoint signature '
+            'validation is enabled.'
+        )
+    checkpoint_metadata = build_checkpoint_metadata(
+        config,
+        environment=FLAGS.env_name,
+        seed=FLAGS.seed,
+        git_commit=FLAGS.experiment_git_commit,
+        code_signature=FLAGS.experiment_code_signature,
+        resume=FLAGS.restore_path is not None,
+        restore_path=FLAGS.restore_path,
+    )
+    with open(
+        os.path.join(FLAGS.save_dir, 'checkpoint_metadata.json'),
+        'w',
+    ) as f:
+        json.dump(checkpoint_metadata, f, indent=2, sort_keys=True)
     env, train_dataset, val_dataset = make_env_and_datasets(
         FLAGS.env_name,
         frame_stack=config['frame_stack'],
@@ -175,7 +213,13 @@ def main(_):
 
     # Restore agent.
     if FLAGS.restore_path is not None:
-        agent = restore_agent(agent, FLAGS.restore_path, FLAGS.restore_epoch)
+        agent = restore_agent(
+            agent,
+            FLAGS.restore_path,
+            FLAGS.restore_epoch,
+            expected_checkpoint_metadata=checkpoint_metadata,
+            require_checkpoint_metadata=FLAGS.checkpoint_signature_required,
+        )
     if FLAGS.eval_only:
         if FLAGS.restore_path is None or FLAGS.restore_epoch is None:
             raise ValueError('--eval_only requires both --restore_path and --restore_epoch.')
@@ -285,7 +329,12 @@ def main(_):
 
         # Save agent.
         if not FLAGS.eval_only and i % FLAGS.save_interval == 0:
-            save_agent(agent, FLAGS.save_dir, i)
+            save_agent(
+                agent,
+                FLAGS.save_dir,
+                i,
+                checkpoint_metadata=checkpoint_metadata,
+            )
 
     train_logger.close()
     eval_logger.close()

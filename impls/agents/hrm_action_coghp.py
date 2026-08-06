@@ -1,4 +1,4 @@
-"""CoGHP with an official-style full-sequence HRM action module."""
+"""CoGHP with shared-block feed-forward or recurrent action cores."""
 
 import flax
 import flax.linen as nn
@@ -14,7 +14,7 @@ from utils.networks import GCActor, GCValue, Identity, LengthNormalize, MLP
 
 
 class HRMActionCoGHPAgent(CoGHPAgent):
-    """CoGHP planner with one HRM-generated primitive-action distribution."""
+    """CoGHP planner with a configurable primitive-action core."""
 
     def actor_loss(self, batch, grad_params, rng):
         observations = batch['observations']
@@ -304,6 +304,19 @@ class HRMActionCoGHPAgent(CoGHPAgent):
             action_hrm_mlp_mixer_intermediate_size=(
                 config['action_hrm_mlp_mixer_intermediate_size']
             ),
+            action_core_type=config.get('action_core_type', 'hrm'),
+            action_block_type=config.get('action_block_type', 'auto'),
+            hrm_block_type=config.get('hrm_block_type', 'legacy'),
+            hrm_token_hidden=config.get('hrm_token_hidden', 32),
+            hrm_channel_hidden=config.get('hrm_channel_hidden', 32),
+            hrm_mixer_intermediate_size=config.get(
+                'hrm_mixer_intermediate_size',
+                -1,
+            ),
+            hrm_layernorm_affine=config.get(
+                'hrm_layernorm_affine',
+                True,
+            ),
             action_hrm_norm_eps=config['action_hrm_norm_eps'],
             action_hrm_rope_theta=config['action_hrm_rope_theta'],
             action_hrm_forward_dtype=config['action_hrm_forward_dtype'],
@@ -333,6 +346,24 @@ class HRMActionCoGHPAgent(CoGHPAgent):
         }
         network_variables = network_def.init(init_rng, **network_args)
         network_params = network_variables['params']
+        expected_action_core_params = config.get(
+            'expected_action_core_params',
+            -1,
+        )
+        if expected_action_core_params >= 0:
+            action_core_params = network_params['modules_actor_mixer'][
+                'action_hrm'
+            ]
+            actual_action_core_params = sum(
+                int(leaf.size)
+                for leaf in jax.tree_util.tree_leaves(action_core_params)
+            )
+            if actual_action_core_params != expected_action_core_params:
+                raise ValueError(
+                    'Action-core parameter contract failed: expected '
+                    f'{expected_action_core_params}, got '
+                    f'{actual_action_core_params}.'
+                )
         network_params['modules_target_value'] = network_params[
             'modules_value'
         ]
@@ -368,6 +399,21 @@ def get_config():
     config.action_hrm_is_causal = True
     config.action_hrm_is_mlp_mixer = True
     config.action_hrm_mlp_mixer_intermediate_size = 256
+    # These canonical selectors separate computation topology from the shared
+    # H/L block family.  ``auto`` lets existing hrm_block_type and the oldest
+    # action_hrm_is_mlp_mixer configs retain their original meaning.
+    config.action_core_type = 'hrm'
+    config.action_block_type = 'auto'
+    # Keep the legacy block selector neutral so an old command that changes
+    # only action_hrm_is_mlp_mixer still selects the same mixer/attention
+    # parameter tree.  A mixer size of -1 inherits the old
+    # action_hrm_mlp_mixer_intermediate_size setting.
+    config.hrm_block_type = 'legacy'
+    config.hrm_token_hidden = 32
+    config.hrm_channel_hidden = 32
+    config.hrm_mixer_intermediate_size = -1
+    config.hrm_layernorm_affine = True
+    config.expected_action_core_params = -1
     config.action_hrm_norm_eps = 1e-6
     config.action_hrm_rope_theta = 10000.0
     config.action_hrm_forward_dtype = 'float32'

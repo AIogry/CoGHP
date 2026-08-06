@@ -1,10 +1,10 @@
-"""CoGHP planner with one official-style HRM primitive-action module.
+"""CoGHP planner with configurable shared-block primitive-action cores.
 
 The planner preserves CoGHP's high-level far-to-near autoregression.  The
-primitive-action branch is deliberately small in conceptual scope: it builds
-the complete ``[observation, goal, subgoal chain, action query]`` token
-sequence, applies :class:`utils.hrm.HRMCore` exactly once, and reads the final
-high-level state at the action-query position.
+primitive-action branch builds the complete ``[observation, goal, subgoal
+chain, action query]`` token sequence, applies one of three action-core
+schedules over the same ``B_L``/``B_H`` block implementation, and reads the
+final action-query token.
 
 There are no segments, stage embeddings, residual action corrections, custom
 H/L cells, compressed context vectors, or cross-environment-step carries in
@@ -18,7 +18,7 @@ import jax
 import jax.numpy as jnp
 
 from utils.coghp_network import MixerBlock
-from utils.hrm import HRMCore
+from utils.hrm import ACTION_CORE_TYPES, HRM_BLOCK_TYPES, HRMCore
 from utils.networks import LengthNormalize, MLP
 
 
@@ -28,8 +28,43 @@ _FORWARD_DTYPES = {
 }
 
 
+def resolve_action_block_type(
+    action_block_type: str,
+    legacy_hrm_block_type: str,
+    legacy_is_mlp_mixer: bool,
+) -> str:
+    """Resolve canonical and legacy block selectors deterministically.
+
+    ``attention`` remains accepted as an explicit, HRM-only compatibility
+    value.  It is deliberately not part of :data:`HRM_BLOCK_TYPES` because
+    the three public action Mixer families are the values in that set.
+    """
+
+    if action_block_type not in (None, '', 'auto', 'legacy'):
+        if action_block_type == 'attention':
+            return action_block_type
+        if action_block_type not in HRM_BLOCK_TYPES:
+            raise ValueError(
+                f'Unknown action_block_type {action_block_type!r}; expected '
+                f'one of {sorted(HRM_BLOCK_TYPES)}, auto, or the legacy '
+                'HRM-only attention value.'
+            )
+        return action_block_type
+
+    if legacy_hrm_block_type not in (None, '', 'auto', 'legacy'):
+        if legacy_hrm_block_type not in HRM_BLOCK_TYPES:
+            raise ValueError(
+                f'Unknown legacy hrm_block_type '
+                f'{legacy_hrm_block_type!r}; expected one of '
+                f'{sorted(HRM_BLOCK_TYPES)} or legacy.'
+            )
+        return legacy_hrm_block_type
+
+    return 'swiglu_rmsnorm' if legacy_is_mlp_mixer else 'attention'
+
+
 class HRMActionCoGHPPolicyNetwork(nn.Module):
-    """CoGHP subgoal planner plus a single full-sequence HRM action branch."""
+    """CoGHP planner plus a configurable full-sequence action core."""
 
     state_dim: int
     high_actor_head: nn.Module
@@ -52,6 +87,13 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
     action_hrm_is_causal: bool = True
     action_hrm_is_mlp_mixer: bool = True
     action_hrm_mlp_mixer_intermediate_size: int = 256
+    action_core_type: str = 'hrm'
+    action_block_type: str = 'auto'
+    hrm_block_type: str = 'legacy'
+    hrm_token_hidden: int = 32
+    hrm_channel_hidden: int = 32
+    hrm_mixer_intermediate_size: int = -1
+    hrm_layernorm_affine: bool = True
     action_hrm_norm_eps: float = 1e-6
     action_hrm_rope_theta: float = 10000.0
     action_hrm_forward_dtype: str = 'float32'
@@ -71,9 +113,47 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
             raise ValueError('HRM H_cycles and L_cycles must be positive.')
         if self.action_hrm_intermediate_size < 1:
             raise ValueError('action_hrm_intermediate_size must be positive.')
-        if self.action_hrm_mlp_mixer_intermediate_size < 1:
+        if self.action_core_type not in ACTION_CORE_TYPES:
             raise ValueError(
-                'action_hrm_mlp_mixer_intermediate_size must be positive.'
+                f'action_core_type must be one of '
+                f'{sorted(ACTION_CORE_TYPES)}; got '
+                f'{self.action_core_type!r}.'
+            )
+        if self.hrm_mixer_intermediate_size == 0 or (
+            self.hrm_mixer_intermediate_size < -1
+        ):
+            raise ValueError(
+                'hrm_mixer_intermediate_size must be positive or -1 for '
+                'the legacy action_hrm_mlp_mixer_intermediate_size alias.'
+            )
+        resolved_block_type = resolve_action_block_type(
+            self.action_block_type,
+            self.hrm_block_type,
+            self.action_hrm_is_mlp_mixer,
+        )
+        if (
+            self.action_core_type != 'hrm'
+            and resolved_block_type == 'attention'
+        ):
+            raise ValueError(
+                'matched_feedforward and single_state_iterative support only '
+                f'action_block_type values {sorted(HRM_BLOCK_TYPES)}.'
+            )
+        if (
+            resolved_block_type == 'swiglu_rmsnorm'
+            and self.hrm_mixer_intermediate_size == -1
+            and self.action_hrm_mlp_mixer_intermediate_size < 1
+        ):
+            raise ValueError(
+                'action_hrm_mlp_mixer_intermediate_size must be positive '
+                'when hrm_mixer_intermediate_size uses its -1 alias.'
+            )
+        if resolved_block_type in ('coghp_gelu', 'gelu_layernorm') and (
+            self.hrm_token_hidden < 1 or self.hrm_channel_hidden < 1
+        ):
+            raise ValueError(
+                'hrm_token_hidden and hrm_channel_hidden must be positive '
+                f'for {resolved_block_type}.'
             )
         if self.train_action_chain_source not in ('teacher', 'predicted'):
             raise ValueError(
@@ -85,7 +165,7 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
                 'action_hrm_forward_dtype must be float32 or bfloat16; got '
                 f'{self.action_hrm_forward_dtype!r}.'
             )
-        if not self.action_hrm_is_mlp_mixer:
+        if resolved_block_type == 'attention':
             if (
                 self.action_hrm_head_dim < 1
                 or self.state_dim % self.action_hrm_head_dim != 0
@@ -122,6 +202,11 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
         ]
 
         forward_dtype = _FORWARD_DTYPES[self.action_hrm_forward_dtype]
+        mixer_intermediate_size = self.hrm_mixer_intermediate_size
+        if mixer_intermediate_size == -1:
+            mixer_intermediate_size = (
+                self.action_hrm_mlp_mixer_intermediate_size
+            )
         self.action_hrm = HRMCore(
             seq_len=sequence_length,
             num_layers=self.action_hrm_num_layers,
@@ -131,13 +216,18 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
             is_causal=self.action_hrm_is_causal,
             h_cycles=self.action_hrm_h_cycles,
             l_cycles=self.action_hrm_l_cycles,
+            core_type=self.action_core_type,
             bptt=self.action_hrm_bptt,
             norm_eps=self.action_hrm_norm_eps,
             rope_theta=self.action_hrm_rope_theta,
-            is_mlp_mixer=self.action_hrm_is_mlp_mixer,
+            is_mlp_mixer=(resolved_block_type != 'attention'),
             mlp_mixer_intermediate_size=(
-                self.action_hrm_mlp_mixer_intermediate_size
+                mixer_intermediate_size
             ),
+            block_type=resolved_block_type,
+            token_hidden=self.hrm_token_hidden,
+            channel_hidden=self.hrm_channel_hidden,
+            layernorm_affine=self.hrm_layernorm_affine,
             forward_dtype=forward_dtype,
             name='action_hrm',
         )
@@ -350,11 +440,14 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
                 f'{action_tokens.shape}.'
             )
 
-        # Exactly one outer recurrent call.  HRMCore performs the configured
-        # H/L recursion internally, with fresh fixed initial states per action.
+        # Exactly one outer action-core call, always with fresh per-action
+        # transient state.  Only the HRM variant owns z_L/z_H constants.
         initial_carry = self.action_hrm.initial_carry((batch_size,))
-        final_carry, z_high = self.action_hrm(initial_carry, action_tokens)
-        action_representation = z_high[:, -1, :].astype(jnp.float32)
+        final_carry, core_output = self.action_hrm(
+            initial_carry,
+            action_tokens,
+        )
+        action_representation = core_output[:, -1, :].astype(jnp.float32)
         action_dist = self.low_actor_head(
             action_representation,
             temperature=temperature,
@@ -362,8 +455,12 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
         predicted_actions = action_dist.sample(seed=action_seed)
 
         self.sow('intermediates', 'action_token_sequence', action_tokens)
-        self.sow('intermediates', 'action_z_high', z_high)
-        self.sow('intermediates', 'action_z_low', final_carry['z_L'])
+        self.sow('intermediates', 'action_core_output', core_output)
+        if self.action_core_type == 'hrm':
+            self.sow('intermediates', 'action_z_high', core_output)
+            self.sow('intermediates', 'action_z_low', final_carry['z_L'])
+        elif self.action_core_type == 'single_state_iterative':
+            self.sow('intermediates', 'action_single_state', core_output)
         self.sow(
             'intermediates',
             'action_representation',
@@ -373,47 +470,113 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
         if not return_diagnostics:
             return high_dist_list, action_dist, predicted_actions
 
+        if self.action_core_type == 'matched_feedforward':
+            low_calls = 1
+            high_calls = 1
+        else:
+            low_calls = self.action_hrm_h_cycles * self.action_hrm_l_cycles
+            high_calls = self.action_hrm_h_cycles
         diagnostics = {
-            'action_hrm/outer_cycles': jnp.asarray(1, dtype=jnp.int32),
-            'action_hrm/high_level_calls': jnp.asarray(
-                self.action_hrm_h_cycles,
+            'action_core/outer_calls': jnp.asarray(1, dtype=jnp.int32),
+            'action_core/high_block_calls': jnp.asarray(
+                high_calls,
                 dtype=jnp.int32,
             ),
-            'action_hrm/low_level_calls': jnp.asarray(
-                self.action_hrm_h_cycles * self.action_hrm_l_cycles,
+            'action_core/low_block_calls': jnp.asarray(
+                low_calls,
                 dtype=jnp.int32,
             ),
-            'action_hrm/token_sequence_length': jnp.asarray(
+            'action_core/total_block_calls': jnp.asarray(
+                low_calls + high_calls,
+                dtype=jnp.int32,
+            ),
+            'action_core/input_injections': jnp.asarray(
+                low_calls,
+                dtype=jnp.int32,
+            ),
+            'action_core/token_sequence_length': jnp.asarray(
                 action_tokens.shape[1],
                 dtype=jnp.int32,
             ),
-            'action_hrm/input_token_norm': self._mean_norm(action_tokens),
-            'action_hrm/z_high_initial_norm': self._mean_norm(
-                initial_carry['z_H']
-            ),
-            'action_hrm/z_low_initial_norm': self._mean_norm(
-                initial_carry['z_L']
-            ),
-            'action_hrm/z_high_final_norm': self._mean_norm(z_high),
-            'action_hrm/z_low_final_norm': self._mean_norm(
-                final_carry['z_L']
-            ),
-            'action_hrm/z_high_relative_change': self._mean_relative_change(
-                z_high,
-                initial_carry['z_H'],
-            ),
-            'action_hrm/z_low_relative_change': self._mean_relative_change(
-                final_carry['z_L'],
-                initial_carry['z_L'],
-            ),
-            'action_hrm/action_representation_norm': self._mean_norm(
+            'action_core/input_token_norm': self._mean_norm(action_tokens),
+            'action_core/output_token_norm': self._mean_norm(core_output),
+            'action_core/action_representation_norm': self._mean_norm(
                 action_representation
             ),
-            'action_hrm/action_mode_norm': self._mean_norm(
+            'action_core/action_mode_norm': self._mean_norm(
                 action_dist.mode()
             ),
         }
+        if self.action_core_type == 'single_state_iterative':
+            diagnostics.update(
+                {
+                    'action_core/state_initial_norm': self._mean_norm(
+                        initial_carry['u']
+                    ),
+                    'action_core/state_final_norm': self._mean_norm(
+                        core_output
+                    ),
+                }
+            )
+        elif self.action_core_type == 'hrm':
+            # Keep historical metric keys for existing dashboards.
+            diagnostics.update(
+                {
+                    'action_hrm/outer_cycles': jnp.asarray(
+                        1,
+                        dtype=jnp.int32,
+                    ),
+                    'action_hrm/high_level_calls': jnp.asarray(
+                        high_calls,
+                        dtype=jnp.int32,
+                    ),
+                    'action_hrm/low_level_calls': jnp.asarray(
+                        low_calls,
+                        dtype=jnp.int32,
+                    ),
+                    'action_hrm/token_sequence_length': jnp.asarray(
+                        action_tokens.shape[1],
+                        dtype=jnp.int32,
+                    ),
+                    'action_hrm/input_token_norm': self._mean_norm(
+                        action_tokens
+                    ),
+                    'action_hrm/z_high_initial_norm': self._mean_norm(
+                        initial_carry['z_H']
+                    ),
+                    'action_hrm/z_low_initial_norm': self._mean_norm(
+                        initial_carry['z_L']
+                    ),
+                    'action_hrm/z_high_final_norm': self._mean_norm(
+                        core_output
+                    ),
+                    'action_hrm/z_low_final_norm': self._mean_norm(
+                        final_carry['z_L']
+                    ),
+                    'action_hrm/z_high_relative_change': (
+                        self._mean_relative_change(
+                            core_output,
+                            initial_carry['z_H'],
+                        )
+                    ),
+                    'action_hrm/z_low_relative_change': (
+                        self._mean_relative_change(
+                            final_carry['z_L'],
+                            initial_carry['z_L'],
+                        )
+                    ),
+                    'action_hrm/action_representation_norm': (
+                        self._mean_norm(action_representation)
+                    ),
+                    'action_hrm/action_mode_norm': self._mean_norm(
+                        action_dist.mode()
+                    ),
+                }
+            )
         return high_dist_list, action_dist, predicted_actions, diagnostics
 
 
-__all__ = ['HRMActionCoGHPPolicyNetwork']
+__all__ = [
+    'HRMActionCoGHPPolicyNetwork',
+    'resolve_action_block_type',
+]

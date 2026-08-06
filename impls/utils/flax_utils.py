@@ -1,5 +1,6 @@
 import functools
 import glob
+import json
 import os
 import pickle
 from typing import Any, Dict, Mapping, Sequence
@@ -168,7 +169,118 @@ class TrainState(flax.struct.PyTreeNode):
         return self.apply_gradients(grads=grads), info
 
 
-def save_agent(agent, save_dir, epoch):
+def build_checkpoint_metadata(
+    config,
+    *,
+    environment,
+    seed,
+    git_commit,
+    code_signature=None,
+    resume=False,
+    restore_path=None,
+):
+    """Build the architecture signature stored beside and inside checkpoints.
+
+    The signature intentionally contains only fields that must agree when a
+    checkpoint is restored.  Runtime provenance such as ``resume`` is kept in
+    the surrounding metadata, but is not part of the equality check.
+    """
+
+    action_core_type = config.get('action_core_type')
+    action_block_type = config.get('action_block_type')
+    if action_block_type in (None, '', 'auto', 'legacy'):
+        action_block_type = config.get('hrm_block_type')
+    if action_block_type in (None, '', 'auto', 'legacy'):
+        action_block_type = (
+            'swiglu_rmsnorm'
+            if config.get('action_hrm_is_mlp_mixer', False)
+            else 'attention'
+        )
+
+    mixer_intermediate_size = config.get(
+        'hrm_mixer_intermediate_size',
+        -1,
+    )
+    if mixer_intermediate_size == -1:
+        mixer_intermediate_size = config.get(
+            'action_hrm_mlp_mixer_intermediate_size'
+        )
+
+    is_matched = action_core_type == 'matched_feedforward'
+    signature = {
+        'agent_name': config.get('agent_name'),
+        'action_core_type': action_core_type,
+        'action_block_type': action_block_type,
+        'mixer_intermediate_size': mixer_intermediate_size,
+        'num_layers': config.get('action_hrm_num_layers'),
+        'feature_dim': config.get('feature_dim'),
+        'num_subgoals': config.get('num_subgoals'),
+        'environment': environment,
+        'seed': seed,
+        'git_commit': git_commit,
+        'code_signature': code_signature,
+        'outer_cycles': 1,
+        'h_cycles': 'N/A' if is_matched else config.get('action_hrm_h_cycles'),
+        'l_cycles': 'N/A' if is_matched else config.get('action_hrm_l_cycles'),
+        'gradient_mode': (
+            'N/A'
+            if is_matched
+            else (
+                'full_bptt'
+                if config.get('action_hrm_bptt', False)
+                else 'stage_truncated'
+            )
+        ),
+    }
+    return {
+        'schema_version': 1,
+        'signature': signature,
+        'resume': bool(resume),
+        'restore_path': restore_path,
+    }
+
+
+def validate_checkpoint_metadata(
+    loaded_metadata,
+    expected_metadata,
+    *,
+    require_metadata=False,
+):
+    """Reject a checkpoint whose recorded architecture signature differs."""
+
+    if loaded_metadata is None:
+        if require_metadata:
+            raise ValueError('Checkpoint metadata is required but missing.')
+        return
+    if expected_metadata is None:
+        return
+
+    loaded_signature = loaded_metadata.get('signature')
+    expected_signature = expected_metadata.get('signature')
+    if loaded_signature is None or expected_signature is None:
+        if require_metadata:
+            raise ValueError('Checkpoint signature is required but missing.')
+        return
+    if loaded_signature != expected_signature:
+        differing_keys = sorted(
+            key
+            for key in set(loaded_signature) | set(expected_signature)
+            if loaded_signature.get(key) != expected_signature.get(key)
+        )
+        differences = {
+            key: {
+                'checkpoint': loaded_signature.get(key),
+                'expected': expected_signature.get(key),
+            }
+            for key in differing_keys
+        }
+        raise ValueError(
+            'Checkpoint configuration signature mismatch: '
+            + json.dumps(differences, sort_keys=True)
+        )
+
+
+def save_agent(agent, save_dir, epoch, checkpoint_metadata=None):
     """Save the agent to a file.
 
     Args:
@@ -179,6 +291,7 @@ def save_agent(agent, save_dir, epoch):
 
     save_dict = dict(
         agent=flax.serialization.to_state_dict(agent),
+        checkpoint_metadata=checkpoint_metadata,
     )
     save_path = os.path.join(save_dir, f'params_{epoch}.pkl')
     with open(save_path, 'wb') as f:
@@ -187,7 +300,13 @@ def save_agent(agent, save_dir, epoch):
     print(f'Saved to {save_path}')
 
 
-def restore_agent(agent, restore_path, restore_epoch):
+def restore_agent(
+    agent,
+    restore_path,
+    restore_epoch,
+    expected_checkpoint_metadata=None,
+    require_checkpoint_metadata=False,
+):
     """Restore the agent from a file.
 
     Args:
@@ -203,6 +322,12 @@ def restore_agent(agent, restore_path, restore_epoch):
 
     with open(restore_path, 'rb') as f:
         load_dict = pickle.load(f)
+
+    validate_checkpoint_metadata(
+        load_dict.get('checkpoint_metadata'),
+        expected_checkpoint_metadata,
+        require_metadata=require_checkpoint_metadata,
+    )
 
     loaded_agent_state = load_dict['agent']
     current_agent_state = flax.serialization.to_state_dict(agent)
