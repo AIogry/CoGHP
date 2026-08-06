@@ -55,6 +55,12 @@ def actor_heads():
     )
     return high_actor, low_actor
 
+def parameter_count(tree):
+    return sum(
+        int(leaf.size)
+        for leaf in jax.tree_util.tree_leaves(tree)
+    )
+
 
 def make_network(
     is_mlp_mixer=True,
@@ -65,6 +71,10 @@ def make_network(
     channel_hidden=6,
     mixer_intermediate_size=-1,
     layernorm_affine=True,
+    planner_core_type='vanilla_coghp',
+    planner_block_type='swiglu_rmsnorm',
+    planner_num_layers=1,
+    planner_mixer_intermediate_size=12,
     core_type='hrm',
     action_block_type='auto',
     h_cycles=2,
@@ -82,6 +92,14 @@ def make_network(
         enc_hidden=(8,),
         num_subgoals=NUM_SUBGOALS,
         causal_mixer=True,
+        planner_core_type=planner_core_type,
+        planner_block_type=planner_block_type,
+        planner_num_layers=planner_num_layers,
+        planner_mixer_intermediate_size=(
+            planner_mixer_intermediate_size
+        ),
+        planner_norm_eps=1e-6,
+        planner_forward_dtype='float32',
         action_hrm_num_layers=1,
         action_hrm_intermediate_size=16,
         action_hrm_head_dim=2,
@@ -409,6 +427,106 @@ class HRMActionPolicyNetworkTest(unittest.TestCase):
                         subtree_norm(grads, 'high_actor_head'),
                         0.0,
                     )
+
+    def test_swiglu_planner_matched_feedforward_integration(self):
+        # Default path must still preserve the legacy CoGHP planner.
+        legacy_network = make_network()
+        legacy_variables = initialize(legacy_network)
+
+        self.assertIn(
+            'planner_mixer_0',
+            legacy_variables['params'],
+        )
+        self.assertNotIn(
+            'planner_core',
+            legacy_variables['params'],
+        )
+
+        # New planner path.
+        planner_width = 12
+        network = make_network(
+            planner_core_type='matched_feedforward',
+            planner_block_type='swiglu_rmsnorm',
+            planner_num_layers=1,
+            planner_mixer_intermediate_size=planner_width,
+        )
+        variables = initialize(network)
+
+        self.assertIn('planner_core', variables['params'])
+        self.assertNotIn(
+            'planner_mixer_0',
+            variables['params'],
+        )
+
+        # For the synthetic test:
+        # sequence length = NUM_SUBGOALS + 3
+        # hidden size = STATE_DIM
+        # one SwiGLU block = 3 * M * (N + D)
+        # matched FF owns independent B_L and B_H.
+        sequence_length = NUM_SUBGOALS + 3
+        expected_params = (
+            2
+            * 3
+            * planner_width
+            * (sequence_length + STATE_DIM)
+        )
+
+        self.assertEqual(
+            parameter_count(
+                variables['params']['planner_core']
+            ),
+            expected_params,
+        )
+
+        # The matched-feedforward planner must not create zL/zH state.
+        constant_paths = {
+            path
+            for path in flax.traverse_util.flatten_dict(
+                variables.get('constants', {})
+            )
+        }
+        self.assertFalse(
+            any(
+                path
+                and path[0] == 'planner_core'
+                for path in constant_paths
+            )
+        )
+
+        observations, goals, teacher_subgoals, _ = (
+            synthetic_inputs()
+        )
+        model_state = {
+            name: collection
+            for name, collection in variables.items()
+            if name != 'params'
+        }
+
+        def planner_loss(params):
+            high_dists, _, _ = network.apply(
+                {
+                    'params': params,
+                    **model_state,
+                },
+                observations,
+                goals,
+                jax.random.PRNGKey(31),
+                subgoal_reps=teacher_subgoals,
+            )
+            return sum(
+                jnp.mean(dist.mode())
+                for dist in high_dists
+            )
+
+        grads = jax.grad(planner_loss)(
+            variables['params']
+        )
+
+        self.assertGreater(
+            subtree_norm(grads, 'planner_core'),
+            1e-8,
+        )
+
 
     def test_block_selector_reaches_only_the_action_hrm_core(self):
         expected_markers = {

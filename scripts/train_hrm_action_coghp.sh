@@ -41,6 +41,14 @@ CHECKPOINT_SIGNATURE_REQUIRED="${CHECKPOINT_SIGNATURE_REQUIRED:-False}"
 EXPERIMENT_GIT_COMMIT="${EXPERIMENT_GIT_COMMIT:-}"
 EXPERIMENT_CODE_SIGNATURE="${EXPERIMENT_CODE_SIGNATURE:-}"
 EXPECTED_ACTION_CORE_PARAMS="${EXPECTED_ACTION_CORE_PARAMS:--1}"
+PLANNER_CORE_TYPE="${PLANNER_CORE_TYPE:-vanilla_coghp}"
+PLANNER_BLOCK_TYPE="${PLANNER_BLOCK_TYPE:-swiglu_rmsnorm}"
+PLANNER_NUM_LAYERS="${PLANNER_NUM_LAYERS:-1}"
+PLANNER_MIXER_INTERMEDIATE_SIZE="${PLANNER_MIXER_INTERMEDIATE_SIZE:-256}"
+PLANNER_NORM_EPS="${PLANNER_NORM_EPS:-1e-6}"
+PLANNER_FORWARD_DTYPE="${PLANNER_FORWARD_DTYPE:-float32}"
+EXPECTED_PLANNER_CORE_PARAMS="${EXPECTED_PLANNER_CORE_PARAMS:--1}"
+
 
 TRAIN_STEPS="${TRAIN_STEPS:-1000000}"
 LOG_INTERVAL="${LOG_INTERVAL:-5000}"
@@ -66,6 +74,45 @@ if [[ -n "${HRM_BLOCK_TYPE}" && -n "${ACTION_HRM_BLOCK_TYPE}" \
   exit 2
 fi
 HRM_BLOCK_TYPE="${HRM_BLOCK_TYPE:-${ACTION_HRM_BLOCK_TYPE}}"
+
+case "${PLANNER_CORE_TYPE}" in
+  legacy_coghp|matched_feedforward) ;;
+  *)
+    echo "PLANNER_CORE_TYPE must be legacy_coghp or matched_feedforward." >&2
+    exit 2
+    ;;
+esac
+
+case "${PLANNER_BLOCK_TYPE}" in
+  swiglu_rmsnorm) ;;
+  *)
+    echo "PLANNER_BLOCK_TYPE currently supports only swiglu_rmsnorm." >&2
+    exit 2
+    ;;
+esac
+
+case "${PLANNER_FORWARD_DTYPE}" in
+  float32|bfloat16) ;;
+  *)
+    echo "PLANNER_FORWARD_DTYPE must be float32 or bfloat16." >&2
+    exit 2
+    ;;
+esac
+
+if ! [[ "${PLANNER_NUM_LAYERS}" =~ ^[1-9][0-9]*$ ]]; then
+  echo "PLANNER_NUM_LAYERS must be positive." >&2
+  exit 2
+fi
+
+if ! [[ "${PLANNER_MIXER_INTERMEDIATE_SIZE}" =~ ^[1-9][0-9]*$ ]]; then
+  echo "PLANNER_MIXER_INTERMEDIATE_SIZE must be positive." >&2
+  exit 2
+fi
+
+if ! [[ "${EXPECTED_PLANNER_CORE_PARAMS}" =~ ^-?[0-9]+$ ]]; then
+  echo "EXPECTED_PLANNER_CORE_PARAMS must be an integer." >&2
+  exit 2
+fi
 
 case "${ACTION_CORE_TYPE}" in
   matched_feedforward|single_state_iterative|hrm) ;;
@@ -332,6 +379,13 @@ echo "Results: ${OUTPUT_ROOT}/${WANDB_PROJECT}/${RUN_GROUP}"
     --agent.num_subgoals="${NUM_SUBGOALS}" \
     --agent.subgoal_steps="${SUBGOAL_STEPS}" \
     --agent.feature_dim="${FEATURE_DIM}" \
+    --agent.planner_core_type="${PLANNER_CORE_TYPE}" \
+    --agent.planner_block_type="${PLANNER_BLOCK_TYPE}" \
+    --agent.planner_num_layers="${PLANNER_NUM_LAYERS}" \
+    --agent.planner_mixer_intermediate_size="${PLANNER_MIXER_INTERMEDIATE_SIZE}" \
+    --agent.planner_norm_eps="${PLANNER_NORM_EPS}" \
+    --agent.planner_forward_dtype="${PLANNER_FORWARD_DTYPE}" \
+    --agent.expected_planner_core_params="${EXPECTED_PLANNER_CORE_PARAMS}" \
     --agent.action_hrm_num_layers="${ACTION_HRM_NUM_LAYERS}" \
     --agent.action_hrm_intermediate_size="${ACTION_HRM_INTERMEDIATE_SIZE}" \
     --agent.action_hrm_head_dim="${ACTION_HRM_HEAD_DIM}" \

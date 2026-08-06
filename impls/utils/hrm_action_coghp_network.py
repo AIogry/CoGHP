@@ -78,6 +78,13 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
     num_subgoals: int = 1
     causal_mixer: bool = True
 
+    planner_core_type: str = 'vanilla_coghp'        # using original CoGHP planner, MLP-mixer with GeLU and only one forward, else using matched_feedforward planner with swiglu_rmsnorm and only one forward
+    planner_block_type: str = 'swiglu_rmsnorm'
+    planner_num_layers: int = 1
+    planner_mixer_intermediate_size: int = 256      # swiglu rmsnorm hidden size
+    planner_norm_eps: float = 1e-6
+    planner_forward_dtype: str = 'float32'
+
     action_hrm_num_layers: int = 1
     action_hrm_intermediate_size: int = 512
     action_hrm_head_dim: int = 32
@@ -107,6 +114,37 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
             raise ValueError('HRM-Action-CoGHP requires num_subgoals >= 1.')
         if self.num_mixer_blocks < 1:
             raise ValueError('num_mixer_blocks must be positive.')
+        if self.planner_core_type not in (
+            'vanilla_coghp',
+            'matched_feedforward',
+        ):
+            raise ValueError(
+                'planner_core_type must be vanilla_coghp or '
+                f'matched_feedforward; got {self.planner_core_type!r}.'
+            )
+
+        if self.planner_num_layers < 1:
+            raise ValueError('planner_num_layers must be positive.')
+
+        if self.planner_mixer_intermediate_size < 1:
+            raise ValueError(
+                'planner_mixer_intermediate_size must be positive.'
+            )
+
+        if self.planner_forward_dtype not in _FORWARD_DTYPES:
+            raise ValueError(
+                'planner_forward_dtype must be float32 or bfloat16; '
+                f'got {self.planner_forward_dtype!r}.'
+            )
+
+        if (
+            self.planner_core_type == 'matched_feedforward'
+            and self.planner_block_type != 'swiglu_rmsnorm'
+        ):
+            raise ValueError(
+                'The new matched-feedforward planner currently supports '
+                'only planner_block_type=swiglu_rmsnorm.'
+            )
         if self.action_hrm_num_layers < 1:
             raise ValueError('action_hrm_num_layers must be positive.')
         if self.action_hrm_h_cycles < 1 or self.action_hrm_l_cycles < 1:
@@ -189,17 +227,62 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
         )
 
         sequence_length = self.num_subgoals + 3
-        planner_mixer_kwargs = dict(
-            num_tokens=sequence_length,
-            embed_dim=self.state_dim,
-            hidden_dim_tokens=self.mixer_token_hidden,
-            hidden_dim_channels=self.mixer_channel_hidden,
-            causal=self.causal_mixer,
-        )
-        self.planner_mixer_blocks = [
-            MixerBlock(**planner_mixer_kwargs, name=f'planner_mixer_{idx}')
-            for idx in range(self.num_mixer_blocks)
-        ]
+
+        if self.planner_core_type == 'vanilla_coghp':
+            planner_mixer_kwargs = dict(
+                num_tokens=sequence_length,
+                embed_dim=self.state_dim,
+                hidden_dim_tokens=self.mixer_token_hidden,
+                hidden_dim_channels=self.mixer_channel_hidden,
+                causal=self.causal_mixer,
+            )
+            self.planner_mixer_blocks = [
+                MixerBlock(**planner_mixer_kwargs, name=f'planner_mixer_{idx}')         # using the MLP-mixer from coghp_network.py, with GeLU activation and only one forward pass
+                for idx in range(self.num_mixer_blocks)
+            ]
+        else:   # planner_core_type == 'matched_feedforward'
+            planner_forward_dtype = _FORWARD_DTYPES[
+                self.planner_forward_dtype
+            ]
+
+            self.planner_core = HRMCore(
+                seq_len=sequence_length,
+                num_layers=self.planner_num_layers,
+                hidden_size=self.state_dim,
+
+                # These two arguments belong to the generic HRMCore
+                # interface. They are not used by the SwiGLU Mixer branch.
+                intermediate_size=self.action_hrm_intermediate_size,
+                head_dim=self.action_hrm_head_dim,
+
+                is_causal=self.causal_mixer,
+
+                # matched_feedforward does not use recurrent cycles,
+                # but HRMCore requires positive values.
+                h_cycles=1,
+                l_cycles=1,
+
+                core_type='matched_feedforward',
+                bptt=True,
+
+                norm_eps=self.planner_norm_eps,
+                rope_theta=self.action_hrm_rope_theta,
+
+                is_mlp_mixer=True,
+                mlp_mixer_intermediate_size=(
+                    self.planner_mixer_intermediate_size
+                ),
+                block_type='swiglu_rmsnorm',
+
+                # Ignored by the SwiGLU block, but required by the
+                # shared Transformer interface.
+                token_hidden=self.mixer_token_hidden,
+                channel_hidden=self.mixer_channel_hidden,
+                layernorm_affine=True,
+
+                forward_dtype=planner_forward_dtype,
+                name='planner_core',
+            )
 
         forward_dtype = _FORWARD_DTYPES[self.action_hrm_forward_dtype]
         mixer_intermediate_size = self.hrm_mixer_intermediate_size
@@ -326,8 +409,14 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
                 [features, previous_tokens],
                 axis=1,
             )
-            for mixer_block in self.planner_mixer_blocks:
-                planner_sequence = mixer_block(planner_sequence)
+            if self.planner_core_type == 'vanilla_coghp':
+                for mixer_block in self.planner_mixer_blocks:
+                    planner_sequence = mixer_block(planner_sequence)
+            else:
+                _, planner_sequence = self.planner_core(
+                    None,
+                    planner_sequence,
+                )
 
             query_index = features.shape[1] + subgoal_idx
             high_dist = self.high_actor_head(

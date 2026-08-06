@@ -289,6 +289,32 @@ class HRMActionCoGHPAgent(CoGHPAgent):
             enc_hidden=config['enc_hidden_dims'],
             num_subgoals=config['num_subgoals'],
             causal_mixer=config.get('causal_mixer', True),
+
+            planner_core_type=config.get(
+                'planner_core_type',
+                'vanilla_coghp',
+            ),
+            planner_block_type=config.get(
+                'planner_block_type',
+                'swiglu_rmsnorm',
+            ),
+            planner_num_layers=config.get(
+                'planner_num_layers',
+                1,
+            ),
+            planner_mixer_intermediate_size=config.get(
+                'planner_mixer_intermediate_size',
+                256,
+            ),
+            planner_norm_eps=config.get(
+                'planner_norm_eps',
+                1e-6,
+            ),
+            planner_forward_dtype=config.get(
+                'planner_forward_dtype',
+                'float32',
+            ),
+
             action_hrm_num_layers=config['action_hrm_num_layers'],
             action_hrm_intermediate_size=(
                 config['action_hrm_intermediate_size']
@@ -364,6 +390,41 @@ class HRMActionCoGHPAgent(CoGHPAgent):
                     f'{expected_action_core_params}, got '
                     f'{actual_action_core_params}.'
                 )
+            
+        expected_planner_core_params = config.get(
+            'expected_planner_core_params',
+            -1,
+        )
+
+        if expected_planner_core_params >= 0:
+            actor_mixer_params = network_params[
+                'modules_actor_mixer'
+            ]
+
+            if 'planner_core' not in actor_mixer_params:
+                raise ValueError(
+                    'Planner parameter contract was requested, but '
+                    'planner_core was not created. Set '
+                    'planner_core_type=matched_feedforward.'
+                )
+
+            planner_core_params = actor_mixer_params['planner_core']
+            actual_planner_core_params = sum(
+                int(leaf.size)
+                for leaf in jax.tree_util.tree_leaves(
+                    planner_core_params
+                )
+            )
+
+            if (
+                actual_planner_core_params
+                != expected_planner_core_params
+            ):
+                raise ValueError(
+                    'Planner-core parameter contract failed: expected '
+                    f'{expected_planner_core_params}, got '
+                    f'{actual_planner_core_params}.'
+                )
         network_params['modules_target_value'] = network_params[
             'modules_value'
         ]
@@ -389,7 +450,13 @@ class HRMActionCoGHPAgent(CoGHPAgent):
 def get_config():
     config = get_coghp_config()
     config.agent_name = 'hrm_action_coghp'
-
+    config.planner_core_type = 'vanilla_coghp'
+    config.planner_block_type = 'swiglu_rmsnorm'
+    config.planner_num_layers = 1
+    config.planner_mixer_intermediate_size = 256
+    config.planner_norm_eps = 1e-6
+    config.planner_forward_dtype = 'float32'
+    config.expected_planner_core_params = -1
     config.action_hrm_num_layers = 1
     config.action_hrm_intermediate_size = 512
     config.action_hrm_head_dim = 32
