@@ -5,6 +5,9 @@ set -euo pipefail
 #
 # The action branch always performs exactly one outer core call.  The core
 # topology and its shared H/L block family are selected independently.
+# ACTION_CORE_TYPE supports vanilla_coghp, matched_feedforward,
+# single_state_iterative, and hrm.  The vanilla path is the original
+# CoGHP GELU MixerBlock stack and does not allocate HRM state.
 #
 # Example:
 #   SEED=0 GPU_ID=0 ACTION_HRM_BACKBONE=mixer \
@@ -45,9 +48,13 @@ PLANNER_CORE_TYPE="${PLANNER_CORE_TYPE:-vanilla_coghp}"
 PLANNER_BLOCK_TYPE="${PLANNER_BLOCK_TYPE:-swiglu_rmsnorm}"
 PLANNER_NUM_LAYERS="${PLANNER_NUM_LAYERS:-1}"
 PLANNER_MIXER_INTERMEDIATE_SIZE="${PLANNER_MIXER_INTERMEDIATE_SIZE:-256}"
+PLANNER_H_CYCLES="${PLANNER_H_CYCLES:-2}"
+PLANNER_L_CYCLES="${PLANNER_L_CYCLES:-2}"
+PLANNER_BPTT="${PLANNER_BPTT:-True}"
 PLANNER_NORM_EPS="${PLANNER_NORM_EPS:-1e-6}"
 PLANNER_FORWARD_DTYPE="${PLANNER_FORWARD_DTYPE:-float32}"
 EXPECTED_PLANNER_CORE_PARAMS="${EXPECTED_PLANNER_CORE_PARAMS:--1}"
+SHARE_ACTOR_CORE="${SHARE_ACTOR_CORE:-False}"
 
 
 TRAIN_STEPS="${TRAIN_STEPS:-1000000}"
@@ -75,10 +82,23 @@ if [[ -n "${HRM_BLOCK_TYPE}" && -n "${ACTION_HRM_BLOCK_TYPE}" \
 fi
 HRM_BLOCK_TYPE="${HRM_BLOCK_TYPE:-${ACTION_HRM_BLOCK_TYPE}}"
 
+# Vanilla CoGHP has its own original MixerBlock implementation.  When the
+# caller does not specify a block selector, choose that path before the
+# generic Mixer/HRM selector fills in its SwiGLU default.
+if [[ "${ACTION_CORE_TYPE}" == "vanilla_coghp" \
+  && -z "${ACTION_BLOCK_TYPE}" \
+  && ( -z "${HRM_BLOCK_TYPE}" || "${HRM_BLOCK_TYPE}" == "legacy" ) ]]; then
+  ACTION_BLOCK_TYPE=coghp_gelu
+fi
+
 case "${PLANNER_CORE_TYPE}" in
-  legacy_coghp|matched_feedforward) ;;
+  # legacy_coghp was the selector used by early planner experiments.  Keep
+  # accepting it, but canonicalize it before writing the run configuration so
+  # old commands retain exactly the vanilla CoGHP path.
+  legacy_coghp) PLANNER_CORE_TYPE=vanilla_coghp ;;
+  vanilla_coghp|matched_feedforward|hrm) ;;
   *)
-    echo "PLANNER_CORE_TYPE must be legacy_coghp or matched_feedforward." >&2
+    echo "PLANNER_CORE_TYPE must be vanilla_coghp, matched_feedforward, or hrm." >&2
     exit 2
     ;;
 esac
@@ -109,15 +129,35 @@ if ! [[ "${PLANNER_MIXER_INTERMEDIATE_SIZE}" =~ ^[1-9][0-9]*$ ]]; then
   exit 2
 fi
 
+for value in "${PLANNER_H_CYCLES}" "${PLANNER_L_CYCLES}"; do
+  if ! [[ "${value}" =~ ^[1-9][0-9]*$ ]]; then
+    echo "PLANNER_H_CYCLES and PLANNER_L_CYCLES must be positive." >&2
+    exit 2
+  fi
+done
+
+case "${PLANNER_BPTT}" in
+  True|False) ;;
+  *) echo "PLANNER_BPTT must be True or False." >&2; exit 2 ;;
+esac
+case "${SHARE_ACTOR_CORE}" in
+  True|False) ;;
+  *) echo "SHARE_ACTOR_CORE must be True or False." >&2; exit 2 ;;
+esac
+if [[ "${SHARE_ACTOR_CORE}" == "True" ]] && [[ "${PLANNER_CORE_TYPE}" != "hrm" || "${ACTION_CORE_TYPE}" != "hrm" ]]; then
+  echo "SHARE_ACTOR_CORE=True requires PLANNER_CORE_TYPE=hrm and ACTION_CORE_TYPE=hrm." >&2
+  exit 2
+fi
+
 if ! [[ "${EXPECTED_PLANNER_CORE_PARAMS}" =~ ^-?[0-9]+$ ]]; then
   echo "EXPECTED_PLANNER_CORE_PARAMS must be an integer." >&2
   exit 2
 fi
 
 case "${ACTION_CORE_TYPE}" in
-  matched_feedforward|single_state_iterative|hrm) ;;
+  vanilla_coghp|matched_feedforward|single_state_iterative|hrm) ;;
   *)
-    echo "ACTION_CORE_TYPE must be matched_feedforward, single_state_iterative, or hrm." >&2
+    echo "ACTION_CORE_TYPE must be vanilla_coghp, matched_feedforward, single_state_iterative, or hrm." >&2
     exit 2
     ;;
 esac
@@ -156,6 +196,24 @@ case "${ACTION_HRM_BACKBONE}" in
     ;;
   *) echo "ACTION_HRM_BACKBONE must be mixer or attention." >&2; exit 2 ;;
 esac
+if [[ "${ACTION_CORE_TYPE}" == "vanilla_coghp" ]]; then
+  if [[ "${ACTION_HRM_BACKBONE}" != "mixer" ]]; then
+    echo "Vanilla CoGHP executor requires ACTION_HRM_BACKBONE=mixer." >&2
+    exit 2
+  fi
+  case "${ACTION_BLOCK_TYPE}" in
+    auto|legacy|''|coghp_gelu) ;;
+    *)
+      echo "Vanilla CoGHP executor uses the original GELU MixerBlock; " \
+        "do not select ${ACTION_BLOCK_TYPE}." >&2
+      exit 2
+      ;;
+  esac
+  # The actual vanilla path directly constructs utils.coghp_network.MixerBlock;
+  # this selector is metadata only and is not sent to HRMCore.
+  ACTION_BLOCK_TYPE=coghp_gelu
+  HRM_BLOCK_TYPE=legacy
+fi
 if [[ "${ACTION_HRM_BACKBONE}" == "mixer" ]]; then
   case "${ACTION_BLOCK_TYPE}" in
     swiglu_rmsnorm|coghp_gelu|gelu_layernorm) ;;
@@ -310,29 +368,49 @@ else
   capacity_tag="ff${ACTION_HRM_INTERMEDIATE_SIZE}_hd${ACTION_HRM_HEAD_DIM}"
 fi
 case "${ACTION_CORE_TYPE}" in
+  vanilla_coghp)
+    RUN_GROUP="${TASK_KEY}_vanilla_coghp_action_mixer"
+    RUN_GROUP+="_n${ACTION_HRM_NUM_LAYERS}_${ACTION_CHAIN_SOURCE}"
+    low_block_calls=0
+    high_block_calls=0
+    ;;
   hrm)
     # Preserve all historical HRM run-group names.
     RUN_GROUP="${TASK_KEY}_hrm_action_${ACTION_HRM_BACKBONE}"
     RUN_GROUP+="_o1_n${ACTION_HRM_NUM_LAYERS}_h${ACTION_HRM_H_CYCLES}_l${ACTION_HRM_L_CYCLES}"
-    RUN_GROUP+="_${capacity_tag}_${bptt_tag}_${ACTION_CHAIN_SOURCE}_s${SEED}"
+    RUN_GROUP+="_${capacity_tag}_${bptt_tag}_${ACTION_CHAIN_SOURCE}"
     low_block_calls=$((ACTION_HRM_H_CYCLES * ACTION_HRM_L_CYCLES))
     high_block_calls="${ACTION_HRM_H_CYCLES}"
     ;;
   single_state_iterative)
     RUN_GROUP="${TASK_KEY}_single_state_action_mixer"
     RUN_GROUP+="_o1_n${ACTION_HRM_NUM_LAYERS}_h${ACTION_HRM_H_CYCLES}_l${ACTION_HRM_L_CYCLES}"
-    RUN_GROUP+="_${capacity_tag}_${bptt_tag}_${ACTION_CHAIN_SOURCE}_s${SEED}"
+    RUN_GROUP+="_${capacity_tag}_${bptt_tag}_${ACTION_CHAIN_SOURCE}"
     low_block_calls=$((ACTION_HRM_H_CYCLES * ACTION_HRM_L_CYCLES))
     high_block_calls="${ACTION_HRM_H_CYCLES}"
     ;;
   matched_feedforward)
     RUN_GROUP="${TASK_KEY}_matched_ff_action_mixer"
     RUN_GROUP+="_o1_n${ACTION_HRM_NUM_LAYERS}_${capacity_tag}"
-    RUN_GROUP+="_${ACTION_CHAIN_SOURCE}_s${SEED}"
+    RUN_GROUP+="_${ACTION_CHAIN_SOURCE}"
     low_block_calls=1
     high_block_calls=1
     ;;
 esac
+if [[ "${SHARE_ACTOR_CORE}" == "True" ]]; then
+  if [[ "${PLANNER_CORE_TYPE}" != "hrm" || "${ACTION_CORE_TYPE}" != "hrm" ]]; then
+    echo "Internal error: shared actor core must use official HRM on both branches." >&2
+    exit 2
+  fi
+  if [[ "${PLANNER_BPTT}" == "True" ]]; then
+    shared_bptt_tag=fullbptt
+  else
+    shared_bptt_tag=truncated
+  fi
+  RUN_GROUP="${TASK_KEY}_shared_hrm_actor_h${PLANNER_H_CYCLES}_l${PLANNER_L_CYCLES}_${capacity_tag}_${shared_bptt_tag}_${ACTION_CHAIN_SOURCE}"
+  low_block_calls=$((PLANNER_H_CYCLES * PLANNER_L_CYCLES))
+  high_block_calls=${PLANNER_H_CYCLES}
+fi
 if [[ -n "${RUN_TAG}" ]]; then
   RUN_GROUP+="_${RUN_TAG}"
 fi
@@ -347,7 +425,20 @@ fi
 echo "Starting ${RUN_GROUP} on GPU ${GPU_ID}"
 echo "Action token sequence: [observation, goal, ${NUM_SUBGOALS} subgoals, action query]"
 echo "Action core: ${ACTION_CORE_TYPE}; outer calls: 1; B_L/B_H calls: ${low_block_calls}/${high_block_calls}"
+if [[ "${SHARE_ACTOR_CORE}" == "True" ]]; then
+  echo "Planner/executor topology: one shared official HRM parameter tree; separate high/low readouts."
+fi
 echo "Action block: ${ACTION_BLOCK_TYPE} (token_hidden=${HRM_TOKEN_HIDDEN}, channel_hidden=${HRM_CHANNEL_HIDDEN}, mixer_intermediate=${HRM_MIXER_INTERMEDIATE_SIZE}, layernorm_affine=${HRM_LAYERNORM_AFFINE})"
+if [[ "${ACTION_CORE_TYPE}" == "vanilla_coghp" ]]; then
+  echo "Vanilla CoGHP executor: original GELU MixerBlock stack; num_mixer_blocks=${NUM_MIXER_BLOCKS:-1}"
+fi
+if [[ "${PLANNER_CORE_TYPE}" == "vanilla_coghp" ]]; then
+  echo "Planner core: vanilla_coghp; shared CoGHP Mixer blocks=${NUM_MIXER_BLOCKS:-1}"
+elif [[ "${PLANNER_CORE_TYPE}" == "matched_feedforward" ]]; then
+  echo "Planner core: matched_feedforward; B_L/B_H calls per subgoal=1/1"
+else
+  echo "Planner core: official HRM; H=${PLANNER_H_CYCLES}, L=${PLANNER_L_CYCLES}, BPTT=${PLANNER_BPTT}; B_L/B_H calls per subgoal=$((PLANNER_H_CYCLES * PLANNER_L_CYCLES))/${PLANNER_H_CYCLES}"
+fi
 if [[ "${ACTION_CORE_TYPE}" == "matched_feedforward" ]]; then
   echo "Matched feed-forward ignores H/L cycle and BPTT settings by design."
 fi
@@ -383,8 +474,12 @@ echo "Results: ${OUTPUT_ROOT}/${WANDB_PROJECT}/${RUN_GROUP}"
     --agent.planner_block_type="${PLANNER_BLOCK_TYPE}" \
     --agent.planner_num_layers="${PLANNER_NUM_LAYERS}" \
     --agent.planner_mixer_intermediate_size="${PLANNER_MIXER_INTERMEDIATE_SIZE}" \
+    --agent.planner_h_cycles="${PLANNER_H_CYCLES}" \
+    --agent.planner_l_cycles="${PLANNER_L_CYCLES}" \
+    --agent.planner_bptt="${PLANNER_BPTT}" \
     --agent.planner_norm_eps="${PLANNER_NORM_EPS}" \
     --agent.planner_forward_dtype="${PLANNER_FORWARD_DTYPE}" \
+    --agent.share_actor_core="${SHARE_ACTOR_CORE}" \
     --agent.expected_planner_core_params="${EXPECTED_PLANNER_CORE_PARAMS}" \
     --agent.action_hrm_num_layers="${ACTION_HRM_NUM_LAYERS}" \
     --agent.action_hrm_intermediate_size="${ACTION_HRM_INTERMEDIATE_SIZE}" \

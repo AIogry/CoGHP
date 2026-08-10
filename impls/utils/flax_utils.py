@@ -196,6 +196,14 @@ def build_checkpoint_metadata(
             if config.get('action_hrm_is_mlp_mixer', False)
             else 'attention'
         )
+    if action_core_type == 'vanilla_coghp' and action_block_type in (
+        None,
+        '',
+        'auto',
+        'legacy',
+        'swiglu_rmsnorm',
+    ):
+        action_block_type = 'coghp_gelu'
 
     mixer_intermediate_size = config.get(
         'hrm_mixer_intermediate_size',
@@ -206,11 +214,22 @@ def build_checkpoint_metadata(
             'action_hrm_mlp_mixer_intermediate_size'
         )
 
-    is_matched = action_core_type == 'matched_feedforward'
+    is_nonrecurrent_action = action_core_type in (
+        'vanilla_coghp',
+        'matched_feedforward',
+    )
+    planner_core_type = config.get('planner_core_type', 'vanilla_coghp')
+    if planner_core_type == 'legacy_coghp':
+        planner_core_type = 'vanilla_coghp'
+    planner_is_vanilla = planner_core_type == 'vanilla_coghp'
+    planner_is_matched = planner_core_type == 'matched_feedforward'
+    planner_is_hrm = planner_core_type == 'hrm'
+    share_actor_core = bool(config.get('share_actor_core', False))
     signature = {
         'agent_name': config.get('agent_name'),
         'action_core_type': action_core_type,
         'action_block_type': action_block_type,
+        'share_actor_core': share_actor_core,
         'mixer_intermediate_size': mixer_intermediate_size,
         'num_layers': config.get('action_hrm_num_layers'),
         'feature_dim': config.get('feature_dim'),
@@ -220,20 +239,73 @@ def build_checkpoint_metadata(
         'git_commit': git_commit,
         'code_signature': code_signature,
         'outer_cycles': 1,
-        'h_cycles': 'N/A' if is_matched else config.get('action_hrm_h_cycles'),
-        'l_cycles': 'N/A' if is_matched else config.get('action_hrm_l_cycles'),
+        'h_cycles': (
+            'N/A'
+            if is_nonrecurrent_action
+            else (
+                config.get('planner_h_cycles')
+                if share_actor_core
+                else config.get('action_hrm_h_cycles')
+            )
+        ),
+        'l_cycles': (
+            'N/A'
+            if is_nonrecurrent_action
+            else (
+                config.get('planner_l_cycles')
+                if share_actor_core
+                else config.get('action_hrm_l_cycles')
+            )
+        ),
         'gradient_mode': (
             'N/A'
-            if is_matched
+            if is_nonrecurrent_action
             else (
                 'full_bptt'
-                if config.get('action_hrm_bptt', False)
+                if (
+                    config.get('planner_bptt', True)
+                    if share_actor_core
+                    else config.get('action_hrm_bptt', False)
+                )
                 else 'stage_truncated'
             )
         ),
+        # Planner controls are included in schema v2.  For the legacy vanilla
+        # and matched paths these do not alter the old execution semantics,
+        # while an official-HRM planner checkpoint is explicitly identifiable.
+        'planner_core_type': planner_core_type,
+        'planner_block_type': config.get(
+            'planner_block_type',
+            'swiglu_rmsnorm',
+        ),
+        'planner_num_layers': config.get('planner_num_layers', 1),
+        'planner_mixer_intermediate_size': config.get(
+            'planner_mixer_intermediate_size',
+            256,
+        ),
+        'planner_h_cycles': (
+            'N/A'
+            if planner_is_vanilla or planner_is_matched
+            else config.get('planner_h_cycles', 2)
+        ),
+        'planner_l_cycles': (
+            'N/A'
+            if planner_is_vanilla or planner_is_matched
+            else config.get('planner_l_cycles', 2)
+        ),
+        'planner_gradient_mode': (
+            'N/A'
+            if not planner_is_hrm
+            else (
+                'full_bptt'
+                if config.get('planner_bptt', True)
+                else 'stage_truncated'
+            )
+        ),
+        'planner_executor_shared_core': share_actor_core,
     }
     return {
-        'schema_version': 1,
+        'schema_version': 2,
         'signature': signature,
         'resume': bool(resume),
         'restore_path': restore_path,
@@ -261,6 +333,46 @@ def validate_checkpoint_metadata(
         if require_metadata:
             raise ValueError('Checkpoint signature is required but missing.')
         return
+    # Schema-1 checkpoints predate planner selectors.  They remain restorable
+    # for the old vanilla/matched paths, but cannot be used to resume an
+    # official-HRM planner because its recurrence is not represented in the
+    # old signature.
+    loaded_schema = int(loaded_metadata.get('schema_version', 1))
+    # Schema-2 checkpoints written before the shared actor-core option did
+    # not record these two fields.  Treat their absence as the historical
+    # split topology; a shared run (expected=True) still fails closed below.
+    if loaded_schema >= 2:
+        loaded_signature = dict(loaded_signature)
+        loaded_signature.setdefault('share_actor_core', False)
+        loaded_signature.setdefault('planner_executor_shared_core', False)
+    if loaded_schema < 2:
+        if expected_signature.get('planner_core_type') == 'hrm':
+            raise ValueError(
+                'Checkpoint metadata schema v2 is required for an official '
+                'HRM planner.'
+            )
+        planner_keys = {
+            'planner_core_type',
+            'planner_block_type',
+            'planner_num_layers',
+            'planner_mixer_intermediate_size',
+            'planner_h_cycles',
+            'planner_l_cycles',
+            'planner_gradient_mode',
+            'share_actor_core',
+            'planner_executor_shared_core',
+        }
+        loaded_signature = {
+            key: value
+            for key, value in loaded_signature.items()
+            if key not in planner_keys
+        }
+        expected_signature = {
+            key: value
+            for key, value in expected_signature.items()
+            if key not in planner_keys
+        }
+
     if loaded_signature != expected_signature:
         differing_keys = sorted(
             key

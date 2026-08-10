@@ -75,10 +75,14 @@ def make_network(
     planner_block_type='swiglu_rmsnorm',
     planner_num_layers=1,
     planner_mixer_intermediate_size=12,
+    planner_h_cycles=2,
+    planner_l_cycles=2,
+    planner_bptt=True,
     core_type='hrm',
     action_block_type='auto',
     h_cycles=2,
     l_cycles=2,
+    share_actor_core=False,
 ):
     high_actor, low_actor = actor_heads()
     return HRMActionCoGHPPolicyNetwork(
@@ -98,8 +102,12 @@ def make_network(
         planner_mixer_intermediate_size=(
             planner_mixer_intermediate_size
         ),
+        planner_h_cycles=planner_h_cycles,
+        planner_l_cycles=planner_l_cycles,
+        planner_bptt=planner_bptt,
         planner_norm_eps=1e-6,
         planner_forward_dtype='float32',
+        share_actor_core=share_actor_core,
         action_hrm_num_layers=1,
         action_hrm_intermediate_size=16,
         action_hrm_head_dim=2,
@@ -241,6 +249,70 @@ class HRMActionPolicyNetworkTest(unittest.TestCase):
         self.assertEqual(
             constant_shapes['action_hrm/zL_init'],
             (STATE_DIM,),
+        )
+
+    def test_vanilla_coghp_executor_uses_original_mixer_stack(self):
+        network = make_network(core_type='vanilla_coghp')
+        variables = initialize(network)
+        self.assertIn('action_mixer_blocks_0', variables['params'])
+        self.assertNotIn('action_hrm', variables['params'])
+        self.assertNotIn('constants', variables)
+
+        # One original CoGHP MixerBlock with N=5, D=8, token/channel width 8.
+        expected_params = (
+            (5 * 8 + 8)       # token_dense1
+            + (8 * 5 + 5)     # token_dense2
+            + (8 * 8 + 8)     # channel_dense1
+            + (8 * 8 + 8)     # channel_dense2
+            + (5 * 5)         # tm_weights
+        )
+        self.assertEqual(
+            parameter_count(variables['params']['action_mixer_blocks_0']),
+            expected_params,
+        )
+
+        observations, goals, teacher_subgoals, actions = synthetic_inputs()
+        model_state = {
+            name: collection
+            for name, collection in variables.items()
+            if name != 'params'
+        }
+        high_dists, _, _, diagnostics = network.apply(
+            {'params': variables['params'], **model_state},
+            observations,
+            goals,
+            jax.random.PRNGKey(19),
+            subgoal_reps=teacher_subgoals,
+            return_diagnostics=True,
+        )
+        self.assertEqual(len(high_dists), NUM_SUBGOALS)
+        self.assertEqual(
+            int(diagnostics['action_core/total_block_calls']),
+            1,
+        )
+        self.assertEqual(
+            int(diagnostics['action_core/high_block_calls']),
+            0,
+        )
+        self.assertEqual(
+            int(diagnostics['action_core/low_block_calls']),
+            0,
+        )
+
+        def action_loss(params):
+            _, dist, _ = network.apply(
+                {'params': params, **model_state},
+                observations,
+                goals,
+                jax.random.PRNGKey(19),
+                subgoal_reps=teacher_subgoals,
+            )
+            return -jnp.mean(dist.log_prob(actions))
+
+        grads = jax.grad(action_loss)(variables['params'])
+        self.assertGreater(
+            subtree_norm(grads, 'action_mixer_blocks_0'),
+            0.0,
         )
 
     def test_every_core_reads_final_query_without_fake_hrm_states(self):
@@ -527,6 +599,145 @@ class HRMActionPolicyNetworkTest(unittest.TestCase):
             1e-8,
         )
 
+    def test_official_hrm_planner_uses_independent_recurrent_core(self):
+        planner_width = 12
+        network = make_network(
+            planner_core_type='hrm',
+            planner_block_type='swiglu_rmsnorm',
+            planner_num_layers=1,
+            planner_mixer_intermediate_size=planner_width,
+            planner_h_cycles=2,
+            planner_l_cycles=2,
+            planner_bptt=False,
+        )
+        variables = initialize(network)
+        self.assertIn('planner_core', variables['params'])
+        self.assertNotIn('planner_mixer_0', variables['params'])
+
+        sequence_length = NUM_SUBGOALS + 3
+        expected_params = (
+            2 * 3 * planner_width * (sequence_length + STATE_DIM)
+        )
+        self.assertEqual(
+            parameter_count(variables['params']['planner_core']),
+            expected_params,
+        )
+
+        constant_paths = {
+            path
+            for path in flax.traverse_util.flatten_dict(
+                variables.get('constants', {})
+            )
+        }
+        self.assertTrue(
+            any(path[:2] == ('planner_core', 'zH_init')
+                for path in constant_paths)
+        )
+        self.assertTrue(
+            any(path[:2] == ('planner_core', 'zL_init')
+                for path in constant_paths)
+        )
+
+        observations, goals, teacher_subgoals, _ = synthetic_inputs()
+        model_state = {
+            name: collection
+            for name, collection in variables.items()
+            if name != 'params'
+        }
+
+        def apply_model(params):
+            return network.apply(
+                {'params': params, **model_state},
+                observations,
+                goals,
+                jax.random.PRNGKey(37),
+                subgoal_reps=teacher_subgoals,
+            )
+
+        high_dists, _, _ = jax.jit(apply_model)(variables['params'])
+        self.assertEqual(len(high_dists), NUM_SUBGOALS)
+
+        def planner_loss(params):
+            high_dists, _, _ = apply_model(params)
+            return sum(jnp.mean(dist.mode()) for dist in high_dists)
+
+        grads = jax.grad(planner_loss)(variables['params'])
+        self.assertGreater(subtree_norm(grads, 'planner_core'), 1e-8)
+
+    def test_shared_official_hrm_core_has_two_readouts_and_one_parameter_tree(self):
+        network = make_network(
+            planner_core_type='hrm',
+            planner_block_type='swiglu_rmsnorm',
+            planner_h_cycles=2,
+            planner_l_cycles=2,
+            planner_bptt=False,
+            core_type='hrm',
+            action_block_type='swiglu_rmsnorm',
+            h_cycles=2,
+            l_cycles=2,
+            bptt=False,
+            share_actor_core=True,
+        )
+        variables = initialize(network)
+        actor_params = variables['params']
+        self.assertIn('shared_actor_core', actor_params)
+        self.assertNotIn('planner_core', actor_params)
+        self.assertNotIn('action_hrm', actor_params)
+        self.assertEqual(
+            parameter_count(actor_params['shared_actor_core']),
+            2 * 3 * 12 * (NUM_SUBGOALS + 3 + STATE_DIM),
+        )
+
+        constant_paths = {
+            path
+            for path in flax.traverse_util.flatten_dict(
+                variables.get('constants', {})
+            )
+        }
+        self.assertTrue(
+            any(path[:2] == ('shared_actor_core', 'zH_init')
+                for path in constant_paths)
+        )
+        self.assertTrue(
+            any(path[:2] == ('shared_actor_core', 'zL_init')
+                for path in constant_paths)
+        )
+
+        observations, goals, teacher_subgoals, _ = synthetic_inputs()
+        model_state = {
+            name: collection
+            for name, collection in variables.items()
+            if name != 'params'
+        }
+
+        def apply_model(params):
+            return network.apply(
+                {'params': params, **model_state},
+                observations,
+                goals,
+                jax.random.PRNGKey(41),
+                subgoal_reps=teacher_subgoals,
+                return_diagnostics=True,
+            )
+
+        outputs = jax.jit(apply_model)(variables['params'])
+        self.assertEqual(len(outputs[0]), NUM_SUBGOALS)
+        self.assertEqual(
+            int(outputs[-1]['action_core/total_block_calls']),
+            6,
+        )
+
+        def actor_loss(params):
+            high_dists, action_dist, _, _ = apply_model(params)
+            return sum(jnp.mean(dist.mode()) for dist in high_dists) + jnp.mean(
+                action_dist.mode()
+            )
+
+        grads = jax.grad(actor_loss)(variables['params'])
+        self.assertGreater(subtree_norm(grads, 'shared_actor_core'), 1e-8)
+        self.assertGreater(subtree_norm(grads, 'high_actor_head'), 1e-8)
+        self.assertGreater(subtree_norm(grads, 'low_actor_head'), 1e-8)
+
 
     def test_block_selector_reaches_only_the_action_hrm_core(self):
         expected_markers = {
@@ -707,6 +918,7 @@ class HRMActionAgentTest(unittest.TestCase):
         use_legacy_selector=False,
         drop_new_selectors=False,
         legacy_is_mlp_mixer=True,
+        expected_action_core_params=-1,
     ):
         config = get_config()
         config.encoder = None
@@ -737,6 +949,7 @@ class HRMActionAgentTest(unittest.TestCase):
         config.hrm_channel_hidden = channel_hidden
         config.hrm_mixer_intermediate_size = mixer_intermediate_size
         config.hrm_layernorm_affine = layernorm_affine
+        config.expected_action_core_params = expected_action_core_params
         if drop_new_selectors:
             for field in (
                 'action_core_type',
@@ -780,6 +993,15 @@ class HRMActionAgentTest(unittest.TestCase):
             jax.tree_util.tree_leaves(explicit_agent.network.model_state),
         ):
             np.testing.assert_array_equal(old, new)
+
+    def test_vanilla_executor_parameter_contract_reaches_agent(self):
+        agent = self.make_agent(
+            core_type='vanilla_coghp',
+            expected_action_core_params=262,
+        )
+        actor_params = agent.network.params['modules_actor_mixer']
+        self.assertIn('action_mixer_blocks_0', actor_params)
+        self.assertNotIn('action_hrm', actor_params)
 
     def test_old_config_and_checkpoint_restore_into_default_hrm(self):
         legacy_agent = self.make_agent(
@@ -1014,6 +1236,10 @@ class HRMActionAgentTest(unittest.TestCase):
     def test_config_contains_only_clean_hrm_controls(self):
         config = get_config()
         self.assertEqual(config.agent_name, 'hrm_action_coghp')
+        self.assertEqual(config.planner_core_type, 'vanilla_coghp')
+        self.assertEqual(config.planner_h_cycles, 2)
+        self.assertEqual(config.planner_l_cycles, 2)
+        self.assertTrue(config.planner_bptt)
         self.assertEqual(config.action_hrm_num_layers, 1)
         self.assertEqual(config.action_hrm_h_cycles, 2)
         self.assertEqual(config.action_hrm_l_cycles, 2)

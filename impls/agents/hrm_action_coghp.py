@@ -1,4 +1,4 @@
-"""CoGHP with shared-block feed-forward or recurrent action cores."""
+"""CoGHP with vanilla, shared-block feed-forward, or recurrent action cores."""
 
 import flax
 import flax.linen as nn
@@ -306,6 +306,18 @@ class HRMActionCoGHPAgent(CoGHPAgent):
                 'planner_mixer_intermediate_size',
                 256,
             ),
+            planner_h_cycles=config.get(
+                'planner_h_cycles',
+                2,
+            ),
+            planner_l_cycles=config.get(
+                'planner_l_cycles',
+                2,
+            ),
+            planner_bptt=config.get(
+                'planner_bptt',
+                True,
+            ),
             planner_norm_eps=config.get(
                 'planner_norm_eps',
                 1e-6,
@@ -314,6 +326,7 @@ class HRMActionCoGHPAgent(CoGHPAgent):
                 'planner_forward_dtype',
                 'float32',
             ),
+            share_actor_core=config.get('share_actor_core', False),
 
             action_hrm_num_layers=config['action_hrm_num_layers'],
             action_hrm_intermediate_size=(
@@ -377,9 +390,31 @@ class HRMActionCoGHPAgent(CoGHPAgent):
             -1,
         )
         if expected_action_core_params >= 0:
-            action_core_params = network_params['modules_actor_mixer'][
-                'action_hrm'
-            ]
+            actor_mixer_params = network_params['modules_actor_mixer']
+            action_core_type = config.get('action_core_type', 'hrm')
+            share_actor_core = config.get('share_actor_core', False)
+            if share_actor_core:
+                if 'shared_actor_core' not in actor_mixer_params:
+                    raise ValueError(
+                        'Shared actor parameter contract was requested, but '
+                        'shared_actor_core was not created.'
+                    )
+                action_core_params = actor_mixer_params['shared_actor_core']
+            elif action_core_type == 'vanilla_coghp':
+                action_mixer_params = {
+                    key: value
+                    for key, value in actor_mixer_params.items()
+                    if key.startswith('action_mixer_blocks_')
+                }
+                if not action_mixer_params:
+                    raise ValueError(
+                        'Vanilla CoGHP action parameter contract was '
+                        'requested, but action_mixer_blocks_* were not '
+                        'created.'
+                    )
+                action_core_params = action_mixer_params
+            else:
+                action_core_params = actor_mixer_params['action_hrm']
             actual_action_core_params = sum(
                 int(leaf.size)
                 for leaf in jax.tree_util.tree_leaves(action_core_params)
@@ -400,15 +435,21 @@ class HRMActionCoGHPAgent(CoGHPAgent):
             actor_mixer_params = network_params[
                 'modules_actor_mixer'
             ]
-
-            if 'planner_core' not in actor_mixer_params:
-                raise ValueError(
-                    'Planner parameter contract was requested, but '
-                    'planner_core was not created. Set '
-                    'planner_core_type=matched_feedforward.'
-                )
-
-            planner_core_params = actor_mixer_params['planner_core']
+            if config.get('share_actor_core', False):
+                if 'shared_actor_core' not in actor_mixer_params:
+                    raise ValueError(
+                        'Shared planner parameter contract was requested, '
+                        'but shared_actor_core was not created.'
+                    )
+                planner_core_params = actor_mixer_params['shared_actor_core']
+            else:
+                if 'planner_core' not in actor_mixer_params:
+                    raise ValueError(
+                        'Planner parameter contract was requested, but '
+                        'planner_core was not created. Set '
+                        'planner_core_type=matched_feedforward or hrm.'
+                    )
+                planner_core_params = actor_mixer_params['planner_core']
             actual_planner_core_params = sum(
                 int(leaf.size)
                 for leaf in jax.tree_util.tree_leaves(
@@ -454,8 +495,12 @@ def get_config():
     config.planner_block_type = 'swiglu_rmsnorm'
     config.planner_num_layers = 1
     config.planner_mixer_intermediate_size = 256
+    config.planner_h_cycles = 2
+    config.planner_l_cycles = 2
+    config.planner_bptt = True
     config.planner_norm_eps = 1e-6
     config.planner_forward_dtype = 'float32'
+    config.share_actor_core = False
     config.expected_planner_core_params = -1
     config.action_hrm_num_layers = 1
     config.action_hrm_intermediate_size = 512
