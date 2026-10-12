@@ -1,4 +1,5 @@
 import json
+import importlib.metadata
 import os
 import platform
 import random
@@ -31,6 +32,8 @@ flags.DEFINE_enum('wandb_mode', 'online', ['online', 'offline', 'disabled'], 'W&
 flags.DEFINE_integer('seed', 0, 'Random seed.')
 flags.DEFINE_string('env_name', 'antmaze-large-navigate-v0', 'Environment (dataset) name.')
 flags.DEFINE_string('save_dir', 'exp/', 'Save directory.')
+flags.DEFINE_string('run_dir', None, 'Exact artifact directory; must not already exist. Overrides save_dir layout.')
+flags.DEFINE_bool('require_gpu', False, 'Fail instead of silently training on CPU.')
 flags.DEFINE_string('restore_path', None, 'Restore path.')
 flags.DEFINE_integer('restore_epoch', None, 'Restore epoch.')
 flags.DEFINE_bool('eval_only', False, 'Evaluate a restored checkpoint without applying a training update.')
@@ -54,6 +57,7 @@ flags.DEFINE_integer('train_steps', 1000000, 'Number of training steps.')
 flags.DEFINE_integer('log_interval', 5000, 'Logging interval.')
 flags.DEFINE_integer('eval_interval', 100000, 'Evaluation interval.')
 flags.DEFINE_integer('save_interval', 1000000, 'Saving interval.')
+flags.DEFINE_list('save_steps', [], 'Additional exact checkpoint steps, e.g. 800000,900000,1000000.')
 flags.DEFINE_integer('eval_seed', None, 'Base seed for deterministic evaluation. None derives it from --seed.')
 flags.DEFINE_integer('train_dataset_seed', None, 'Training dataset RNG seed. None derives it from --seed.')
 flags.DEFINE_integer('validation_dataset_seed', None, 'Validation dataset RNG seed. None derives it from --seed.')
@@ -83,6 +87,11 @@ config_flags.DEFINE_config_file('agent', 'agents/coghp.py', lock_config=False)
 def main(_):
     random.seed(FLAGS.seed)
     np.random.seed(FLAGS.seed)
+    if FLAGS.require_gpu and jax.default_backend() != 'gpu':
+        raise RuntimeError('--require_gpu was set but JAX did not initialize a GPU backend.')
+    save_steps = {int(step) for step in FLAGS.save_steps}
+    if any(step <= 0 or step > FLAGS.train_steps for step in save_steps):
+        raise ValueError('--save_steps must lie within the training budget.')
     if (
         FLAGS.require_deterministic_gpu
         and jax.default_backend() == 'gpu'
@@ -96,6 +105,9 @@ def main(_):
 
     # Set up logger.
     exp_name = get_exp_name(FLAGS.seed)
+    if FLAGS.run_dir is not None:
+        FLAGS.save_dir = os.path.abspath(FLAGS.run_dir)
+        os.makedirs(FLAGS.save_dir, exist_ok=False)
     setup_wandb(
         entity=FLAGS.wandb_entity,
         project=FLAGS.wandb_project,
@@ -104,8 +116,9 @@ def main(_):
         mode=FLAGS.wandb_mode,
     )
 
-    FLAGS.save_dir = os.path.join(FLAGS.save_dir, wandb.run.project, FLAGS.run_group, exp_name)
-    os.makedirs(FLAGS.save_dir, exist_ok=True)
+    if FLAGS.run_dir is None:
+        FLAGS.save_dir = os.path.join(FLAGS.save_dir, wandb.run.project, FLAGS.run_group, exp_name)
+        os.makedirs(FLAGS.save_dir, exist_ok=True)
     flag_dict = get_flag_dict()
     with open(os.path.join(FLAGS.save_dir, 'flags.json'), 'w') as f:
         json.dump(flag_dict, f)
@@ -192,6 +205,13 @@ def main(_):
         'jax_devices': [str(device) for device in jax.devices()],
         'pythonhashseed': os.environ.get('PYTHONHASHSEED'),
         'xla_flags': os.environ.get('XLA_FLAGS'),
+        'cuda_visible_devices': os.environ.get('CUDA_VISIBLE_DEVICES'),
+        'dataset_dir': os.environ.get('OGBENCH_DATASET_DIR'),
+        'jax_backend': jax.default_backend(),
+        'package_versions': {
+            name: importlib.metadata.version(name)
+            for name in ('jaxlib', 'flax', 'optax', 'mujoco', 'gymnasium')
+        },
     }
     with open(os.path.join(FLAGS.save_dir, 'reproducibility.json'), 'w') as f:
         json.dump(reproducibility_info, f, indent=2)
@@ -328,7 +348,7 @@ def main(_):
             eval_logger.log(eval_metrics, step=i)
 
         # Save agent.
-        if not FLAGS.eval_only and i % FLAGS.save_interval == 0:
+        if not FLAGS.eval_only and (i % FLAGS.save_interval == 0 or i in save_steps):
             save_agent(
                 agent,
                 FLAGS.save_dir,

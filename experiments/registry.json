@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "version_id": "navigation-20261012-baseline",
+  "git_ref": "refs/tags/exp/navigation-20261012-baseline",
+  "development_branch": "research/navigation",
+  "association": "Retrospective consolidated code/results version for both completed campaigns. This tag identifies the consolidated baseline, not the exact full working tree present when each run started. Original snapshots and manifests are preserved unchanged.",
+  "source_compatibility": {
+    "scope": [
+      "impls/main.py",
+      "impls/agents/**",
+      "impls/utils/**",
+      "ogbench/**"
+    ],
+    "file_count": 140,
+    "sha256_of_sorted_file_hashes": "bfa4e7fdf52e3f774a1ffce8b5e7f2e1af5bfd73208ad08b69cb5c786f3afc81",
+    "hash_encoding": "SHA256(json.dumps(path_to_sha256, sort_keys=True).encode())",
+    "differences_between_original_snapshots": {
+      "changed": [
+        "README.md",
+        "impls/test_study_runner.py",
+        "scripts/run_study.py",
+        "scripts/train_hrm_action_coghp.sh"
+      ],
+      "added": [
+        "experiments/navigation_hrm_action_multiseed_extension.json"
+      ],
+      "removed": []
+    }
+  },
+  "metric": {
+    "column": "evaluation/overall_success",
+    "steps": [
+      800000,
+      900000,
+      1000000
+    ],
+    "units": "fraction in [0,1]",
+    "per_seed": "arithmetic mean of the three exact evaluation steps",
+    "across_seeds": "mean and sample standard deviation (ddof=1) of per-seed scores"
+  },
+  "protocol": {
+    "eval_episodes": 50,
+    "eval_interval": 100000,
+    "eval_on_cpu": 1,
+    "eval_temperature": 0,
+    "fixed_validation_batch": true,
+    "log_interval": 5000,
+    "require_deterministic_gpu": true,
+    "save_interval": 1000000,
+    "save_steps": [
+      800000,
+      900000,
+      1000000
+    ],
+    "train_steps": 1000000,
+    "video_episodes": 0
+  },
+  "software_environment": {
+    "python_version": "3.11.15",
+    "numpy_version": "2.4.6",
+    "jax_version": "0.10.2",
+    "package_versions": {
+      "jaxlib": "0.10.2",
+      "flax": "0.12.7",
+      "optax": "0.2.8",
+      "mujoco": "3.10.0",
+      "gymnasium": "1.3.0"
+    },
+    "jax_backend": "gpu",
+    "xla_flags": "--xla_gpu_deterministic_ops"
+  },
+  "completed_runs": 54,
+  "seeds_per_method_environment": [
+    0,
+    1,
+    2
+  ],
+  "results_csv": "experiments/navigation_results_20261012.csv",
+  "campaigns": [
+    {
+      "campaign_id": "20261009_coghp_vs_hrm_h2l2_point_ant_pilot",
+      "completed_runs": 24,
+      "study_file": "experiments/navigation_hrm_action.json",
+      "results_root": "/data/qijunrong/06-RL/offline-rl/exp/Navigation/20261009_coghp_vs_hrm_h2l2_point_ant_pilot",
+      "original_source_directory": "/data/qijunrong/06-RL/offline-rl/exp/Navigation/20261009_coghp_vs_hrm_h2l2_point_ant_pilot/source",
+      "original_code_signature": "9931309998ed4798c2c5c5ecafa9482d49d040e4cce6f73ab4565f012f04036e",
+      "original_base_commit": "4f5242ff9f764ac0fb0e3a78e216ae18bdd8d5dc",
+      "original_source_was_dirty": true,
+      "campaign_manifest_sha256": "458c4cd37c38446997182091aedc97287d23512114b3a23b044c412eb5a82c54",
+      "training_source_matches_consolidated_version": true
+    },
+    {
+      "campaign_id": "20261010_coghp_vs_hrm_h2l2_humanoid_and_seed_completion",
+      "completed_runs": 30,
+      "study_file": "experiments/navigation_hrm_action_multiseed_extension.json",
+      "results_root": "/data/qijunrong/06-RL/offline-rl/exp/Navigation/20261010_coghp_vs_hrm_h2l2_humanoid_and_seed_completion",
+      "original_source_directory": "/home/eai/Research/Navigation/20261010_coghp_vs_hrm_h2l2_humanoid_and_seed_completion",
+      "original_code_signature": "c034a8974e40ec439deb10a2c69f8142c2bc31ca95b0875a9c6fcf4ce35179a0",
+      "original_base_commit": "4f5242ff9f764ac0fb0e3a78e216ae18bdd8d5dc",
+      "original_source_was_dirty": true,
+      "campaign_manifest_sha256": "4827c3e34720110a459350166f71d43a0f4746727278f5f910e155324f871d12",
+      "training_source_matches_consolidated_version": true
+    }
+  ]
+}

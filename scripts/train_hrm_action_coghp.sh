@@ -274,18 +274,38 @@ done
 
 normalize_task() {
   case "$1" in
+    pointmaze_medium|pointmaze-medium) printf '%s\n' pointmaze_medium ;;
+    pointmaze_large|pointmaze-large) printf '%s\n' pointmaze_large ;;
+    pointmaze_giant|pointmaze-giant) printf '%s\n' pointmaze_giant ;;
+    antmaze_medium|antmaze-medium) printf '%s\n' antmaze_medium ;;
+    antmaze_large|antmaze-large) printf '%s\n' antmaze_large ;;
     antmaze_giant|antmaze-giant) printf '%s\n' antmaze_giant ;;
+    humanoidmaze_medium|humanoidmaze-medium) printf '%s\n' humanoidmaze_medium ;;
+    humanoidmaze_large|humanoidmaze-large) printf '%s\n' humanoidmaze_large ;;
     humanoidmaze_giant|humanoidmaze-giant) printf '%s\n' humanoidmaze_giant ;;
     *) return 1 ;;
   esac
 }
 
 TASK_KEY="$(normalize_task "${TASK}")" || {
-  echo "Unknown task ${TASK}; expected antmaze_giant or humanoidmaze_giant." >&2
+  echo "Unknown task ${TASK}; expected pointmaze/antmaze/humanoidmaze medium, large, or giant (use underscores)." >&2
   exit 2
 }
 
 case "${TASK_KEY}" in
+  pointmaze_medium|pointmaze_large|pointmaze_giant|antmaze_medium|antmaze_large)
+    ENV_NAME="${TASK_KEY//_/-}-navigate-v0"
+    NUM_SUBGOALS=1
+    SUBGOAL_STEPS=50
+    FEATURE_DIM=128
+    EXTRA_ARGS=()
+    [[ "${TASK_KEY}" != *_medium ]] || SUBGOAL_STEPS=25
+    [[ "${TASK_KEY}" != pointmaze_* ]] || FEATURE_DIM=32
+    if [[ "${TASK_KEY}" == pointmaze_giant ]]; then
+      NUM_SUBGOALS=3
+      EXTRA_ARGS=(--agent.lr=1e-5)
+    fi
+    ;;
   antmaze_giant)
     ENV_NAME="antmaze-giant-navigate-v0"
     NUM_SUBGOALS=2
@@ -293,9 +313,10 @@ case "${TASK_KEY}" in
     FEATURE_DIM=128
     EXTRA_ARGS=()
     ;;
-  humanoidmaze_giant)
-    ENV_NAME="humanoidmaze-giant-navigate-v0"
-    NUM_SUBGOALS=2
+  humanoidmaze_medium|humanoidmaze_large|humanoidmaze_giant)
+    ENV_NAME="${TASK_KEY//_/-}-navigate-v0"
+    NUM_SUBGOALS=1
+    [[ "${TASK_KEY}" != humanoidmaze_giant ]] || NUM_SUBGOALS=2
     SUBGOAL_STEPS=100
     FEATURE_DIM=128
     EXTRA_ARGS=(--agent.discount=0.995)

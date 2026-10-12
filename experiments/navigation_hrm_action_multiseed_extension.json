@@ -1,0 +1,173 @@
+{
+  "study_id": "navigation_hrm_action_multiseed_extension",
+  "question": "Extend the fixed vanilla-planner HRM H2L2 truncated executor comparison to HumanoidMaze and complete three seeds on PointMaze and AntMaze.",
+  "interpretation": "This campaign adds 30 runs to the previous 24-run campaign. Compare three seeds per method/environment after provenance-checked joint aggregation. Original CoGHP is not a parameter-matched recurrence control.",
+  "metric": {
+    "column": "evaluation/overall_success",
+    "steps": [
+      800000,
+      900000,
+      1000000
+    ]
+  },
+  "protocol": {
+    "train_steps": 1000000,
+    "log_interval": 5000,
+    "eval_interval": 100000,
+    "save_interval": 1000000,
+    "save_steps": [
+      800000,
+      900000,
+      1000000
+    ],
+    "eval_episodes": 50,
+    "eval_temperature": 0,
+    "video_episodes": 0,
+    "eval_on_cpu": 1,
+    "fixed_validation_batch": true,
+    "require_deterministic_gpu": true
+  },
+  "common_agent": {
+    "batch_size": 256,
+    "discount": 0.99,
+    "high_discount": 0.8,
+    "low_alpha": 3.0,
+    "high_alpha": 3.0,
+    "expectile": 0.7,
+    "tau": 0.005,
+    "num_mixer_blocks": 1,
+    "mixer_hidden": 32,
+    "causal_mixer": true,
+    "action_use_full_subgoal_chain": true,
+    "share_mixer_weights": false,
+    "separate_action_mixer": false
+  },
+  "methods": {
+    "coghp": {
+      "agent": "coghp",
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "overrides": {},
+      "environments": [
+        "humanoidmaze-medium-navigate-v0",
+        "humanoidmaze-large-navigate-v0",
+        "humanoidmaze-giant-navigate-v0"
+      ]
+    },
+    "hrm_h2l2_truncated": {
+      "agent": "hrm_action_coghp",
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "overrides": {
+        "planner_core_type": "vanilla_coghp",
+        "share_actor_core": false,
+        "action_core_type": "hrm",
+        "action_block_type": "swiglu_rmsnorm",
+        "hrm_block_type": "swiglu_rmsnorm",
+        "hrm_mixer_intermediate_size": 256,
+        "action_hrm_num_layers": 1,
+        "action_hrm_mlp_mixer_intermediate_size": 256,
+        "action_hrm_h_cycles": 2,
+        "action_hrm_l_cycles": 2,
+        "action_hrm_bptt": false,
+        "action_hrm_is_causal": true,
+        "action_hrm_is_mlp_mixer": true,
+        "action_hrm_norm_eps": 1e-06,
+        "action_hrm_forward_dtype": "float32",
+        "train_action_chain_source": "teacher",
+        "enable_action_hrm_validation": true
+      },
+      "seeds_by_environment": {
+        "pointmaze-medium-navigate-v0": [
+          1,
+          2
+        ],
+        "pointmaze-large-navigate-v0": [
+          1,
+          2
+        ],
+        "pointmaze-giant-navigate-v0": [
+          1,
+          2
+        ],
+        "antmaze-medium-navigate-v0": [
+          1,
+          2
+        ],
+        "antmaze-large-navigate-v0": [
+          1,
+          2
+        ],
+        "antmaze-giant-navigate-v0": [
+          1,
+          2
+        ]
+      }
+    }
+  },
+  "environments": {
+    "pointmaze-medium-navigate-v0": {
+      "num_subgoals": 1,
+      "subgoal_steps": 25,
+      "feature_dim": 32,
+      "lr": 0.0003
+    },
+    "pointmaze-large-navigate-v0": {
+      "num_subgoals": 1,
+      "subgoal_steps": 50,
+      "feature_dim": 32,
+      "lr": 0.0003
+    },
+    "pointmaze-giant-navigate-v0": {
+      "num_subgoals": 3,
+      "subgoal_steps": 50,
+      "feature_dim": 32,
+      "lr": 1e-05
+    },
+    "antmaze-medium-navigate-v0": {
+      "num_subgoals": 1,
+      "subgoal_steps": 25,
+      "feature_dim": 128,
+      "lr": 0.0003
+    },
+    "antmaze-large-navigate-v0": {
+      "num_subgoals": 1,
+      "subgoal_steps": 50,
+      "feature_dim": 128,
+      "lr": 0.0003
+    },
+    "antmaze-giant-navigate-v0": {
+      "num_subgoals": 2,
+      "subgoal_steps": 50,
+      "feature_dim": 128,
+      "lr": 0.0003
+    },
+    "humanoidmaze-medium-navigate-v0": {
+      "num_subgoals": 1,
+      "subgoal_steps": 100,
+      "feature_dim": 128,
+      "lr": 0.0003,
+      "discount": 0.995
+    },
+    "humanoidmaze-large-navigate-v0": {
+      "num_subgoals": 1,
+      "subgoal_steps": 100,
+      "feature_dim": 128,
+      "lr": 0.0003,
+      "discount": 0.995
+    },
+    "humanoidmaze-giant-navigate-v0": {
+      "num_subgoals": 2,
+      "subgoal_steps": 100,
+      "feature_dim": 128,
+      "lr": 0.0003,
+      "discount": 0.995
+    }
+  }
+}
