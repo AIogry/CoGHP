@@ -1,18 +1,22 @@
 # Global Potential / Position-Latent Navigation implementation and experiment report
 
 This report documents the implementation requested in `docs/10-12/prompt1.md`.
-Status at handoff: formal training launched on **2026-10-13 00:16 Asia/Shanghai**.
-Baseline seed 0 has logged 10,000 updates with finite training/validation
-metrics; eleven other runs are queued. Correctness, four GPU smoke runs, paired
-local execution and exact process-resume checks passed. **No final 1M-update
-result exists yet.** The campaign's
-`campaign.json`, per-run `run.json` and `results.txt` are the live authorities;
-the immutable source snapshot of this report records pre-launch evidence.
+**Scope corrected by the user on 2026-10-13:** use GPU 0 AND GPU 1, seed 0
+ONLY, on HumanoidMaze-Large/Giant, PointMaze-Giant and AntMaze-Giant. The four
+conditions therefore make **16 formal runs**. All 12 new-task preflight runs and
+their diagnostics passed; the revised formal queue is ready to launch. No final
+1M result exists.
 
-Implementation commit: `7d24426cd5d2aa5158753d0a91aaa75836eef76a`.
-Source signature: `e4ec2f17089bac1edfc1e3376cbbd20ca929e440ed6c9b8973b8a66571fce8a1`.
-The launch snapshot contained 185 files and a clean Git status. This handoff
-update changes documentation only; training continues to use that exact source.
+The earlier AntMaze-only, three-seed queue was stopped at 00:33 Asia/Shanghai.
+Its Baseline had logged 150,000 updates and had no saved checkpoint yet. The
+attempt is marked `cancelled`; all logs, data and frozen source are retained.
+Its other eleven runs never started. The corrected campaign starts fresh and
+does not mix the cancelled attempt into its results.
+
+Core implementation origin: `7d24426cd5d2aa5158753d0a91aaa75836eef76a`.
+The scope correction changes experiment configuration and GPU process checks;
+the agent, training losses and dataset implementation are unchanged. The new
+campaign records its own exact commit and source hash in `campaign.json`.
 
 ## Research and scope
 
@@ -39,24 +43,45 @@ or persistent recurrent memory has been added. HRM cycles remain fixed.
 - Historical flags checked: AntMaze-Giant HRM H2L2 seed 0, campaign
   `20261009_coghp_vs_hrm_h2l2_point_ant_pilot`.
 - Formal configuration: `experiments/navigation_global_position.json`.
-- Environment: `antmaze-giant-navigate-v0`; fixed existing train/validation NPZ files.
-- K=2, subgoal interval=50, feature dimension=128, batch=256, Adam lr=3e-4.
+- Environments: HumanoidMaze-Large/Giant, PointMaze-Giant, AntMaze-Giant; each
+  uses its existing `*-navigate-v0` train/validation NPZ files.
+- Batch=256; environment-specific settings inherit the verified earlier
+  `navigation_hrm_action_multiseed_extension.json` recipes (table below).
 - Actor/value/legacy encoder hidden layers=(512,512,512); one original planner
   Mixer block; HRM one layer, intermediate=256, H=2, L=2, BPTT=False,
   SwiGLU/RMSNorm, float32, causal; separate planner/executor cores.
-- Legacy discount=.99, expectile=.7, tau=.005, actor chain discount=.8,
+- Expectile=.7, tau=.005, actor chain discount=.8,
   high/low inverse temperature=3. Action training remains teacher-forced.
 - 1M updates; formal evaluation every 100k, all 5 tasks, 50 episodes/task,
   temperature=0, independent deterministic evaluation seed, CPU evaluation.
-- Main score: average success at exactly 800k/900k/1M within each seed, then
-  across-seed mean and sample SD (ddof=1). No final-only or last-5 score.
-- Queue is seed-major: all four seed-0 conditions, then seed 1, then seed 2.
-- Formal experiment ID: `20261013_global_potential_position_latent_antmaze_giant`.
-- Formal source: `/home/eai/Research/Navigation/20261013_global_potential_position_latent_antmaze_giant/source`.
-- Formal results: `/data/qijunrong/06-RL/offline-rl/exp/Navigation/20261013_global_potential_position_latent_antmaze_giant`.
+- Main score: average success at exactly 800k/900k/1M for seed 0. Across-seed
+  standard deviation is unavailable with a single seed; no final-only/last-5 score.
+- Queue contains only seed 0, with one sequential worker on each GPU.
+- Formal experiment ID: `20261013_global_position_four_tasks_seed0`.
+- Formal source: `/home/eai/Research/Navigation/20261013_global_position_four_tasks_seed0/source`.
+- Formal results: `/data/qijunrong/06-RL/offline-rl/exp/Navigation/20261013_global_position_four_tasks_seed0`.
 - Exact implementation commit, full source hashes, dataset SHA256 and resolved
   config are recorded by the launcher in `campaign.json`; no dirty snapshot is
   to be passed off as a clean Git commit.
+
+| Environment | K | Subgoal interval | Actor/command dim | Learning rate | Legacy discount |
+|---|---:|---:|---:|---:|---:|
+| HumanoidMaze-Large | 1 | 100 | 128 | 3e-4 | .995 |
+| HumanoidMaze-Giant | 2 | 100 | 128 | 3e-4 | .995 |
+| PointMaze-Giant | 3 | 50 | 32 | 1e-5 | .99 |
+| AntMaze-Giant | 2 | 50 | 128 | 3e-4 | .99 |
+
+All four conditions use the same recipe within each task. Point commands use
+32 dimensions to preserve the existing Actor token interface; Global embedding
+dimension stays 128. Global n=25, gamma=.99 and position loss coefficient=1
+stay fixed across tasks, independently of the legacy discount above.
+The environment recipes were also checked against actual seed-0 `flags.json`
+files from the 20261009 Point/Ant pilot and 20261010 Humanoid extension.
+
+PointMaze's observation is already XY-only (`PointEnv.get_ob` returns qpos).
+For that task the P factor tests the encoder/decoder and gradient protocol,
+not removal of future posture information. Ant/Humanoid additionally test
+whether future body-state inputs can be excluded from Actor commands.
 
 ## Implementation map
 
@@ -90,8 +115,9 @@ or persistent recurrent memory has been added. HRM cycles remain fixed.
 ## Mathematical definitions and gradients
 
 Position commands: r=(q-pos(s))/sigma; z=phi(s,r). Encoder and decoder hidden
-layers=(128,128). The learned 128-D latent uses stable length normalization to
-sqrt(128); raw 2-D displacement is never length-normalized. The scale is the
+layers=(128,128). The learned latent uses the Actor's dimension (32 for Point,
+128 otherwise), with stable normalization to its square root; raw 2-D
+displacement is never length-normalized. The scale is the
 population standard deviation of all TRAIN observations' XY, floored at 1e-6.
 Global absolute goals use (q-train_mean)/sigma. Statistics are stored in resolved
 flags, a statistics file, the checkpoint signature, and model constants.
@@ -112,8 +138,9 @@ extra action labels or relabeled random-goal actions are introduced.
 
 The shared current-state feature still receives the high loss. In G conditions,
 \(A_j=\frac12\sum_i[\Phi_i(w_j,q_g)-\Phi_i(s,q_g)]\); the low loss uses its
-unchanged legacy weights. Here K=2 and the displayed 50 is the fixed subgoal
-interval, not the Global abstraction length (25).
+unchanged legacy weights. The displayed formula illustrates AntMaze (K=2,
+subgoal interval=50); the general implementation uses each task's K and interval,
+separately from the Global abstraction length (25).
 
 Planner targets, teacher prefixes, and final goal tokens all stop the position
 encoder gradient. Executor tokens remain live. Position encoder receives low
@@ -142,7 +169,7 @@ Only the position Actor's forward command inputs exclude future body state.
 ## Global data protocol
 
 Abstraction length=25; gamma_G=.99. Environment `_goal_tol` is read at runtime
-(AntMaze=.5). Global reuses the already sampled legacy `value_goals` XY:
+(PointMaze=1.0; AntMaze/HumanoidMaze=.5). Global reuses the already sampled legacy `value_goals` XY:
 current/future/random mixture=.2/.5/.3 with legacy future-goal sampling. This
 does not consume extra RNG or modify legacy samples/rewards/masks/goals.
 
@@ -273,21 +300,37 @@ the training environment, dataset, checkpoint or official evaluation.
 
 Host: 32 logical CPUs, about 60 GiB RAM with about 50 GiB available at audit.
 Two RTX 4090 24 GiB devices. Sandbox nvidia-smi failed, but non-invasive host
-inspection and a JAX calculation succeeded. GPU 0 has a ToDesk process; it was
-left alone. GPU 1 was empty and is the only assigned training GPU.
+inspection and a JAX calculation succeeded. GPU 0 has a ToDesk process (PID
+42218, `/opt/todesk/bin/ToDesk_Session`, about 850 MiB); both GPUs have enough
+free memory. The user explicitly requested both GPUs. The launcher permits
+only that exact PID AND executable as a background exception; all other
+compute occupancy remains an error. ToDesk is not stopped or modified.
 
 Smoke tmux: `nav-gp-smoke-20261012`; launcher PID at start: 396871.
 Smoke logs and immutable source are in the evidence directory's `smoke/`.
-Formal launch gates have passed. Assigned GPU: 1 only, one process at a time.
-Formal tmux session: `nav-global-position-20261013`.
-Launcher PID: 570496; first training PID: 570752. Both were observed running
-under the tmux session. GPU 1 had 1058 MiB assigned to the training process at
-the post-launch audit; GPU 0's existing ToDesk process remained untouched.
-Launcher log: `/home/eai/Research/Navigation/20261013_global_potential_position_latent_antmaze_giant/launcher.log`.
-Launch identity and last verified status:
-`/home/eai/Research/Navigation/20261013_global_potential_position_latent_antmaze_giant/launch.json`.
+Old formal launcher PID 570496 and training PID 570752 stopped cleanly on the
+scope correction; the original run is cancelled, not a training-method failure.
+Its frozen source signature was
+`e4ec2f17089bac1edfc1e3376cbbd20ca929e440ed6c9b8973b8a66571fce8a1`.
+
+New-task preflight: `/home/eai/Research/Navigation/preflight_global_position_four_tasks_20261013`.
+It runs four conditions x three additional tasks x 2000 updates, then the CPU
+value/local-execution probes, on GPUs 0 and 1. New study-runner validation:
+27 tests passed, including exact PID/executable exception matching and the
+16-run task/seed/config matrix.
+All 12 short runs and their diagnostics completed successfully. Recorded metrics
+were finite; every P condition had zero high gradient and nonzero low gradient
+to its position encoder. Maximum observed Humanoid state-restoration error was
+2.17e-7; Point state restoration also passed. G-only and G+P Global metrics
+were exactly equal in both Humanoid tasks. Evidence: `smoke_audit.json` and
+each run's `diagnostics/` in the new-task preflight directory. These 2000-update
+scores are implementation checks, not final performance comparisons.
+
+Corrected formal tmux session: `nav-global-position-four-20261013`.
+Launcher log: `/home/eai/Research/Navigation/20261013_global_position_four_tasks_seed0/launcher.log`.
+Launch identity: `/home/eai/Research/Navigation/20261013_global_position_four_tasks_seed0/launch.json`.
 Run logs and checkpoints use
-`<results>/runs/<baseline|g_only|p_only|g_plus_p>/antmaze-giant-navigate-v0/seed_<000|001|002>/attempt_000/`:
+`<results>/runs/<baseline|g_only|p_only|g_plus_p>/<environment>/seed_000/attempt_000/`:
 `stdout.log`, `run.json`, `artifacts/train.csv`, `artifacts/eval.csv`,
 `artifacts/params_{800000,900000,1000000}.pkl`, sampler sidecars and diagnostic
 JSON/logs. Resumes must use a new artifact directory and a matching signature.
@@ -296,7 +339,7 @@ The queue stops after a training/probe error, never silently changes methods or
 restarts from an uncertain checkpoint. No automatic hyperparameter tuning or
 additional environment runs are authorized by this campaign. Results become
 formal only when all three designated checkpoint scores exist for that seed;
-across-seed SD is shown only after all declared seeds have completed.
+across-seed SD is not estimated for this seed-0-only campaign.
 
 ## Interpretation limits and next steps
 
@@ -307,4 +350,4 @@ clipping, temporal reward scale, additional Global parameters, and label drift
 remain alternative explanations. No learned adaptive HRM halting or online
 queryable planning is claimed. Do not expand the algorithm in response to
 poor early success. Source/config are frozen before the formal four-condition
-queue, seed 0 first and seeds 1/2 if preceding runs finish without errors.
+queue, with only the user's four tasks and seed 0.

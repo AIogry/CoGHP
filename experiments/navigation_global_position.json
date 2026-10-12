@@ -1,5 +1,5 @@
 {
-  "study_id": "navigation_global_position_latent",
+  "study_id": "navigation_global_position_four_tasks_seed0",
   "question": "Do position-latent commands and independently trained temporally abstracted global values improve navigation, separately and together?",
   "interpretation": "Baseline is vanilla Mixer planner + HRM H2L2 truncated executor. P is a command-learning protocol, not pure information deletion; G is a position-goal OTA-style adaptation, not an unmodified OTA reproduction.",
   "seed_major_order": true,
@@ -74,9 +74,7 @@
     "baseline": {
       "agent": "navigation_coghp",
       "seeds": [
-        0,
-        1,
-        2
+        0
       ],
       "overrides": {
         "command_content": "full_state",
@@ -86,9 +84,7 @@
     "g_only": {
       "agent": "navigation_coghp",
       "seeds": [
-        0,
-        1,
-        2
+        0
       ],
       "overrides": {
         "command_content": "full_state",
@@ -98,9 +94,7 @@
     "p_only": {
       "agent": "navigation_coghp",
       "seeds": [
-        0,
-        1,
-        2
+        0
       ],
       "overrides": {
         "command_content": "position",
@@ -110,9 +104,7 @@
     "g_plus_p": {
       "agent": "navigation_coghp",
       "seeds": [
-        0,
-        1,
-        2
+        0
       ],
       "overrides": {
         "command_content": "position",
@@ -121,6 +113,26 @@
     }
   },
   "environments": {
+    "humanoidmaze-large-navigate-v0": {
+      "num_subgoals": 1,
+      "subgoal_steps": 100,
+      "feature_dim": 128,
+      "lr": 0.0003,
+      "discount": 0.995
+    },
+    "humanoidmaze-giant-navigate-v0": {
+      "num_subgoals": 2,
+      "subgoal_steps": 100,
+      "feature_dim": 128,
+      "lr": 0.0003,
+      "discount": 0.995
+    },
+    "pointmaze-giant-navigate-v0": {
+      "num_subgoals": 3,
+      "subgoal_steps": 50,
+      "feature_dim": 32,
+      "lr": 0.00001
+    },
     "antmaze-giant-navigate-v0": {
       "num_subgoals": 2,
       "subgoal_steps": 50,

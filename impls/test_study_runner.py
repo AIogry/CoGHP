@@ -30,12 +30,18 @@ class StudyRunnerTest(unittest.TestCase):
     def test_global_position_matrix_seed_priority_and_isolated_axes(self):
         study = runner.load_study(ROOT / 'experiments/navigation_global_position.json')
         jobs = runner.plan(study, self.root)
-        self.assertEqual(len(jobs), 12)
-        self.assertEqual([j['seed'] for j in jobs], [0]*4+[1]*4+[2]*4)
+        self.assertEqual(len(jobs), 16)
+        self.assertEqual([j['seed'] for j in jobs], [0]*16)
         self.assertEqual([j['method'] for j in jobs[:4]], ['baseline','g_only','p_only','g_plus_p'])
-        common = [{k:v for k,v in j['agent'].items()
-                   if k not in ('command_content','high_weight_source')} for j in jobs]
-        self.assertTrue(all(c == common[0] for c in common))
+        expected = runner.load_study(ROOT / 'experiments/navigation_hrm_action_multiseed_extension.json')
+        self.assertEqual(set(study['environments']), {'pointmaze-giant-navigate-v0', 'antmaze-giant-navigate-v0',
+                                                    'humanoidmaze-large-navigate-v0', 'humanoidmaze-giant-navigate-v0'})
+        for environment in study['environments']:
+            self.assertEqual(study['environments'][environment], expected['environments'][environment])
+            common = [{k:v for k,v in j['agent'].items()
+                       if k not in ('command_content','high_weight_source')}
+                      for j in jobs if j['environment'] == environment]
+            self.assertTrue(all(c == common[0] for c in common))
         self.assertEqual(study['metric']['steps'], [800000,900000,1000000])
 
     def test_diagnostics_are_cpu_only_and_fail_closed(self):
@@ -338,6 +344,15 @@ for step in (800000,900000,1000000): (p/f'params_{step}.pkl').write_bytes(b'fixt
         with mock.patch.object(subprocess, 'check_output', side_effect=replies):
             with self.assertRaisesRegex(ValueError, 'compute processes'):
                 runner.check_gpu_occupancy(['1'])
+
+    def test_gpu_exception_requires_both_pid_and_executable(self):
+        replies = ['0, GPU-a, A\n1, GPU-b, B\n', 'GPU-a, 234, /opt/todesk/bin/ToDesk_Session\n']
+        with mock.patch.object(subprocess, 'check_output', side_effect=replies):
+            self.assertIn('0', runner.check_gpu_occupancy(['0'], {'234':'/opt/todesk/bin/ToDesk_Session'}))
+        for allowed in ({'234':'/different'}, {'235':'/opt/todesk/bin/ToDesk_Session'}):
+            with mock.patch.object(subprocess, 'check_output', side_effect=replies):
+                with self.assertRaisesRegex(ValueError, 'compute processes'):
+                    runner.check_gpu_occupancy(['0'], allowed)
 
     def test_legacy_hrm_launcher_matches_all_six_environment_recipes(self):
         capture = self.root / 'arguments.json'

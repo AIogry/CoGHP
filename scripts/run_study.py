@@ -248,23 +248,32 @@ def freeze(campaign, study, datasets, source_root=None):
     return source, provenance
 
 
-def check_gpu_occupancy(gpus):
+def check_gpu_occupancy(gpus, allowed_processes=None):
     output = subprocess.check_output(
         ['nvidia-smi', '--query-gpu=index,uuid,name', '--format=csv,noheader'], text=True)
     devices = {row[0].strip(): (row[1].strip(), row[2].strip()) for row in csv.reader(output.splitlines())}
     if set(gpus) - set(devices):
         raise ValueError(f'Requested GPU IDs absent from nvidia-smi: {gpus}')
     processes = subprocess.check_output(
-        ['nvidia-smi', '--query-compute-apps=gpu_uuid,pid', '--format=csv,noheader'], text=True)
+        ['nvidia-smi', '--query-compute-apps=gpu_uuid,pid,process_name', '--format=csv,noheader'], text=True)
     selected = {devices[gpu][0] for gpu in gpus}
-    occupied = [line for line in processes.splitlines() if line.split(',')[0].strip() in selected]
+    allowed_processes = allowed_processes or {}
+    occupied = []
+    for line in processes.splitlines():
+        row = [part.strip() for part in next(csv.reader([line]))]
+        if row[0] not in selected:
+            continue
+        # Exact PID AND executable matching, never a blanket occupancy bypass.
+        if len(row) >= 3 and allowed_processes.get(row[1]) == row[2]:
+            continue
+        occupied.append(line)
     if occupied:
         raise ValueError('Selected GPUs already have compute processes: ' + '; '.join(occupied))
     return devices
 
 
-def check_gpus(gpus, dataset_root, source):
-    devices = check_gpu_occupancy(gpus)
+def check_gpus(gpus, dataset_root, source, allowed_processes=None):
+    devices = check_gpu_occupancy(gpus, allowed_processes)
     probe = ('import jax, ogbench, pathlib; '
              'assert jax.default_backend() == "gpu", jax.devices(); '
              'assert pathlib.Path(ogbench.__file__).resolve().is_relative_to(pathlib.Path.cwd().parent); '
@@ -525,6 +534,8 @@ def main(argv=None):
                         help='Pool with another campaign after checking protocol, source and data identity.')
     parser.add_argument('--dataset-root', type=Path, default=Path('/data/qijunrong/06-RL/offline-rl/data/raw_ogbench'))
     parser.add_argument('--gpus', default='0,1', help='Comma-separated physical GPU indices; one worker per GPU.')
+    parser.add_argument('--allow-gpu-process', action='append', default=[], metavar='PID=EXECUTABLE',
+                        help='Explicitly permit a verified background GPU process; exact PID and executable match required.')
     parser.add_argument('--methods', help='Comma-separated method IDs from the study.')
     parser.add_argument('--environments', help='Comma-separated complete environment IDs.')
     parser.add_argument('--attempt', type=int, default=0, help='Explicit retry identity. Never overwrites earlier attempts.')
@@ -535,6 +546,12 @@ def main(argv=None):
     modes.add_argument('--prepare', action='store_true', help='Hash data and freeze code without querying GPUs or starting training.')
     modes.add_argument('--summarize', action='store_true', help='Read only exact-step results; print to the terminal.')
     args = parser.parse_args(argv)
+    allowed_processes = {}
+    for item in args.allow_gpu_process:
+        pid, sep, executable = item.partition('=')
+        if not sep or not pid.isdigit() or int(pid) <= 0 or not executable.startswith('/') or pid in allowed_processes:
+            raise ValueError('GPU process exception must be a unique positive PID=absolute/executable/path.')
+        allowed_processes[pid] = executable
     campaign = args.run_root.resolve()
     dataset_root = args.dataset_root.resolve()
     if args.attempt < 0:
@@ -602,7 +619,7 @@ def main(argv=None):
         return 0
     if not args.prepare:
         print('Checking GPU occupancy...', flush=True)
-        check_gpu_occupancy(gpus)
+        check_gpu_occupancy(gpus, allowed_processes)
     print('Hashing datasets and freezing actual source...', flush=True)
     datasets = dataset_inventory(study, dataset_root, hash_files=True)
     source, provenance = freeze(campaign, study, datasets, args.source_root)
@@ -616,12 +633,15 @@ def main(argv=None):
         except BlockingIOError as error:
             raise ValueError('Another launcher owns this campaign.') from error
         print('Checking JAX on the assigned GPUs using frozen source...', flush=True)
-        check_gpus(gpus, dataset_root, source)
+        check_gpus(gpus, dataset_root, source, allowed_processes)
+        write_json(campaign / 'launcher_runtime.json', dict(
+            started_at=now(), launcher_pid=os.getpid(), physical_gpus=gpus,
+            allowed_gpu_processes=allowed_processes))
         stop = threading.Event()
         previous = {sig: signal.signal(sig, lambda *_: stop.set()) for sig in (signal.SIGINT, signal.SIGTERM)}
         try:
             def run_and_report(job, gpu):
-                check_gpu_occupancy([gpu])
+                check_gpu_occupancy([gpu], allowed_processes)
                 result = run_one(job, gpu, study, source, provenance,
                                  dataset_root, args.wandb_mode, stop)
                 # Atomically publish completed exact-checkpoint scores plus the
