@@ -4,8 +4,10 @@ This report documents the implementation requested in `docs/10-12/prompt1.md`.
 **Scope corrected by the user on 2026-10-13:** use GPU 0 AND GPU 1, seed 0
 ONLY, on HumanoidMaze-Large/Giant, PointMaze-Giant and AntMaze-Giant. The four
 conditions therefore make **16 formal runs**. All 12 new-task preflight runs and
-their diagnostics passed; the revised formal queue is ready to launch. No final
-1M result exists.
+their diagnostics passed. The revised formal queue launched at **2026-10-13
+00:46 Asia/Shanghai**: GPU 0 is training HumanoidMaze-Large Baseline, and GPU 1
+is training HumanoidMaze-Large G-only, both seed 0; fourteen runs are queued.
+No final 1M result exists.
 
 The earlier AntMaze-only, three-seed queue was stopped at 00:33 Asia/Shanghai.
 Its Baseline had logged 150,000 updates and had no saved checkpoint yet. The
@@ -17,6 +19,9 @@ Core implementation origin: `7d24426cd5d2aa5158753d0a91aaa75836eef76a`.
 The scope correction changes experiment configuration and GPU process checks;
 the agent, training losses and dataset implementation are unchanged. The new
 campaign records its own exact commit and source hash in `campaign.json`.
+Corrected training commit: `17e819fc22674b9072b63b54af1887b42efd18b6`.
+Source signature: `56e69af79d1d2d89f769f9df88b23da355b46f0d1b03ac58cbb28695477e5c20`.
+The source was frozen from a clean worktree and verified against its file hashes.
 
 ## Research and scope
 
@@ -327,6 +332,10 @@ each run's `diagnostics/` in the new-task preflight directory. These 2000-update
 scores are implementation checks, not final performance comparisons.
 
 Corrected formal tmux session: `nav-global-position-four-20261013`.
+Launcher PID: 814530. Initial training PIDs: 815163 (GPU 0, Baseline) and
+815164 (GPU 1, G-only). The host GPU audit observed both training processes;
+the existing ToDesk process remained in place. Subsequent PIDs and statuses
+are recorded in each run's `run.json`.
 Launcher log: `/home/eai/Research/Navigation/20261013_global_position_four_tasks_seed0/launcher.log`.
 Launch identity: `/home/eai/Research/Navigation/20261013_global_position_four_tasks_seed0/launch.json`.
 Run logs and checkpoints use
