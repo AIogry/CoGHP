@@ -1,11 +1,18 @@
 # Global Potential / Position-Latent Navigation implementation and experiment report
 
 This report documents the implementation requested in `docs/10-12/prompt1.md`.
-Status at implementation freeze: correctness, four GPU smoke runs, paired local
-execution and exact process-resume checks passed. Formal launch is the next
-authorized action. **No final 1M-update result exists yet.** The campaign's
+Status at handoff: formal training launched on **2026-10-13 00:16 Asia/Shanghai**.
+Baseline seed 0 has logged 10,000 updates with finite training/validation
+metrics; eleven other runs are queued. Correctness, four GPU smoke runs, paired
+local execution and exact process-resume checks passed. **No final 1M-update
+result exists yet.** The campaign's
 `campaign.json`, per-run `run.json` and `results.txt` are the live authorities;
-the source snapshot of this report records pre-launch evidence.
+the immutable source snapshot of this report records pre-launch evidence.
+
+Implementation commit: `7d24426cd5d2aa5158753d0a91aaa75836eef76a`.
+Source signature: `e4ec2f17089bac1edfc1e3376cbbd20ca929e440ed6c9b8973b8a66571fce8a1`.
+The launch snapshot contained 185 files and a clean Git status. This handoff
+update changes documentation only; training continues to use that exact source.
 
 ## Research and scope
 
@@ -273,7 +280,12 @@ Smoke tmux: `nav-gp-smoke-20261012`; launcher PID at start: 396871.
 Smoke logs and immutable source are in the evidence directory's `smoke/`.
 Formal launch gates have passed. Assigned GPU: 1 only, one process at a time.
 Formal tmux session: `nav-global-position-20261013`.
+Launcher PID: 570496; first training PID: 570752. Both were observed running
+under the tmux session. GPU 1 had 1058 MiB assigned to the training process at
+the post-launch audit; GPU 0's existing ToDesk process remained untouched.
 Launcher log: `/home/eai/Research/Navigation/20261013_global_potential_position_latent_antmaze_giant/launcher.log`.
+Launch identity and last verified status:
+`/home/eai/Research/Navigation/20261013_global_potential_position_latent_antmaze_giant/launch.json`.
 Run logs and checkpoints use
 `<results>/runs/<baseline|g_only|p_only|g_plus_p>/antmaze-giant-navigate-v0/seed_<000|001|002>/attempt_000/`:
 `stdout.log`, `run.json`, `artifacts/train.csv`, `artifacts/eval.csv`,
