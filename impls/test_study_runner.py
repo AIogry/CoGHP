@@ -27,6 +27,39 @@ class StudyRunnerTest(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.study = runner.load_study(runner.DEFAULT_STUDY)
 
+    def test_global_position_matrix_seed_priority_and_isolated_axes(self):
+        study = runner.load_study(ROOT / 'experiments/navigation_global_position.json')
+        jobs = runner.plan(study, self.root)
+        self.assertEqual(len(jobs), 12)
+        self.assertEqual([j['seed'] for j in jobs], [0]*4+[1]*4+[2]*4)
+        self.assertEqual([j['method'] for j in jobs[:4]], ['baseline','g_only','p_only','g_plus_p'])
+        common = [{k:v for k,v in j['agent'].items()
+                   if k not in ('command_content','high_weight_source')} for j in jobs]
+        self.assertTrue(all(c == common[0] for c in common))
+        self.assertEqual(study['metric']['steps'], [800000,900000,1000000])
+
+    def test_diagnostics_are_cpu_only_and_fail_closed(self):
+        study = runner.load_study(ROOT / 'experiments/navigation_global_position.json')
+        job = runner.plan(study, self.root, methods='p_only')[0]
+        Path(job['run_dir']).mkdir(parents=True)
+        observed = []
+        def probe(cmd, **kwargs):
+            observed.append((cmd, kwargs['env']))
+            return subprocess.CompletedProcess(cmd, 1)
+        with mock.patch.object(runner.subprocess, 'run', side_effect=probe):
+            result = runner.run_diagnostics(job, study, ROOT, self.root)
+        self.assertEqual(result['status'], 'failed')
+        self.assertEqual(len(observed), 1)
+        self.assertEqual(observed[0][1]['JAX_PLATFORMS'], 'cpu')
+        self.assertEqual(observed[0][1]['CUDA_VISIBLE_DEVICES'], '')
+
+    def test_diagnostic_checkpoints_must_be_saved(self):
+        self.study['diagnostics'] = {'steps':[123]}
+        path = self.root / 'study.json'
+        path.write_text(json.dumps(self.study))
+        with self.assertRaisesRegex(ValueError, 'saved checkpoints'):
+            runner.load_study(path)
+
     def test_matrix_and_matched_environment_settings(self):
         jobs = runner.plan(self.study, self.root)
         self.assertEqual(len(jobs), 24)

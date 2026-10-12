@@ -15,6 +15,7 @@ from agents import agents
 from ml_collections import config_flags
 from utils.datasets import Dataset, GCDataset, HGCDataset, MultiHGCDataset
 from utils.env_utils import make_env_and_datasets
+from utils.navigation_dataset import NavigationDataset, position_statistics
 from utils.evaluation import derive_seed, evaluate
 from utils.flax_utils import (
     build_checkpoint_metadata,
@@ -172,6 +173,26 @@ def main(_):
         frame_stack=config['frame_stack'],
         seed=environment_seed,
     )
+    navigation_study = config['agent_name'] == 'navigation_coghp'
+    if navigation_study:
+        stats = position_statistics(train_dataset)
+        config.position_mean = tuple(stats['mean'])
+        config.position_scale = tuple(stats['scale'])
+        if not hasattr(env.unwrapped, '_goal_tol'):
+            raise ValueError('Navigation study requires an explicit environment goal tolerance.')
+        config.global_goal_tolerance = float(env.unwrapped._goal_tol)
+        with open(os.path.join(FLAGS.save_dir, 'position_statistics.json'), 'w') as f:
+            json.dump(stats, f, indent=2)
+        # Resolve data-dependent semantics before recording flags/signatures.
+        checkpoint_metadata = build_checkpoint_metadata(
+            config, environment=FLAGS.env_name, seed=FLAGS.seed,
+            git_commit=FLAGS.experiment_git_commit, code_signature=FLAGS.experiment_code_signature,
+            resume=FLAGS.restore_path is not None, restore_path=FLAGS.restore_path)
+        with open(os.path.join(FLAGS.save_dir, 'checkpoint_metadata.json'), 'w') as f:
+            json.dump(checkpoint_metadata, f, indent=2)
+        with open(os.path.join(FLAGS.save_dir, 'flags.json'), 'w') as f:
+            json.dump(get_flag_dict(), f)
+        wandb.config.update({'agent': config.to_dict()}, allow_val_change=True)
 
     dataset_class = {
         'GCDataset': GCDataset,
@@ -189,6 +210,10 @@ def main(_):
             config,
             rng=np.random.default_rng(validation_dataset_seed),
         )
+    if navigation_study:
+        train_dataset = NavigationDataset(train_dataset, config)
+        if val_dataset is not None:
+            val_dataset = NavigationDataset(val_dataset, config)
 
     reproducibility_info = {
         'seed': FLAGS.seed,
@@ -230,8 +255,18 @@ def main(_):
         example_batch['actions'],
         config,
     )
+    if navigation_study:
+        counts = {
+            name: sum(int(np.prod(leaf.shape)) for leaf in jax.tree_util.tree_leaves(params))
+            for name, params in agent.network.params.items()
+        }
+        with open(os.path.join(FLAGS.save_dir, 'model_parameter_counts.json'), 'w') as f:
+            json.dump(dict(by_group=counts, total_stored_parameters=sum(counts.values()),
+                           note='Includes target copies and any inactive legacy modules; not an active-compute count.'),
+                      f, indent=2)
 
-    # Restore agent.
+    # Restore agent and, for this new study, the exact sampler continuation.
+    first_update = 1
     if FLAGS.restore_path is not None:
         agent = restore_agent(
             agent,
@@ -240,6 +275,16 @@ def main(_):
             expected_checkpoint_metadata=checkpoint_metadata,
             require_checkpoint_metadata=FLAGS.checkpoint_signature_required,
         )
+        if navigation_study and not FLAGS.eval_only:
+            state_path = os.path.join(FLAGS.restore_path, f'training_state_{FLAGS.restore_epoch}.json')
+            with open(state_path) as f:
+                sampler_state = json.load(f)
+            if int(agent.network.step) != FLAGS.restore_epoch + 1:
+                raise ValueError('Checkpoint update count does not match restore epoch.')
+            train_dataset.rng.bit_generator.state = sampler_state['train_rng']
+            if val_dataset is not None:
+                val_dataset.rng.bit_generator.state = sampler_state['validation_rng']
+            first_update = FLAGS.restore_epoch + 1
     if FLAGS.eval_only:
         if FLAGS.restore_path is None or FLAGS.restore_epoch is None:
             raise ValueError('--eval_only requires both --restore_path and --restore_epoch.')
@@ -251,7 +296,8 @@ def main(_):
     eval_logger = CsvLogger(os.path.join(FLAGS.save_dir, 'eval.csv'))
     first_time = time.time()
     last_time = time.time()
-    for i in tqdm.tqdm(range(1, FLAGS.train_steps + 1), smoothing=0.1, dynamic_ncols=True):
+    previous_position_probe = None
+    for i in tqdm.tqdm(range(first_update, FLAGS.train_steps + 1), smoothing=0.1, dynamic_ncols=True):
         # Update agent.
         if not FLAGS.eval_only:
             batch = train_dataset.sample(config['batch_size'])
@@ -296,6 +342,21 @@ def main(_):
                         rng=validation_rollout_key,
                     )
                     train_metrics.update(rollout_info)
+                if navigation_study and config['command_content'] == 'position':
+                    train_metrics.update(agent.gradient_diagnostics(val_batch))
+                    probe = np.asarray(agent.position_probe(val_batch))
+                    train_metrics['position_drift/mse_since_previous_log'] = (
+                        0.0 if previous_position_probe is None else float(np.mean((probe - previous_position_probe) ** 2)))
+                    train_metrics['position_drift/has_previous'] = float(previous_position_probe is not None)
+                    previous_position_probe = probe
+                    if i % FLAGS.eval_interval == 0 or i in save_steps:
+                        np.savez_compressed(os.path.join(FLAGS.save_dir, f'position_probe_{i}.npz'),
+                                            latent=probe, observations=val_batch['observations'],
+                                            positions=val_batch['high_actor_targets'][..., :2])
+            if navigation_study:
+                bad = [key for key, value in train_metrics.items() if not np.isfinite(np.asarray(value)).all()]
+                if bad:
+                    raise FloatingPointError(f'Nonfinite navigation metrics at update {i}: {bad}')
             train_metrics['time/epoch_time'] = (time.time() - last_time) / FLAGS.log_interval
             train_metrics['time/total_time'] = time.time() - first_time
             last_time = time.time()
@@ -355,6 +416,11 @@ def main(_):
                 i,
                 checkpoint_metadata=checkpoint_metadata,
             )
+            if navigation_study:
+                sampler_state = dict(train_rng=train_dataset.rng.bit_generator.state,
+                                     validation_rng=val_dataset.rng.bit_generator.state if val_dataset is not None else None)
+                with open(os.path.join(FLAGS.save_dir, f'training_state_{i}.json'), 'w') as f:
+                    json.dump(sampler_state, f)
 
     train_logger.close()
     eval_logger.close()

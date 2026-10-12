@@ -620,6 +620,9 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
         temperature: float = 1.0,
         action_chain_source: Optional[str] = None,
         return_diagnostics: bool = False,
+        goal_rep_override: Optional[jax.Array] = None,
+        detach_planner_commands: bool = False,
+        return_latents: bool = False,
     ):
         """Generate subgoals and one primitive-action distribution."""
 
@@ -628,20 +631,36 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
             seed = jax.random.PRNGKey(0)
         planner_seed, free_planner_seed, action_seed = jax.random.split(seed, 3)
 
-        features = self._encode_inputs(observations, goals)
+        if goal_rep_override is None:
+            features = self._encode_inputs(observations, goals)
+        else:
+            # Position commands are encoded outside this module. The legacy
+            # gc_encoder remains exclusively on the unchanged default path.
+            features = jnp.concatenate(
+                [self.feature_embed(observations[:, None, :]),
+                 goal_rep_override[:, None, :]], axis=1,
+            )
+        planner_features = features
+        planner_subgoals = subgoal_reps
+        if detach_planner_commands:
+            planner_features = jnp.concatenate(
+                [features[:, :1], jax.lax.stop_gradient(features[:, 1:])], axis=1,
+            )
+            if subgoal_reps is not None:
+                planner_subgoals = jax.lax.stop_gradient(subgoal_reps)
         if features.shape[1] != 2:
             raise ValueError(
                 'Expected exactly observation and goal feature tokens; got '
                 f'{features.shape[1]} tokens.'
             )
         high_dist_list, predicted_subgoals = self._run_planner(
-            features,
-            teacher_subgoals=subgoal_reps,
+            planner_features,
+            teacher_subgoals=planner_subgoals,
             temperature=temperature,
             seed=planner_seed,
         )
         action_chain = self._resolve_action_chain(
-            features,
+            planner_features,
             subgoal_reps,
             predicted_subgoals,
             temperature,
@@ -696,6 +715,9 @@ class HRMActionCoGHPPolicyNetwork(nn.Module):
             temperature=temperature,
         )
         predicted_actions = action_dist.sample(seed=action_seed)
+
+        if return_latents:
+            return high_dist_list, action_dist, predicted_actions, predicted_subgoals
 
         self.sow('intermediates', 'action_token_sequence', action_tokens)
         self.sow('intermediates', 'action_core_output', core_output)

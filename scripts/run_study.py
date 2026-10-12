@@ -10,6 +10,7 @@ import argparse
 import csv
 import fcntl
 import hashlib
+import io
 import json
 import math
 import os
@@ -63,7 +64,7 @@ def load_study(path):
         raise ValueError('Study must contain methods and environments.')
     for name, method in study['methods'].items():
         safe_name(name)
-        if method['agent'] not in ('coghp', 'hrm_action_coghp'):
+        if method['agent'] not in ('coghp', 'hrm_action_coghp', 'navigation_coghp'):
             raise ValueError(f'Unsupported agent: {method["agent"]}')
         environments = method.get('environments', list(study['environments']))
         if (not environments or len(environments) != len(set(environments))
@@ -95,6 +96,16 @@ def load_study(path):
     for step in protocol.get('save_steps', []):
         if type(step) is not int or not 0 < step <= protocol['train_steps']:
             raise ValueError(f'Invalid checkpoint step: {step}')
+    if study.get('diagnostics'):
+        diagnostic_steps = study['diagnostics']['steps']
+        saved = set(protocol.get('save_steps', [])) | set(
+            range(protocol['save_interval'], protocol['train_steps'] + 1, protocol['save_interval']))
+        if not diagnostic_steps or set(diagnostic_steps) - saved:
+            raise ValueError('Diagnostic steps must have saved checkpoints.')
+        for key in ('value_samples', 'local_episodes', 'local_budget'):
+            value = study['diagnostics'].get(key, 1)
+            if type(value) is not int or value <= 0:
+                raise ValueError(f'Invalid diagnostic {key}')
     return study
 
 
@@ -126,6 +137,8 @@ def plan(study, campaign, methods=None, environments=None, attempt=0):
                                  agent_name=spec['agent'], agent=agent, attempt=attempt,
                                  run_dir=str(campaign / 'runs' / method / environment
                                              / f'seed_{seed:03d}' / f'attempt_{attempt:03d}')))
+    if study.get('seed_major_order', False):
+        jobs.sort(key=lambda job: job['seed'])
     return jobs
 
 
@@ -319,6 +332,40 @@ def validate_completed(job, study):
     return read_metric(artifacts / 'eval.csv', study['metric'])
 
 
+def run_diagnostics(job, study, source, dataset_root):
+    """CPU-only, held-out probes AFTER training; never used to select actions."""
+    spec = study.get('diagnostics')
+    if not spec or job['agent_name'] != 'navigation_coghp':
+        return dict(status='not_requested')
+    directory = Path(job['run_dir']) / 'diagnostics'
+    directory.mkdir(exist_ok=False)
+    artifacts = Path(job['run_dir']) / 'artifacts'
+    env = child_environment(source, dataset_root, '', job['seed'])
+    env.update(JAX_PLATFORMS='cpu', OPENBLAS_NUM_THREADS='1')
+    records = []
+    for step in spec['steps']:
+        probes = [('values', 'diagnose_navigation_values.py',
+                   [f'--samples={spec.get("value_samples", 2048)}'])]
+        if job['agent']['command_content'] == 'position':
+            probes.append(('commands', 'diagnose_navigation_commands.py',
+                           [f'--episodes={spec.get("local_episodes", 24)}',
+                            f'--budget={spec.get("local_budget", 100)}']))
+        for name, script, extra in probes:
+            output = directory / f'{name}_{step}.json'
+            cmd = [sys.executable, '-u', str(source / 'scripts' / script),
+                   f'--artifacts={artifacts}', f'--step={step}',
+                   f'--dataset-root={dataset_root}', f'--output={output}', *extra]
+            with (directory / f'{name}_{step}.log').open('x') as log:
+                result = subprocess.run(cmd, cwd=source, env=env, stdout=log,
+                                        stderr=subprocess.STDOUT, timeout=1800)
+            record = dict(probe=name, step=step, command=cmd,
+                          returncode=result.returncode, output=str(output))
+            records.append(record)
+            if result.returncode != 0:
+                return dict(status='failed', records=records)
+    return dict(status='completed', records=records)
+
+
 def run_one(job, gpu, study, source, provenance, dataset_root, wandb_mode, stop):
     run_dir = Path(job['run_dir'])
     run_dir.mkdir(parents=True, exist_ok=False)
@@ -327,7 +374,7 @@ def run_one(job, gpu, study, source, provenance, dataset_root, wandb_mode, stop)
     metadata = dict(job, status='running', started_at=now(), physical_gpu=gpu, command=cmd,
                     source_signature=provenance['code_signature'], source_dir=str(source),
                     git_commit=provenance['git_commit'], python=sys.executable,
-                    environment={k: env[k] for k in ('CUDA_VISIBLE_DEVICES', 'CUDA_DEVICE_ORDER',
+                    runtime_environment={k: env[k] for k in ('CUDA_VISIBLE_DEVICES', 'CUDA_DEVICE_ORDER',
                         'PYTHONPATH', 'PYTHONHASHSEED', 'OGBENCH_DATASET_DIR', 'XLA_FLAGS',
                         'XLA_PYTHON_CLIENT_PREALLOCATE', 'OMP_NUM_THREADS', 'MKL_NUM_THREADS')})
     write_json(run_dir / 'run.json', metadata)
@@ -358,12 +405,20 @@ def run_one(job, gpu, study, source, provenance, dataset_root, wandb_mode, stop)
         else:
             metadata['metric'] = validate_completed(job, study)
             metadata['status'] = 'completed'
+            # Keep valid training results even if an independent probe fails.
+            metadata['training_finished_at'] = now()
+            write_json(run_dir / 'run.json', metadata)
+            try:
+                metadata['diagnostics'] = run_diagnostics(job, study, source, dataset_root)
+            except (OSError, ValueError, subprocess.SubprocessError) as error:
+                metadata['diagnostics'] = dict(status='failed', error=str(error))
     except Exception as error:
         metadata.update(status='failed', error=str(error))
     metadata['finished_at'] = now()
     write_json(run_dir / 'run.json', metadata)
     print(f'{metadata["status"].upper()} {run_dir}', flush=True)
-    return 0 if metadata['status'] == 'completed' else 1
+    return int(metadata['status'] != 'completed'
+               or metadata.get('diagnostics', {}).get('status') == 'failed')
 
 
 def dispatch(jobs, gpus, runner, stop):
@@ -418,7 +473,9 @@ def validate_comparable_campaigns(current, reference):
         raise ValueError('Cannot combine campaigns: different training/model/environment source')
 
 
-def summarize(jobs, study, references=()):
+def summarize(jobs, study, references=(), output=None):
+    def emit(*args):
+        print(*args, file=output)
     entries = [(job, study) for job in jobs]
     for reference_jobs, reference_study in references:
         entries.extend((job, reference_study) for job in reference_jobs)
@@ -433,7 +490,7 @@ def summarize(jobs, study, references=()):
         expected_counts[group] = expected_counts.get(group, 0) + 1
     grouped = {}
     invalid = False
-    print('method | environment | seed | ' + ' | '.join(map(str, study['metric']['steps'])) + ' | mean (%)')
+    emit('method | environment | seed | ' + ' | '.join(map(str, study['metric']['steps'])) + ' | mean (%)')
     for job, run_study in sorted(entries, key=lambda item: (item[0]['environment'], item[0]['method'], item[0]['seed'])):
         path = Path(job['run_dir'])
         try:
@@ -442,20 +499,20 @@ def summarize(jobs, study, references=()):
                 raise ValueError(f'status={state["status"]}')
             metric = validate_completed(job, run_study)
             values = [100 * value for value in metric['values'].values()]
-            print(f'{job["method"]} | {job["environment"]} | {job["seed"]} | '
+            emit(f'{job["method"]} | {job["environment"]} | {job["seed"]} | '
                   + ' | '.join(f'{v:.2f}' for v in values) + f' | {100 * metric["mean"]:.2f}')
             grouped.setdefault((job['method'], job['environment']), []).append(metric['mean'])
         except (OSError, ValueError, KeyError) as error:
             invalid = True
-            print(f'{job["method"]} | {job["environment"]} | {job["seed"]} | INCOMPLETE: {error}')
-    print('\nAcross-seed summaries (sample standard deviation; no SD for a single seed):')
+            emit(f'{job["method"]} | {job["environment"]} | {job["seed"]} | INCOMPLETE: {error}')
+    emit('\nAcross-seed summaries (sample standard deviation; no SD for a single seed):')
     for (method, environment), values in grouped.items():
         expected = expected_counts[method, environment]
         if len(values) != expected:
-            print(f'{method} | {environment} | INCOMPLETE seeds={len(values)}/{expected}')
+            emit(f'{method} | {environment} | INCOMPLETE seeds={len(values)}/{expected}')
             continue
         sd = f'{100 * statistics.stdev(values):.2f}' if len(values) > 1 else 'N/A (single seed)'
-        print(f'{method} | {environment} | n={len(values)} | {100 * statistics.mean(values):.2f} | SD={sd}')
+        emit(f'{method} | {environment} | n={len(values)} | {100 * statistics.mean(values):.2f} | SD={sd}')
     return int(invalid)
 
 
@@ -525,6 +582,8 @@ def main(argv=None):
             if state['status'] != 'completed':
                 raise ValueError(f'Existing {state["status"]} attempt: {run_dir}. '
                                  'Select explicit --attempt N and filters to retry; no automatic overwrite/resume.')
+            if state.get('diagnostics', {}).get('status') == 'failed':
+                raise ValueError(f'Existing diagnostic failure requires investigation before dispatch: {run_dir}')
             validate_completed(job, study)
         else:
             pending.append(job)
@@ -561,9 +620,21 @@ def main(argv=None):
         stop = threading.Event()
         previous = {sig: signal.signal(sig, lambda *_: stop.set()) for sig in (signal.SIGINT, signal.SIGTERM)}
         try:
-            return dispatch(pending, gpus,
-                            lambda job, gpu: run_one(job, gpu, study, source, provenance,
-                                                     dataset_root, args.wandb_mode, stop), stop)
+            def run_and_report(job, gpu):
+                check_gpu_occupancy([gpu])
+                result = run_one(job, gpu, study, source, provenance,
+                                 dataset_root, args.wandb_mode, stop)
+                # Atomically publish completed exact-checkpoint scores plus the
+                # explicit incomplete queue after every run, including failures.
+                with report_lock:
+                    report = io.StringIO()
+                    summarize(jobs, study, output=report)
+                    temporary = campaign / 'results.txt.tmp'
+                    temporary.write_text(report.getvalue())
+                    temporary.replace(campaign / 'results.txt')
+                return result
+            report_lock = threading.Lock()
+            return dispatch(pending, gpus, run_and_report, stop)
         finally:
             for sig, handler in previous.items():
                 signal.signal(sig, handler)
