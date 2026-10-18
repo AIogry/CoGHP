@@ -10,28 +10,23 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-
-IMPLS_DIR = pathlib.Path(__file__).resolve().parent
+IMPLS_DIR = pathlib.Path(__file__).resolve().parents[1] / "impls"
 if str(IMPLS_DIR) not in sys.path:
     sys.path.insert(0, str(IMPLS_DIR))
 
-from utils.coghp_network import MixerBlock  # noqa: E402
-from utils.hrm import (  # noqa: E402
-    ACTION_CORE_TYPES,
-    CoGHPMixerBlock,
+from utils.coghp_network import MixerBlock
+from networks.backbones import (
+    BACKBONE_TYPES as ACTION_CORE_TYPES,
+    GELUMixerBlock as CoGHPMixerBlock,
     GELULayerNormMixerBlock,
-    HRM,
-    HRMCore,
-    Transformer,
-    TransformerBlock,
+    SequenceBackbone as HRMCore,
+    BlockStack as Transformer,
+    SequenceBlock as TransformerBlock,
 )
 
 
 def tree_norm(tree):
-    return sum(
-        float(jnp.linalg.norm(leaf))
-        for leaf in jax.tree_util.tree_leaves(tree)
-    )
+    return sum(float(jnp.linalg.norm(leaf)) for leaf in jax.tree_util.tree_leaves(tree))
 
 
 def parameter_count(tree):
@@ -54,7 +49,7 @@ def make_configurable_core(
     channel_hidden=9,
     mixer_intermediate_size=11,
     layernorm_affine=True,
-    core_type='hrm',
+    core_type="hrm",
     bptt=True,
 ):
     return HRMCore(
@@ -86,34 +81,32 @@ class OfficialHRMTest(unittest.TestCase):
             dtype=jnp.float32,
         ).reshape(2, 5, 128)
         core = make_configurable_core(
-            'swiglu_rmsnorm',
-            core_type='matched_feedforward',
+            "swiglu_rmsnorm",
+            core_type="matched_feedforward",
             mixer_intermediate_size=256,
         )
         variables = core.init(jax.random.PRNGKey(204), None, inputs)
-        self.assertEqual(set(variables), {'params'})
+        self.assertEqual(set(variables), {"params"})
         self.assertEqual(core.apply(variables, None, inputs)[0], {})
 
-        low_count = parameter_count(variables['params']['L_level'])
-        high_count = parameter_count(variables['params']['H_level'])
+        low_count = parameter_count(variables["params"]["L_level"])
+        high_count = parameter_count(variables["params"]["H_level"])
         self.assertEqual(low_count, 102144)
         self.assertEqual(high_count, 102144)
-        self.assertEqual(parameter_count(variables['params']), 204288)
+        self.assertEqual(parameter_count(variables["params"]), 204288)
 
         eager = core.apply(variables, None, inputs)[1]
-        compiled = jax.jit(
-            lambda value: core.apply(variables, None, value)[1]
-        )(inputs)
+        compiled = jax.jit(lambda value: core.apply(variables, None, value)[1])(inputs)
         self.assertEqual(eager.shape, inputs.shape)
         np.testing.assert_allclose(compiled, eager, rtol=1e-5, atol=1e-5)
 
         grads = jax.grad(
             lambda params: jnp.mean(
-                core.apply({'params': params}, None, inputs)[1] ** 2
+                core.apply({"params": params}, None, inputs)[1] ** 2
             )
-        )(variables['params'])
-        self.assertGreater(tree_norm(grads['L_level']), 0.0)
-        self.assertGreater(tree_norm(grads['H_level']), 0.0)
+        )(variables["params"])
+        self.assertGreater(tree_norm(grads["L_level"]), 0.0)
+        self.assertGreater(tree_norm(grads["H_level"]), 0.0)
         self.assertTrue(
             all(
                 bool(jnp.all(jnp.isfinite(leaf)))
@@ -133,17 +126,17 @@ class OfficialHRMTest(unittest.TestCase):
         baseline_params = baseline.init(
             jax.random.PRNGKey(9),
             inputs,
-        )['params']
+        )["params"]
         baseline_count = parameter_count(baseline_params)
         self.assertEqual(baseline_count, 8734)
         cases = (
             (
-                'coghp_gelu',
+                "coghp_gelu",
                 dict(token_hidden=32, channel_hidden=15),
                 8730,
             ),
             (
-                'gelu_layernorm',
+                "gelu_layernorm",
                 dict(
                     token_hidden=32,
                     channel_hidden=14,
@@ -152,7 +145,7 @@ class OfficialHRMTest(unittest.TestCase):
                 8698,
             ),
             (
-                'swiglu_rmsnorm',
+                "swiglu_rmsnorm",
                 dict(mixer_intermediate_size=11),
                 8778,
             ),
@@ -174,41 +167,39 @@ class OfficialHRMTest(unittest.TestCase):
                         None,
                         inputs,
                     )
-                    actual = parameter_count(variables['params'])
+                    actual = parameter_count(variables["params"])
                     self.assertEqual(actual, expected)
                     self.assertEqual(
                         set(variables),
-                        {'params', 'constants'}
-                        if core_type == 'hrm'
-                        else {'params'},
+                        {"params", "constants"} if core_type == "hrm" else {"params"},
                     )
-                    if block_type == 'gelu_layernorm':
+                    if block_type == "gelu_layernorm":
                         self.assertLessEqual(
                             abs(actual - baseline_count) / baseline_count,
                             0.01,
                         )
                     if reference_params is None:
-                        reference_params = variables['params']
+                        reference_params = variables["params"]
                     else:
                         self.assertEqual(
                             flattened_shapes(reference_params),
-                            flattened_shapes(variables['params']),
+                            flattened_shapes(variables["params"]),
                         )
                         for left, right in zip(
                             jax.tree_util.tree_leaves(reference_params),
-                            jax.tree_util.tree_leaves(variables['params']),
+                            jax.tree_util.tree_leaves(variables["params"]),
                         ):
                             np.testing.assert_array_equal(left, right)
 
     def test_cycles_reuse_identical_parameter_tree(self):
         inputs = jnp.ones((1, 5, 128), dtype=jnp.float32)
         settings = {
-            'coghp_gelu': dict(token_hidden=32, channel_hidden=15),
-            'gelu_layernorm': dict(
+            "coghp_gelu": dict(token_hidden=32, channel_hidden=15),
+            "gelu_layernorm": dict(
                 token_hidden=32,
                 channel_hidden=14,
             ),
-            'swiglu_rmsnorm': dict(mixer_intermediate_size=11),
+            "swiglu_rmsnorm": dict(mixer_intermediate_size=11),
         }
         for block_type, overrides in settings.items():
             with self.subTest(block_type=block_type):
@@ -225,8 +216,8 @@ class OfficialHRMTest(unittest.TestCase):
                     **overrides,
                 )
                 key = jax.random.PRNGKey(11)
-                params_h1l1 = h1l1.init(key, None, inputs)['params']
-                params_h2l2 = h2l2.init(key, None, inputs)['params']
+                params_h1l1 = h1l1.init(key, None, inputs)["params"]
+                params_h2l2 = h2l2.init(key, None, inputs)["params"]
                 self.assertEqual(
                     flattened_shapes(params_h1l1),
                     flattened_shapes(params_h2l2),
@@ -265,12 +256,12 @@ class OfficialHRMTest(unittest.TestCase):
                     local_variables = local_block.init(key, inputs)
                     original_variables = original_block.init(key, inputs)
                     self.assertEqual(
-                        flattened_shapes(local_variables['params']),
-                        flattened_shapes(original_variables['params']),
+                        flattened_shapes(local_variables["params"]),
+                        flattened_shapes(original_variables["params"]),
                     )
                     for local, original in zip(
-                        jax.tree_util.tree_leaves(local_variables['params']),
-                        jax.tree_util.tree_leaves(original_variables['params']),
+                        jax.tree_util.tree_leaves(local_variables["params"]),
+                        jax.tree_util.tree_leaves(original_variables["params"]),
                     ):
                         np.testing.assert_array_equal(local, original)
                     local_output = local_block.apply(local_variables, inputs)
@@ -289,22 +280,22 @@ class OfficialHRMTest(unittest.TestCase):
     def test_gelu_layernorm_affine_parameter_shapes(self):
         inputs = jnp.ones((1, 5, 128), dtype=jnp.float32)
         affine = make_configurable_core(
-            'gelu_layernorm',
+            "gelu_layernorm",
             token_hidden=32,
             channel_hidden=14,
             layernorm_affine=True,
-        ).init(jax.random.PRNGKey(13), None, inputs)['params']
+        ).init(jax.random.PRNGKey(13), None, inputs)["params"]
         no_affine = make_configurable_core(
-            'gelu_layernorm',
+            "gelu_layernorm",
             token_hidden=32,
             channel_hidden=14,
             layernorm_affine=False,
-        ).init(jax.random.PRNGKey(13), None, inputs)['params']
+        ).init(jax.random.PRNGKey(13), None, inputs)["params"]
         flat_affine = flax.traverse_util.flatten_dict(affine)
         norm_shapes = {
-            '/'.join(path): value.shape
+            "/".join(path): value.shape
             for path, value in flat_affine.items()
-            if 'norm' in '/'.join(path)
+            if "norm" in "/".join(path)
         }
         self.assertEqual(len(norm_shapes), 8)
         self.assertEqual(
@@ -313,7 +304,7 @@ class OfficialHRMTest(unittest.TestCase):
         )
         self.assertFalse(
             any(
-                'norm' in '/'.join(path)
+                "norm" in "/".join(path)
                 for path in flax.traverse_util.flatten_dict(no_affine)
             )
         )
@@ -336,40 +327,40 @@ class OfficialHRMTest(unittest.TestCase):
             layernorm_affine=True,
         )
         variables = block.init(jax.random.PRNGKey(17), inputs)
-        params = variables['params']
+        params = variables["params"]
 
         token_input = jnp.swapaxes(inputs, -1, -2)
         token_update = nn.gelu(
-            token_input @ params['token_dense1']['kernel']
-            + params['token_dense1']['bias']
+            token_input @ params["token_dense1"]["kernel"]
+            + params["token_dense1"]["bias"]
         )
         token_update = (
-            token_update @ params['token_dense2']['kernel']
-            + params['token_dense2']['bias']
+            token_update @ params["token_dense2"]["kernel"]
+            + params["token_dense2"]["bias"]
         )
         token_output = nn.LayerNorm(
             epsilon=1e-6,
             use_bias=True,
             use_scale=True,
         ).apply(
-            {'params': params['token_norm']},
+            {"params": params["token_norm"]},
             token_input + token_update,
         )
         channel_input = jnp.swapaxes(token_output, -1, -2)
         channel_update = nn.gelu(
-            channel_input @ params['channel_dense1']['kernel']
-            + params['channel_dense1']['bias']
+            channel_input @ params["channel_dense1"]["kernel"]
+            + params["channel_dense1"]["bias"]
         )
         channel_update = (
-            channel_update @ params['channel_dense2']['kernel']
-            + params['channel_dense2']['bias']
+            channel_update @ params["channel_dense2"]["kernel"]
+            + params["channel_dense2"]["bias"]
         )
         reference = nn.LayerNorm(
             epsilon=1e-6,
             use_bias=True,
             use_scale=True,
         ).apply(
-            {'params': params['channel_norm']},
+            {"params": params["channel_norm"]},
             channel_input + channel_update,
         )
         np.testing.assert_allclose(
@@ -393,9 +384,9 @@ class OfficialHRMTest(unittest.TestCase):
             dtype=jnp.float32,
         ).reshape(inputs.shape)
         for block_type in (
-            'swiglu_rmsnorm',
-            'coghp_gelu',
-            'gelu_layernorm',
+            "swiglu_rmsnorm",
+            "coghp_gelu",
+            "gelu_layernorm",
         ):
             for core_type in sorted(ACTION_CORE_TYPES):
                 with self.subTest(
@@ -442,20 +433,20 @@ class OfficialHRMTest(unittest.TestCase):
                     model_state = {
                         name: collection
                         for name, collection in variables.items()
-                        if name != 'params'
+                        if name != "params"
                     }
 
                     def loss(params):
                         _, output = core.apply(
-                            {'params': params, **model_state},
+                            {"params": params, **model_state},
                             None,
                             inputs,
                         )
                         return jnp.sum(output * weights)
 
-                    grads = jax.grad(loss)(variables['params'])
-                    self.assertGreater(tree_norm(grads['H_level']), 1e-8)
-                    self.assertGreater(tree_norm(grads['L_level']), 1e-8)
+                    grads = jax.grad(loss)(variables["params"])
+                    self.assertGreater(tree_norm(grads["H_level"]), 1e-8)
+                    self.assertGreater(tree_norm(grads["L_level"]), 1e-8)
                     self.assertTrue(
                         all(
                             bool(jnp.all(jnp.isfinite(leaf)))
@@ -478,15 +469,15 @@ class OfficialHRMTest(unittest.TestCase):
             GELULayerNormMixerBlock,
         )
         core_cases = (
-            ('matched_feedforward', 2, 2, 1, 1),
-            ('single_state_iterative', 2, 2, 2, 4),
-            ('hrm', 1, 1, 1, 1),
-            ('hrm', 2, 2, 2, 4),
+            ("matched_feedforward", 2, 2, 1, 1),
+            ("single_state_iterative", 2, 2, 2, 4),
+            ("hrm", 1, 1, 1, 1),
+            ("hrm", 2, 2, 2, 4),
         )
         for block_type in (
-            'swiglu_rmsnorm',
-            'coghp_gelu',
-            'gelu_layernorm',
+            "swiglu_rmsnorm",
+            "coghp_gelu",
+            "gelu_layernorm",
         ):
             for (
                 core_type,
@@ -516,7 +507,7 @@ class OfficialHRMTest(unittest.TestCase):
                     def capture(module, method_name):
                         return (
                             isinstance(module, block_classes)
-                            and method_name == '__call__'
+                            and method_name == "__call__"
                         )
 
                     (_, _), captured = jax.jit(
@@ -525,21 +516,19 @@ class OfficialHRMTest(unittest.TestCase):
                             None,
                             value,
                             capture_intermediates=capture,
-                            mutable=['intermediates'],
+                            mutable=["intermediates"],
                         )
                     )(inputs)
-                    flat = flax.traverse_util.flatten_dict(
-                        captured['intermediates']
-                    )
+                    flat = flax.traverse_util.flatten_dict(captured["intermediates"])
                     h_calls = sum(
                         len(values)
                         for path, values in flat.items()
-                        if path[0] == 'H_level' and path[-1] == '__call__'
+                        if path[0] == "H_level" and path[-1] == "__call__"
                     )
                     l_calls = sum(
                         len(values)
                         for path, values in flat.items()
-                        if path[0] == 'L_level' and path[-1] == '__call__'
+                        if path[0] == "L_level" and path[-1] == "__call__"
                     )
                     self.assertEqual(h_calls, expected_h_calls)
                     self.assertEqual(l_calls, expected_l_calls)
@@ -552,18 +541,18 @@ class OfficialHRMTest(unittest.TestCase):
             dtype=jnp.float32,
         ).reshape(2, 5, 128)
         for block_type in (
-            'swiglu_rmsnorm',
-            'coghp_gelu',
-            'gelu_layernorm',
+            "swiglu_rmsnorm",
+            "coghp_gelu",
+            "gelu_layernorm",
         ):
             with self.subTest(block_type=block_type):
                 matched = make_configurable_core(
                     block_type,
-                    core_type='matched_feedforward',
+                    core_type="matched_feedforward",
                 )
                 single = make_configurable_core(
                     block_type,
-                    core_type='single_state_iterative',
+                    core_type="single_state_iterative",
                     h_cycles=1,
                     l_cycles=1,
                 )
@@ -571,12 +560,12 @@ class OfficialHRMTest(unittest.TestCase):
                 matched_variables = matched.init(key, None, inputs)
                 single_variables = single.init(key, None, inputs)
                 self.assertEqual(
-                    flattened_shapes(matched_variables['params']),
-                    flattened_shapes(single_variables['params']),
+                    flattened_shapes(matched_variables["params"]),
+                    flattened_shapes(single_variables["params"]),
                 )
                 for left, right in zip(
-                    jax.tree_util.tree_leaves(matched_variables['params']),
-                    jax.tree_util.tree_leaves(single_variables['params']),
+                    jax.tree_util.tree_leaves(matched_variables["params"]),
+                    jax.tree_util.tree_leaves(single_variables["params"]),
                 ):
                     np.testing.assert_array_equal(left, right)
                 matched_output = matched.apply(
@@ -599,14 +588,14 @@ class OfficialHRMTest(unittest.TestCase):
             dtype=jnp.float32,
         ).reshape(2, 5, 128)
         for block_type in (
-            'swiglu_rmsnorm',
-            'coghp_gelu',
-            'gelu_layernorm',
+            "swiglu_rmsnorm",
+            "coghp_gelu",
+            "gelu_layernorm",
         ):
             with self.subTest(block_type=block_type):
                 core = make_configurable_core(
                     block_type,
-                    core_type='single_state_iterative',
+                    core_type="single_state_iterative",
                     h_cycles=2,
                     l_cycles=2,
                 )
@@ -627,8 +616,8 @@ class OfficialHRMTest(unittest.TestCase):
                 )
                 low = Transformer(**level_kwargs)
                 high = Transformer(**level_kwargs)
-                low_variables = {'params': variables['params']['L_level']}
-                high_variables = {'params': variables['params']['H_level']}
+                low_variables = {"params": variables["params"]["L_level"]}
+                high_variables = {"params": variables["params"]["H_level"]}
 
                 # u0=0; L,L,H,L,L,H, with x injected before every L only.
                 reference = jnp.zeros_like(inputs)
@@ -662,7 +651,7 @@ class OfficialHRMTest(unittest.TestCase):
             mlp_mixer_intermediate_size=11,
         )
         legacy = HRMCore(**common)
-        explicit = HRMCore(**common, block_type='swiglu_rmsnorm')
+        explicit = HRMCore(**common, block_type="swiglu_rmsnorm")
         key = jax.random.PRNGKey(16)
         legacy_variables = legacy.init(key, None, inputs)
         explicit_variables = explicit.init(key, None, inputs)
@@ -709,12 +698,11 @@ class OfficialHRMTest(unittest.TestCase):
         # A bias-free SwiGLU has 3 * input * intermediate parameters.
         expected = 3 * mixer_intermediate * (seq_len + hidden_size)
         actual = sum(
-            int(leaf.size)
-            for leaf in jax.tree_util.tree_leaves(variables['params'])
+            int(leaf.size) for leaf in jax.tree_util.tree_leaves(variables["params"])
         )
         self.assertEqual(actual, expected)
-        flat_params = flax.traverse_util.flatten_dict(variables['params'])
-        self.assertFalse(any('bias' in path for path in flat_params))
+        flat_params = flax.traverse_util.flatten_dict(variables["params"])
+        self.assertFalse(any("bias" in path for path in flat_params))
 
     def test_core_supports_official_mixer_and_attention_backbones(self):
         inputs = jnp.ones((2, 4, 8), dtype=jnp.float32)
@@ -735,17 +723,17 @@ class OfficialHRMTest(unittest.TestCase):
                 )
                 variables = core.init(jax.random.PRNGKey(1), None, inputs)
 
-                self.assertEqual(set(variables), {'params', 'constants'})
-                self.assertEqual(variables['constants']['zH_init'].shape, (8,))
-                self.assertEqual(variables['constants']['zL_init'].shape, (8,))
-                self.assertNotIn('zH_init', variables['params'])
-                self.assertNotIn('zL_init', variables['params'])
+                self.assertEqual(set(variables), {"params", "constants"})
+                self.assertEqual(variables["constants"]["zH_init"].shape, (8,))
+                self.assertEqual(variables["constants"]["zL_init"].shape, (8,))
+                self.assertNotIn("zH_init", variables["params"])
+                self.assertNotIn("zL_init", variables["params"])
 
                 run = jax.jit(lambda x: core.apply(variables, None, x))
                 carry, outputs = run(inputs)
                 self.assertEqual(outputs.shape, inputs.shape)
-                self.assertEqual(carry['z_H'].shape, inputs.shape)
-                self.assertEqual(carry['z_L'].shape, inputs.shape)
+                self.assertEqual(carry["z_H"].shape, inputs.shape)
+                self.assertEqual(carry["z_L"].shape, inputs.shape)
                 self.assertTrue(bool(jnp.all(jnp.isfinite(outputs))))
 
     def test_bptt_flag_matches_official_preliminary_iteration_cut(self):
@@ -765,14 +753,14 @@ class OfficialHRMTest(unittest.TestCase):
         )
         inputs = jnp.linspace(-1.0, 1.0, 18, dtype=jnp.float32).reshape(1, 3, 6)
         initial_carry = {
-            'z_H': jnp.full_like(inputs, 0.25),
-            'z_L': jnp.full_like(inputs, -0.15),
+            "z_H": jnp.full_like(inputs, 0.25),
+            "z_L": jnp.full_like(inputs, -0.15),
         }
         weights = jnp.linspace(0.1, 1.0, inputs.size).reshape(inputs.shape)
         for block_type in (
-            'swiglu_rmsnorm',
-            'coghp_gelu',
-            'gelu_layernorm',
+            "swiglu_rmsnorm",
+            "coghp_gelu",
+            "gelu_layernorm",
         ):
             with self.subTest(block_type=block_type):
                 model_kwargs = dict(
@@ -791,19 +779,19 @@ class OfficialHRMTest(unittest.TestCase):
                     _, output = core.apply(variables, carry, inputs)
                     return jnp.sum(output * weights)
 
-                full_grad = jax.grad(
-                    lambda carry: loss(full_core, carry)
-                )(initial_carry)
-                truncated_grad = jax.grad(
-                    lambda carry: loss(truncated_core, carry)
-                )(initial_carry)
+                full_grad = jax.grad(lambda carry: loss(full_core, carry))(
+                    initial_carry
+                )
+                truncated_grad = jax.grad(lambda carry: loss(truncated_core, carry))(
+                    initial_carry
+                )
 
                 self.assertGreater(tree_norm(full_grad), 1e-8)
                 self.assertEqual(tree_norm(truncated_grad), 0.0)
 
     def test_single_state_bptt_uses_the_same_final_pair_cut(self):
         inputs = jnp.linspace(-1.0, 1.0, 18, dtype=jnp.float32).reshape(1, 3, 6)
-        initial_carry = {'u': jnp.full_like(inputs, 0.2)}
+        initial_carry = {"u": jnp.full_like(inputs, 0.2)}
         weights = jnp.linspace(0.1, 1.0, inputs.size).reshape(inputs.shape)
         common = dict(
             seq_len=3,
@@ -814,16 +802,16 @@ class OfficialHRMTest(unittest.TestCase):
             is_causal=False,
             h_cycles=2,
             l_cycles=2,
-            core_type='single_state_iterative',
+            core_type="single_state_iterative",
             is_mlp_mixer=True,
             mlp_mixer_intermediate_size=7,
             token_hidden=5,
             channel_hidden=7,
         )
         for block_type in (
-            'swiglu_rmsnorm',
-            'coghp_gelu',
-            'gelu_layernorm',
+            "swiglu_rmsnorm",
+            "coghp_gelu",
+            "gelu_layernorm",
         ):
             with self.subTest(block_type=block_type):
                 full = HRMCore(**common, block_type=block_type, bptt=True)
@@ -842,59 +830,13 @@ class OfficialHRMTest(unittest.TestCase):
                     output = core.apply(variables, carry, inputs)[1]
                     return jnp.sum(output * weights)
 
-                full_grad = jax.grad(
-                    lambda carry: loss(full, carry)
-                )(initial_carry)
-                truncated_grad = jax.grad(
-                    lambda carry: loss(truncated, carry)
-                )(initial_carry)
+                full_grad = jax.grad(lambda carry: loss(full, carry))(initial_carry)
+                truncated_grad = jax.grad(lambda carry: loss(truncated, carry))(
+                    initial_carry
+                )
                 self.assertGreater(tree_norm(full_grad), 1e-8)
                 self.assertEqual(tree_norm(truncated_grad), 0.0)
 
-    def test_token_wrapper_returns_high_state_logits_and_detached_carry(self):
-        model = HRM(
-            vocab_size=11,
-            seq_len=4,
-            num_layers=1,
-            hidden_size=8,
-            intermediate_size=16,
-            head_dim=4,
-            is_causal=False,
-            h_cycles=2,
-            l_cycles=2,
-            bptt=False,
-            is_mlp_mixer=False,
-        )
-        input_ids = jnp.asarray([[0, 1, 2, 3], [3, 2, 1, 0]])
-        variables = model.init(jax.random.PRNGKey(3), None, input_ids)
-        carry, logits = jax.jit(
-            lambda ids: model.apply(variables, None, ids)
-        )(input_ids)
 
-        self.assertEqual(logits.shape, (2, 4, 11))
-        self.assertEqual(carry['z_H'].shape, (2, 4, 8))
-        self.assertEqual(carry['z_L'].shape, (2, 4, 8))
-        self.assertTrue(np.isfinite(np.asarray(logits)).all())
-
-        def apply_with_params(params):
-            return model.apply(
-                {'params': params, 'constants': variables['constants']},
-                None,
-                input_ids,
-            )
-
-        logits_grad = jax.grad(
-            lambda params: jnp.sum(apply_with_params(params)[1] ** 2)
-        )(variables['params'])
-        carry_grad = jax.grad(
-            lambda params: sum(
-                jnp.sum(value ** 2)
-                for value in apply_with_params(params)[0].values()
-            )
-        )(variables['params'])
-        self.assertGreater(tree_norm(logits_grad), 1e-8)
-        self.assertEqual(tree_norm(carry_grad), 0.0)
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

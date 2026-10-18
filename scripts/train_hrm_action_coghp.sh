@@ -473,7 +473,7 @@ echo "Results: ${OUTPUT_ROOT}/${WANDB_PROJECT}/${RUN_GROUP}"
     --env_name="${ENV_NAME}" \
     --save_dir="${OUTPUT_ROOT}" \
     --seed="${SEED}" \
-    --agent=agents/hrm_action_coghp.py \
+    --agent=agents/navigation.py:legacy_action \
     --train_steps="${TRAIN_STEPS}" \
     --log_interval="${LOG_INTERVAL}" \
     --eval_interval="${EVAL_INTERVAL}" \

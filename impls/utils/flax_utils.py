@@ -304,7 +304,11 @@ def build_checkpoint_metadata(
         ),
         'planner_executor_shared_core': share_actor_core,
     }
-    if config.get('agent_name') == 'navigation_coghp':
+    if 'network_backbone' in config:
+        for key in ('network_backbone', 'actor_hidden_dims', 'value_hidden_dims', 'enc_hidden_dims'):
+            value = config.get(key)
+            signature[key] = list(value) if isinstance(value, (tuple, list)) else value
+    if 'command_content' in config:
         for key in ('command_content', 'high_weight_source', 'navigation_protocol',
                     'position_scale', 'position_mean', 'position_hidden_dims',
                     'position_loss_coef', 'global_dim', 'global_hidden_dims',

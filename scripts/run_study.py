@@ -29,7 +29,6 @@ from datetime import datetime, timezone
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_STUDY = ROOT / 'experiments/navigation_hrm_action.json'
 
 
 def now():
@@ -64,7 +63,7 @@ def load_study(path):
         raise ValueError('Study must contain methods and environments.')
     for name, method in study['methods'].items():
         safe_name(name)
-        if method['agent'] not in ('coghp', 'hrm_action_coghp', 'navigation_coghp'):
+        if method['agent'] not in ('coghp', 'navigation', 'hrm_action_coghp', 'navigation_coghp'):
             raise ValueError(f'Unsupported agent: {method["agent"]}')
         environments = method.get('environments', list(study['environments']))
         if (not environments or len(environments) != len(set(environments))
@@ -149,6 +148,13 @@ def flag_value(value):
 
 
 def command(job, study, source, provenance, wandb_mode):
+    agent_file = f'agents/{job["agent_name"]}.py'
+    # Old frozen snapshots retain their entry files; current code uses profiles.
+    if not (source / 'impls' / agent_file).is_file():
+        agent_file = {
+            'hrm_action_coghp': 'agents/navigation.py:legacy_action',
+            'navigation_coghp': 'agents/navigation.py:legacy_navigation',
+        }.get(job['agent_name'], agent_file)
     arguments = {
         **study['protocol'], 'run_dir': str(Path(job['run_dir']) / 'artifacts'),
         'run_group': job['method'], 'wandb_project': 'CoGHPNavigation', 'wandb_mode': wandb_mode,
@@ -156,7 +162,7 @@ def command(job, study, source, provenance, wandb_mode):
         'checkpoint_signature_required': True,
         'experiment_git_commit': provenance['git_commit'],
         'experiment_code_signature': provenance['code_signature'],
-        'agent': f'agents/{job["agent_name"]}.py',
+        'agent': agent_file,
     }
     return [sys.executable, '-u', str(source / 'impls/main.py'),
             *[f'--{key}={flag_value(value)}' for key, value in arguments.items()],
@@ -344,7 +350,7 @@ def validate_completed(job, study):
 def run_diagnostics(job, study, source, dataset_root):
     """CPU-only, held-out probes AFTER training; never used to select actions."""
     spec = study.get('diagnostics')
-    if not spec or job['agent_name'] != 'navigation_coghp':
+    if not spec or job['agent_name'] not in ('navigation', 'navigation_coghp'):
         return dict(status='not_requested')
     directory = Path(job['run_dir']) / 'diagnostics'
     directory.mkdir(exist_ok=False)
@@ -527,7 +533,7 @@ def summarize(jobs, study, references=(), output=None):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--study', type=Path, help='Default: stored campaign study, or the original navigation study.')
+    parser.add_argument('--study', type=Path, help='External study JSON; optional when the campaign already contains study.json.')
     parser.add_argument('--run-root', type=Path, required=True, help='An external campaign directory.')
     parser.add_argument('--source-root', type=Path, help='Separate frozen code directory, e.g. /home/eai/Research/Navigation/<campaign>.')
     parser.add_argument('--summarize-with', type=Path, action='append', default=[],
@@ -558,8 +564,9 @@ def main(argv=None):
         raise ValueError('--attempt must be non-negative')
     manifest_path = campaign / 'campaign.json'
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else None
-    study = (manifest['study'] if manifest is not None and args.study is None
-             else load_study(args.study or DEFAULT_STUDY))
+    if args.study is None and manifest is None:
+        parser.error('--study is required for a new campaign; keep study JSON files outside the source tree.')
+    study = manifest['study'] if args.study is None else load_study(args.study)
     if manifest_path.exists():
         recorded = json.loads(manifest_path.read_text())['study']
         if study != recorded:

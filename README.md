@@ -20,6 +20,54 @@ cd impls
 pip install -r requirements.txt
 ```
 
+# Navigation research framework
+
+The research method and the original CoGHP baseline have independent agent and
+policy implementations. `agents/navigation.py` does not inherit from or import
+the CoGHP agent or its Mixer policy. The algorithm registry loads the baseline
+only when it is selected.
+
+| Location | Responsibility |
+| --- | --- |
+| `impls/agents/navigation.py` | Navigation objectives, global/detail values, command learning and parameter updates |
+| `impls/agents/coghp.py` | Original CoGHP comparison baseline |
+| `impls/networks/backbones.py` | Backbones, including their local SwiGLU/RMSNorm implementation and H/L state updates |
+| `impls/networks/policies.py` | Subgoal-chain generation, planner/executor assembly and action readout |
+| `impls/utils/networks.py` | Higher-level actor/value definitions; accepts native backbones |
+| `impls/utils/encoders.py` | Observation, goal and position-command encoders/decoders |
+| `impls/utils/datasets.py` | Goal relabeling, trajectory sampling and global fragment fields |
+| `impls/utils/coghp_network.py` | Original CoGHP policy, used only as a baseline |
+
+There is no separate computation package. Numerical layers belong to their
+backbone. The old HRM token-vocabulary wrapper and external model configuration
+classes are retired; H/L recurrence is a state-update option in the framework.
+
+From `impls/`, select the method explicitly:
+
+```bash
+python main.py --agent=agents/navigation.py --env_name=antmaze-large-navigate-v0
+python main.py --agent=agents/coghp.py --env_name=antmaze-large-navigate-v0
+```
+
+The new navigation defaults use independent SwiGLU/RMSNorm backbones for feature
+and command encoding, actor heads, values, the feed-forward planner and the HRM
+executor. They are a new development configuration, not the configuration used
+by the completed October experiments. Global value and position commands remain
+explicit method options (`high_weight_source=global_ota`, `command_content=position`).
+
+Historical configurations remain available through `agents/navigation.py:legacy_action`
+and `agents/navigation.py:legacy_navigation`. Those profiles retain their previous
+GELU/MLP paths and serialized parameter names, and are not the new-method defaults.
+The study runner also accepts the historical method IDs and resolves them to
+these profiles when the old implementation files are absent. Existing frozen
+experiment snapshots continue to use their own original entry files.
+
+Study JSON files and generated reports live outside this source tree in
+`../docs/CoGHP/experiments/`. A new campaign requires an explicit `--study` path;
+an existing campaign reads its frozen specification from `campaign.json`.
+Campaign-specific regression checks use that external directory, configurable
+through `COGHP_STUDY_DIR`.
+
 # Reproducing the main results
 An agent can be trained by executing `main.py` script.
 
@@ -55,40 +103,13 @@ python main.py --env_name=visual-antmaze-medium-navigate-v0 --train_steps=500000
 python main.py --env_name=visual-cube-single-noisy-v0 --train_steps=500000 --eval_episodes=50 --eval_on_cpu=0 --agent=agents/coghp.py --agent.encoder=impala_small --agent.high_alpha=3.0 --agent.low_actor_rep_grad=True --agent.low_alpha=3.0 --agent.p_aug=0.5 --agent.feature_dim=32 --agent.subgoal_steps=10
 ```
 
-# FM-CoGHP extension
-
-FM-CoGHP jointly generates the complete far-to-near latent subgoal chain with conditional flow matching. It can draw
-multiple chains and select one with the existing CoGHP value function or a local contrastive bridge critic.
-FM-CoGHP training outputs are stored under `${DATA_ROOT}/exp/FM_CoGHP/`.
-
-```shell
-# AntMaze Large (one subgoal).
-bash scripts/train_fm_coghp.sh large
-
-# AntMaze Giant (two subgoals, joint-chain setting).
-bash scripts/train_fm_coghp.sh giant
-
-# Select among four candidates with the local CRL critic.
-FLOW_SELECTOR=local_crl FLOW_CANDIDATES=4 bash scripts/train_fm_coghp.sh giant
-```
-
-Supported selectors are `none`, `coghp_value`, and `local_crl`. The same checkpoint can be evaluated with different
-selectors by restoring it with a different `--agent.flow_selector` override. Offline candidate diagnostics are
-available through `scripts/diagnose_fm_coghp_checkpoint.py`.
-
-Run the synthetic interface and gradient-boundary tests with:
-
-```shell
-JAX_PLATFORMS=cpu python -m unittest impls/test_fm_coghp.py -v
-```
-
 # Navigation CoGHP / HRM Action study
 
 The completed October 9–10 navigation campaigns are associated with one
 consolidated baseline, tagged **`exp/navigation-20261012-baseline`** on branch
-**`research/navigation`**. [Experiment registry](experiments/registry.json)
+**`research/navigation`**. [Experiment registry](../docs/CoGHP/experiments/registry.json)
 records both campaign locations, original snapshot hashes, protocol and software
-versions. [Per-run results](experiments/navigation_results_20261012.csv) contains
+versions. [Per-run results](../docs/CoGHP/experiments/navigation_results_20261012.csv) contains
 54 runs (nine environments, two methods, three seeds), the three exact evaluation
 scores, their mean, and source CSV/config hashes. Success rates are fractions in
 `[0, 1]`; multiply by 100 for percentages.
@@ -102,7 +123,7 @@ campaigns with this baseline without claiming they ran from a pre-existing Git
 commit. Resolve its commit with `git rev-parse exp/navigation-20261012-baseline^{commit}`.
 Future development continues on the branch; the experiment tag remains fixed.
 
-`experiments/navigation_hrm_action.json` declares six navigation environments,
+`../docs/CoGHP/experiments/navigation_hrm_action.json` declares six navigation environments,
 original CoGHP seeds 0/1/2, and vanilla-planner HRM H2L2 **truncated** seed 0
 (24 runs). Scientific settings live in this file, not shell environment variables.
 The protocol is 1M updates, evaluation every 100k, all tasks, 50 episodes/task,
@@ -113,9 +134,9 @@ those three checkpoints are retained. HRM has one seed and no across-seed SD.
 cd /home/eai/Research/CoGHP
 PYTHON=/home/eai/Tools/miniforge3/envs/brain_nav/bin/python
 RUN_ROOT=/data/qijunrong/06-RL/offline-rl/exp/CoGHPNavigation_20261009
-"$PYTHON" scripts/run_study.py --run-root "$RUN_ROOT" --gpus 0,1 --dry-run
+"$PYTHON" scripts/run_study.py --study ../docs/CoGHP/experiments/navigation_hrm_action.json --run-root "$RUN_ROOT" --gpus 0,1 --dry-run
 # Run manually after reviewing the plan and reserving both GPUs:
-"$PYTHON" scripts/run_study.py --run-root "$RUN_ROOT" --gpus 0,1 --execute
+"$PYTHON" scripts/run_study.py --study ../docs/CoGHP/experiments/navigation_hrm_action.json --run-root "$RUN_ROOT" --gpus 0,1 --execute
 "$PYTHON" scripts/run_study.py --run-root "$RUN_ROOT" --summarize
 ```
 
@@ -142,7 +163,7 @@ define this study.
 
 ## Humanoid and three-seed completion
 
-`experiments/navigation_hrm_action_multiseed_extension.json` adds exactly 30 runs:
+`../docs/CoGHP/experiments/navigation_hrm_action_multiseed_extension.json` adds exactly 30 runs:
 HumanoidMaze medium/large/giant with both methods at seeds 0/1/2 (18), and HRM
 PointMaze/AntMaze medium/large/giant seeds 1/2 (12). The previous 24 runs are reused,
 giving 54 distinct identities. Humanoid uses `subgoal_steps=100`, `feature_dim=128`,
@@ -164,7 +185,7 @@ SOURCE_ROOT=/home/eai/Research/Navigation/$NAME
 
 # One-time preparation from the development tree (no training):
 "$PYTHON" scripts/run_study.py \
-  --study experiments/navigation_hrm_action_multiseed_extension.json \
+  --study ../docs/CoGHP/experiments/navigation_hrm_action_multiseed_extension.json \
   --run-root "$RUN_ROOT" --source-root "$SOURCE_ROOT" --prepare
 
 # Review and launch from the prepared code:
@@ -181,6 +202,35 @@ hashes, agent settings and evaluation protocol. Duplicate method/environment/see
 identities are rejected. Missing runs remain incomplete, not a reduced-seed mean.
 Different seeds within a method can be declared per environment; methods can also
 restrict their environment scope. These declarations prevent baseline duplication.
+
+## Consolidated October 14 navigation results
+
+[Configuration, results and diagnostic analysis](../docs/CoGHP/experiments/analysis_20261014/report.md)
+integrates the three completed navigation campaigns: 54 three-seed original
+CoGHP / HRM-action runs and 16 seed-0 Global / Position runs. The latter use
+**HRM-action CoGHP as their baseline**, not original CoGHP. The new baseline
+reproduces all ten historical seed-0 evaluation records exactly in each of the
+four overlapping environments; these reruns are not additional independent seeds.
+
+[Per-run results](../docs/CoGHP/experiments/analysis_20261014/runs.csv),
+[full evaluation histories](../docs/CoGHP/experiments/analysis_20261014/evaluations.csv),
+[resolved configurations](../docs/CoGHP/experiments/analysis_20261014/resolved_configs.json),
+and [audit checks](../docs/CoGHP/experiments/analysis_20261014/audit.json) preserve provenance.
+The primary score is the exact 800k/900k/1M mean. Three-seed sample SD and
+single-seed factorial results are reported separately.
+
+The same report includes primary-paper navigation results for the six OGBench
+baselines, OTA, LAVL, and published CoGHP, beside local results in combined
+figures. [Literature source records](../docs/CoGHP/experiments/navigation_literature_20261014.json)
+preserve table versions, seed counts, PDF hashes, and the verified numerical
+matrix. Published and local results are not pooled.
+
+Recompute the derived tables, plots and report without training or modifying
+the raw campaign directories:
+
+```bash
+python3 scripts/analyze_navigation_campaigns.py
+```
 
 # Acknowledgments
 This code is based on [OGBench](https://github.com/seohongpark/ogbench) repository.

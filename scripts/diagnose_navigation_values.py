@@ -16,7 +16,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import ogbench
-from agents.navigation_coghp import NavigationCoGHPAgent, stable_awr
+from agents.navigation import NavigationAgent as NavigationCoGHPAgent, stable_awr
 from ogbench.utils import load_dataset
 from utils.datasets import Dataset, MultiHGCDataset
 from utils.flax_utils import restore_agent

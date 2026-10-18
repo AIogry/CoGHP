@@ -1,3 +1,5 @@
+import dataclasses
+from networks.backbones import SwiGLUBackbone
 from typing import Any, Optional, Sequence
 
 import distrax
@@ -9,15 +11,15 @@ import jax.numpy as jnp
 
 def default_init(scale=1.0):
     """Default kernel initializer."""
-    return nn.initializers.variance_scaling(scale, 'fan_avg', 'uniform')
+    return nn.initializers.variance_scaling(scale, "fan_avg", "uniform")
 
 
 def ensemblize(cls, num_qs, out_axes=0, **kwargs):
     """Ensemblize a module."""
     return nn.vmap(
         cls,
-        variable_axes={'params': 0},
-        split_rngs={'params': True},
+        variable_axes={"params": 0},
+        split_rngs={"params": True},
         in_axes=None,
         out_axes=out_axes,
         axis_size=num_qs,
@@ -78,7 +80,7 @@ class Param(nn.Module):
 
     @nn.compact
     def __call__(self):
-        return self.param('value', init_fn=lambda key: jnp.full((), self.init_value))
+        return self.param("value", init_fn=lambda key: jnp.full((), self.init_value))
 
 
 class LogParam(nn.Module):
@@ -88,7 +90,9 @@ class LogParam(nn.Module):
 
     @nn.compact
     def __call__(self):
-        log_value = self.param('log_value', init_fn=lambda key: jnp.full((), jnp.log(self.init_value)))
+        log_value = self.param(
+            "log_value", init_fn=lambda key: jnp.full((), jnp.log(self.init_value))
+        )
         return jnp.exp(log_value)
 
 
@@ -164,15 +168,26 @@ class GCActor(nn.Module):
     const_std: bool = True
     final_fc_init_scale: float = 1e-2
     gc_encoder: nn.Module = None
+    backbone: nn.Module = None
 
     def setup(self):
-        self.actor_net = MLP(self.hidden_dims, activate_final=True)
-        self.mean_net = nn.Dense(self.action_dim, kernel_init=default_init(self.final_fc_init_scale))
+        self.actor_net = (
+            self.backbone
+            if self.backbone is not None
+            else MLP(self.hidden_dims, activate_final=True)
+        )
+        self.mean_net = nn.Dense(
+            self.action_dim, kernel_init=default_init(self.final_fc_init_scale)
+        )
         if self.state_dependent_std:
-            self.log_std_net = nn.Dense(self.action_dim, kernel_init=default_init(self.final_fc_init_scale))
+            self.log_std_net = nn.Dense(
+                self.action_dim, kernel_init=default_init(self.final_fc_init_scale)
+            )
         else:
             if not self.const_std:
-                self.log_stds = self.param('log_stds', nn.initializers.zeros, (self.action_dim,))
+                self.log_stds = self.param(
+                    "log_stds", nn.initializers.zeros, (self.action_dim,)
+                )
 
     def __call__(
         self,
@@ -209,9 +224,13 @@ class GCActor(nn.Module):
 
         log_stds = jnp.clip(log_stds, self.log_std_min, self.log_std_max)
 
-        distribution = distrax.MultivariateNormalDiag(loc=means, scale_diag=jnp.exp(log_stds) * temperature)
+        distribution = distrax.MultivariateNormalDiag(
+            loc=means, scale_diag=jnp.exp(log_stds) * temperature
+        )
         if self.tanh_squash:
-            distribution = TransformedWithMode(distribution, distrax.Block(distrax.Tanh(), ndims=1))
+            distribution = TransformedWithMode(
+                distribution, distrax.Block(distrax.Tanh(), ndims=1)
+            )
 
         return distribution
 
@@ -233,7 +252,9 @@ class GCDiscreteActor(nn.Module):
 
     def setup(self):
         self.actor_net = MLP(self.hidden_dims, activate_final=True)
-        self.logit_net = nn.Dense(self.action_dim, kernel_init=default_init(self.final_fc_init_scale))
+        self.logit_net = nn.Dense(
+            self.action_dim, kernel_init=default_init(self.final_fc_init_scale)
+        )
 
     def __call__(
         self,
@@ -261,7 +282,9 @@ class GCDiscreteActor(nn.Module):
 
         logits = self.logit_net(outputs)
 
-        distribution = distrax.Categorical(logits=logits / jnp.maximum(1e-6, temperature))
+        distribution = distrax.Categorical(
+            logits=logits / jnp.maximum(1e-6, temperature)
+        )
 
         return distribution
 
@@ -282,14 +305,26 @@ class GCValue(nn.Module):
     layer_norm: bool = True
     ensemble: bool = True
     gc_encoder: nn.Module = None
+    backbone: nn.Module = None
 
     def setup(self):
-        mlp_module = MLP
+        if self.backbone is None:
+            module_cls = MLP
+            kwargs = dict(
+                hidden_dims=(*self.hidden_dims, 1),
+                activate_final=False,
+                layer_norm=self.layer_norm,
+            )
+        else:
+            module_cls = type(self.backbone)
+            kwargs = {
+                field.name: getattr(self.backbone, field.name)
+                for field in dataclasses.fields(self.backbone)
+                if field.init and field.name not in ("parent", "name")
+            }
         if self.ensemble:
-            mlp_module = ensemblize(mlp_module, 2)
-        value_net = mlp_module((*self.hidden_dims, 1), activate_final=False, layer_norm=self.layer_norm)
-
-        self.value_net = value_net
+            module_cls = ensemblize(module_cls, 2)
+        self.value_net = module_cls(**kwargs)
 
     def __call__(self, observations, goals=None, actions=None, goal_encoded=False):
         """Return the value/critic function.
@@ -354,8 +389,16 @@ class GCBilinearValue(nn.Module):
         if self.ensemble:
             mlp_module = ensemblize(mlp_module, 2)
 
-        self.phi = mlp_module((*self.hidden_dims, self.latent_dim), activate_final=False, layer_norm=self.layer_norm)
-        self.psi = mlp_module((*self.hidden_dims, self.latent_dim), activate_final=False, layer_norm=self.layer_norm)
+        self.phi = mlp_module(
+            (*self.hidden_dims, self.latent_dim),
+            activate_final=False,
+            layer_norm=self.layer_norm,
+        )
+        self.psi = mlp_module(
+            (*self.hidden_dims, self.latent_dim),
+            activate_final=False,
+            layer_norm=self.layer_norm,
+        )
 
     def __call__(self, observations, goals, actions=None, info=False):
         """Return the value/critic function.
@@ -419,7 +462,11 @@ class GCMRNValue(nn.Module):
     encoder: nn.Module = None
 
     def setup(self):
-        self.phi = MLP((*self.hidden_dims, self.latent_dim), activate_final=False, layer_norm=self.layer_norm)
+        self.phi = MLP(
+            (*self.hidden_dims, self.latent_dim),
+            activate_final=False,
+            layer_norm=self.layer_norm,
+        )
 
     def __call__(self, observations, goals, is_phi=False, info=False):
         """Return the MRN value function.
@@ -474,7 +521,11 @@ class GCIQEValue(nn.Module):
     encoder: nn.Module = None
 
     def setup(self):
-        self.phi = MLP((*self.hidden_dims, self.latent_dim), activate_final=False, layer_norm=self.layer_norm)
+        self.phi = MLP(
+            (*self.hidden_dims, self.latent_dim),
+            activate_final=False,
+            layer_norm=self.layer_norm,
+        )
         self.alpha = Param()
 
     def __call__(self, observations, goals, is_phi=False, info=False):
@@ -503,12 +554,14 @@ class GCIQEValue(nn.Module):
         xy = jnp.concatenate(jnp.broadcast_arrays(x, y), axis=-1)
         ixy = xy.argsort(axis=-1)
         sxy = jnp.take_along_axis(xy, ixy, axis=-1)
-        neg_inc_copies = jnp.take_along_axis(valid, ixy % self.dim_per_component, axis=-1) * jnp.where(
-            ixy < self.dim_per_component, -1, 1
-        )
+        neg_inc_copies = jnp.take_along_axis(
+            valid, ixy % self.dim_per_component, axis=-1
+        ) * jnp.where(ixy < self.dim_per_component, -1, 1)
         neg_inp_copies = jnp.cumsum(neg_inc_copies, axis=-1)
         neg_f = -1.0 * (neg_inp_copies < 0)
-        neg_incf = jnp.concatenate([neg_f[..., :1], neg_f[..., 1:] - neg_f[..., :-1]], axis=-1)
+        neg_incf = jnp.concatenate(
+            [neg_f[..., :1], neg_f[..., 1:] - neg_f[..., :-1]], axis=-1
+        )
         components = (sxy * neg_incf).sum(axis=-1)
         v = alpha * components.mean(axis=-1) + (1 - alpha) * components.max(axis=-1)
 
@@ -516,3 +569,44 @@ class GCIQEValue(nn.Module):
             return v, phi_s, phi_g
         else:
             return v
+
+
+class GlobalPotential(nn.Module):
+    dim: int
+    position_mean: tuple
+    position_scale: tuple
+    hidden_dims: tuple = (512, 512, 512)
+
+    network_backbone: str = "mlp"
+
+    @nn.compact
+    def __call__(self, states, positions):
+        mean = self.variable(
+            "constants",
+            "position_mean",
+            lambda: jnp.asarray(self.position_mean, dtype=jnp.float32),
+        ).value
+        scale = self.variable(
+            "constants",
+            "position_scale",
+            lambda: jnp.asarray(self.position_scale, dtype=jnp.float32),
+        ).value
+        goals = (positions - mean) / scale
+        values = []
+        for i in range(2):
+            u = (
+                SwiGLUBackbone(self.hidden_dims, self.dim, name=f"state_{i}")
+                if self.network_backbone == "swiglu_rmsnorm"
+                else MLP(
+                    (*self.hidden_dims, self.dim), layer_norm=True, name=f"state_{i}"
+                )
+            )(states)
+            c = (
+                SwiGLUBackbone(self.hidden_dims, self.dim, name=f"goal_{i}")
+                if self.network_backbone == "swiglu_rmsnorm"
+                else MLP(
+                    (*self.hidden_dims, self.dim), layer_norm=True, name=f"goal_{i}"
+                )
+            )(goals)
+            values.append(jnp.sum(u * c, axis=-1) / jnp.sqrt(float(self.dim)))
+        return jnp.stack(values, axis=0)

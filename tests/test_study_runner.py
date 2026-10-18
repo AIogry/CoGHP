@@ -15,6 +15,7 @@ import unittest
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
+STUDY_ROOT = Path(os.environ.get('COGHP_STUDY_DIR', ROOT.parent / 'docs' / 'CoGHP' / 'experiments'))
 spec = importlib.util.spec_from_file_location('study_runner', ROOT / 'scripts/run_study.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
@@ -25,15 +26,17 @@ class StudyRunnerTest(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        self.study = runner.load_study(runner.DEFAULT_STUDY)
+        if not (STUDY_ROOT / 'navigation_hrm_action.json').is_file():
+            self.skipTest('Historical study configs live outside the repository; set COGHP_STUDY_DIR.')
+        self.study = runner.load_study(STUDY_ROOT / 'navigation_hrm_action.json')
 
     def test_global_position_matrix_seed_priority_and_isolated_axes(self):
-        study = runner.load_study(ROOT / 'experiments/navigation_global_position.json')
+        study = runner.load_study(STUDY_ROOT / 'navigation_global_position.json')
         jobs = runner.plan(study, self.root)
         self.assertEqual(len(jobs), 16)
         self.assertEqual([j['seed'] for j in jobs], [0]*16)
         self.assertEqual([j['method'] for j in jobs[:4]], ['baseline','g_only','p_only','g_plus_p'])
-        expected = runner.load_study(ROOT / 'experiments/navigation_hrm_action_multiseed_extension.json')
+        expected = runner.load_study(STUDY_ROOT / 'navigation_hrm_action_multiseed_extension.json')
         self.assertEqual(set(study['environments']), {'pointmaze-giant-navigate-v0', 'antmaze-giant-navigate-v0',
                                                     'humanoidmaze-large-navigate-v0', 'humanoidmaze-giant-navigate-v0'})
         for environment in study['environments']:
@@ -45,7 +48,7 @@ class StudyRunnerTest(unittest.TestCase):
         self.assertEqual(study['metric']['steps'], [800000,900000,1000000])
 
     def test_diagnostics_are_cpu_only_and_fail_closed(self):
-        study = runner.load_study(ROOT / 'experiments/navigation_global_position.json')
+        study = runner.load_study(STUDY_ROOT / 'navigation_global_position.json')
         job = runner.plan(study, self.root, methods='p_only')[0]
         Path(job['run_dir']).mkdir(parents=True)
         observed = []
@@ -86,7 +89,7 @@ class StudyRunnerTest(unittest.TestCase):
         self.assertEqual(counts['antmaze-giant-navigate-v0'], 204288)
 
     def test_extension_adds_30_disjoint_runs_and_completes_54(self):
-        extension = runner.load_study(ROOT / 'experiments/navigation_hrm_action_multiseed_extension.json')
+        extension = runner.load_study(STUDY_ROOT / 'navigation_hrm_action_multiseed_extension.json')
         old = runner.plan(self.study, self.root/'old')
         new = runner.plan(extension, self.root/'new')
         self.assertEqual(len(new), 30)
@@ -119,7 +122,7 @@ class StudyRunnerTest(unittest.TestCase):
             runner.summarize(jobs,self.study,[(jobs,self.study)])
 
     def test_joint_summary_counts_all_three_seeds(self):
-        extension=runner.load_study(ROOT/'experiments/navigation_hrm_action_multiseed_extension.json')
+        extension=runner.load_study(STUDY_ROOT/'navigation_hrm_action_multiseed_extension.json')
         env='pointmaze-medium-navigate-v0'
         old=runner.plan(self.study,self.root/'old',methods='hrm_h2l2_truncated',environments=env)
         new=runner.plan(extension,self.root/'new',methods='hrm_h2l2_truncated',environments=env)
@@ -264,7 +267,7 @@ class StudyRunnerTest(unittest.TestCase):
              mock.patch.object(runner,'check_gpu_occupancy',side_effect=AssertionError('GPU accessed')), \
              mock.patch.object(runner,'dispatch',side_effect=AssertionError('Training started')), \
              contextlib.redirect_stdout(io.StringIO()):
-            self.assertEqual(runner.main(['--run-root',str(campaign),'--source-root',str(source),'--prepare']),0)
+            self.assertEqual(runner.main(['--study',str(STUDY_ROOT / 'navigation_hrm_action.json'),'--run-root',str(campaign),'--source-root',str(source),'--prepare']),0)
             self.assertEqual(freeze.call_args.args[3],source)
 
     def test_dry_run_writes_nothing_and_never_queries_gpu(self):
@@ -275,7 +278,7 @@ class StudyRunnerTest(unittest.TestCase):
                 (dataset / (env + suffix)).write_bytes(b'fixture')
         campaign = self.root / 'campaign'
         with mock.patch.object(runner, 'check_gpus', side_effect=AssertionError('GPU access')), contextlib.redirect_stdout(io.StringIO()):
-            result = runner.main(['--run-root', str(campaign), '--dataset-root', str(dataset), '--dry-run'])
+            result = runner.main(['--study',str(STUDY_ROOT / 'navigation_hrm_action.json'),'--run-root', str(campaign), '--dataset-root', str(dataset), '--dry-run'])
         self.assertEqual(result, 0)
         self.assertFalse(campaign.exists())
 
@@ -285,7 +288,7 @@ class StudyRunnerTest(unittest.TestCase):
         run_dir.mkdir(parents=True)
         (run_dir / 'run.json').write_text('{"status":"failed"}')
         with mock.patch.object(runner, 'dataset_inventory', return_value={}), self.assertRaisesRegex(ValueError, 'Existing failed'):
-            runner.main(['--run-root', str(self.root), '--dry-run'])
+            runner.main(['--study',str(STUDY_ROOT / 'navigation_hrm_action.json'),'--run-root', str(self.root), '--dry-run'])
         self.assertEqual((run_dir / 'run.json').read_text(), '{"status":"failed"}')
 
     def test_missing_data_fails_instead_of_skipping_tasks(self):
@@ -363,7 +366,7 @@ for step in (800000,900000,1000000): (p/f'params_{step}.pkl').write_bytes(b'fixt
         env = dict(os.environ, PYTHON=str(fake), CAPTURE=str(capture),
                    HRM_ACTION_SKIP_DATASET_CHECK='1', LOG_DIR=str(self.root / 'logs'),
                    ACTION_HRM_BPTT='False')
-        extension = runner.load_study(ROOT / 'experiments/navigation_hrm_action_multiseed_extension.json')
+        extension = runner.load_study(STUDY_ROOT / 'navigation_hrm_action_multiseed_extension.json')
         for name, expected in extension['environments'].items():
             task = name.removesuffix('-navigate-v0').replace('-', '_')
             result = subprocess.run(['bash', str(ROOT / 'scripts/train_hrm_action_coghp.sh'), task],

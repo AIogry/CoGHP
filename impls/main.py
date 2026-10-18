@@ -15,13 +15,9 @@ from agents import agents
 from ml_collections import config_flags
 from utils.datasets import Dataset, GCDataset, HGCDataset, MultiHGCDataset
 from utils.env_utils import make_env_and_datasets
-from utils.navigation_dataset import NavigationDataset, position_statistics
+from utils.datasets import NavigationDataset, position_statistics
 from utils.evaluation import derive_seed, evaluate
-from utils.flax_utils import (
-    build_checkpoint_metadata,
-    restore_agent,
-    save_agent,
-)
+from utils.flax_utils import build_checkpoint_metadata, restore_agent, save_agent
 from utils.log_utils import CsvLogger, get_exp_name, get_flag_dict, get_wandb_video, setup_wandb
 
 FLAGS = flags.FLAGS
@@ -82,7 +78,7 @@ flags.DEFINE_integer('video_episodes', 1, 'Number of video episodes for each tas
 flags.DEFINE_integer('video_frame_skip', 3, 'Frame skip for videos.')
 flags.DEFINE_integer('eval_on_cpu', 1, 'Whether to evaluate on CPU.')
 
-config_flags.DEFINE_config_file('agent', 'agents/coghp.py', lock_config=False)
+config_flags.DEFINE_config_file('agent', 'agents/navigation.py', lock_config=False)
 
 
 def main(_):
@@ -173,7 +169,7 @@ def main(_):
         frame_stack=config['frame_stack'],
         seed=environment_seed,
     )
-    navigation_study = config['agent_name'] == 'navigation_coghp'
+    navigation_study = 'command_content' in config
     if navigation_study:
         stats = position_statistics(train_dataset)
         config.position_mean = tuple(stats['mean'])
@@ -330,12 +326,7 @@ def main(_):
                 train_metrics.update({f'validation/{k}': v for k, v in val_info.items()})
                 if (
                     hasattr(agent, 'validation_rollout_info')
-                    and (
-                        config.get('enable_hcoghp_diagnostics', False)
-                        or config.get('enable_free_running_validation', False)
-                        or config.get('enable_fm_diagnostics', False)
-                        or config.get('enable_action_hrm_validation', False)
-                    )
+                    and config.get('enable_action_hrm_validation', False)
                 ):
                     rollout_info = agent.validation_rollout_info(
                         val_batch,

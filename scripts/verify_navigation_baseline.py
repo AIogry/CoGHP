@@ -11,8 +11,8 @@ sys.path[:0] = [str(ROOT / 'impls'), str(ROOT)]
 import flax
 import jax
 import numpy as np
-from agents.hrm_action_coghp import HRMActionCoGHPAgent
-from agents.navigation_coghp import NavigationCoGHPAgent, get_config
+from agents.navigation import NavigationAgent as HRMActionCoGHPAgent
+from agents.navigation import NavigationAgent as NavigationCoGHPAgent, get_legacy_navigation_config as get_config
 from ogbench.utils import load_dataset
 from utils.datasets import Dataset, MultiHGCDataset
 

@@ -1,3 +1,5 @@
+"""Original CoGHP policy retained as the comparison baseline."""
+
 from typing import Sequence, Optional
 import distrax
 import jax

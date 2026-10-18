@@ -19,7 +19,7 @@ import jax
 import mujoco
 import numpy as np
 import ogbench
-from agents.navigation_coghp import NavigationCoGHPAgent
+from agents.navigation import NavigationAgent as NavigationCoGHPAgent
 from ogbench.utils import load_dataset
 from utils.flax_utils import restore_agent
 
