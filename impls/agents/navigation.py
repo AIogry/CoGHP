@@ -303,6 +303,20 @@ class NavigationAgent(flax.struct.PyTreeNode):
     def _create_core(cls, seed, ex_observations, ex_actions, config):
         if config["num_subgoals"] < 1:
             raise ValueError("Navigation requires num_subgoals >= 1.")
+        joint_objective = config.get("joint_plan_objective", "endpoint_deep")
+        if joint_objective not in ("endpoint_deep", "waypoint_final"):
+            raise ValueError("Unknown joint_plan_objective.")
+        if joint_objective == "waypoint_final":
+            if config.get("planner_generation") != "joint":
+                raise ValueError("waypoint_final requires joint planner generation.")
+            if config.get("planner_refinement_steps", 1) != 1:
+                raise ValueError(
+                    "waypoint_final requires planner_refinement_steps=1 (external K)."
+                )
+            if not config.get("planner_bptt", True):
+                raise ValueError(
+                    "waypoint_final requires planner_bptt=True for full HRM backpropagation."
+                )
         if config["train_action_chain_source"] not in ("teacher", "predicted"):
             raise ValueError("train_action_chain_source must be teacher or predicted.")
         if config["action_hrm_forward_dtype"] not in ("float32", "bfloat16"):
@@ -433,6 +447,8 @@ class NavigationAgent(flax.struct.PyTreeNode):
             num_subgoals=config["num_subgoals"],
             causal_mixer=config.get("causal_mixer", True),
             planner_core_type=config.get("planner_core_type", "vanilla_coghp"),
+            planner_generation=config.get("planner_generation", "autoregressive"),
+            planner_refinement_steps=config.get("planner_refinement_steps", 1),
             planner_block_type=config.get("planner_block_type", "swiglu_rmsnorm"),
             planner_num_layers=config.get("planner_num_layers", 1),
             planner_mixer_intermediate_size=config.get(
@@ -595,6 +611,7 @@ class NavigationAgent(flax.struct.PyTreeNode):
         chain_source=None,
         return_latents=False,
         return_diagnostics=False,
+        return_planner_rounds=False,
     ):
         kwargs = {}
         if self.position_mode:
@@ -614,6 +631,7 @@ class NavigationAgent(flax.struct.PyTreeNode):
             action_chain_source=chain_source,
             return_latents=return_latents,
             return_diagnostics=return_diagnostics,
+            return_planner_rounds=return_planner_rounds,
             **kwargs,
         )
 
@@ -637,7 +655,12 @@ class NavigationAgent(flax.struct.PyTreeNode):
         )
 
     def multi_high_actor_loss(self, batch, dist_list, obs_expand, grad_params):
-        if not self.position_mode and (not self.global_mode):
+        if (
+            not self.position_mode
+            and not self.global_mode
+            and self.config.get("joint_plan_objective", "endpoint_deep")
+            != "waypoint_final"
+        ):
             return self._detail_high_actor_loss(
                 batch, dist_list, obs_expand, grad_params
             )
@@ -677,7 +700,84 @@ class NavigationAgent(flax.struct.PyTreeNode):
         )
         return (loss / k, info)
 
+    def joint_high_actor_loss(self, batch, rounds):
+        """Deep supervision with one endpoint-progress weight per data plan.
+
+        This deliberately reuses the selected existing value. The endpoint
+        delta is a baseline preference score, not a return-based trajectory
+        advantage or an assessment of a generated plan's feasibility.
+        """
+        targets = jax.lax.stop_gradient(self.command_labels(batch))
+        # Dataset slots are far-to-near: slot zero is the plan endpoint.
+        advantages = self.high_advantages(batch)[:, 0]
+        cap = self.config.get("awr_max_weight", 100.0)
+        weights = stable_awr(advantages, self.config["high_alpha"], cap)
+        losses, mses, logps, stds = [], [], [], []
+        info = {}
+        for r, dists in enumerate(rounds):
+            logp = jnp.stack(
+                [dist.log_prob(targets[:, j]) for j, dist in enumerate(dists)], axis=1
+            ).mean(axis=1)
+            means = jnp.stack([dist.mode() for dist in dists], axis=1)
+            mse = jnp.mean((means - targets) ** 2)
+            # Keep the historical subgoal_steps scale, but give every waypoint
+            # equal weight inside the joint plan and average across rounds.
+            loss = -(weights * logp).mean() / self.config["subgoal_steps"]
+            losses.append(loss)
+            mses.append(mse)
+            logps.append(logp.mean())
+            stds.append(
+                jnp.mean(jnp.stack([dist.scale_diag.mean() for dist in dists]))
+            )
+            info[f"round_{r + 1}/loss"] = loss
+            info[f"round_{r + 1}/mse"] = mse
+            info[f"round_{r + 1}/bc_log_prob"] = logp.mean()
+        loss = jnp.mean(jnp.stack(losses))
+        info.update(
+            # Existing loss_components expects the unnormalized sum here.
+            actor_loss=loss * self.config["num_subgoals"],
+            joint_plan_loss=loss,
+            adv=advantages.mean(),
+            mse=mses[-1],
+            bc_log_prob=logps[-1],
+            std=stds[-1],
+            refinement_mse_gain=mses[0] - mses[-1],
+            weight_mean=weights.mean(),
+            weight_cap_fraction=jnp.mean(weights >= cap * (1 - 1e-6)),
+            weight_ess_fraction=weights.sum() ** 2 / (
+                weights.shape[0] * jnp.maximum(jnp.sum(weights ** 2), 1e-12)
+            ),
+        )
+        return loss, info
+
     def actor_loss(self, batch, grad_params, rng):
+        if self.config.get("planner_generation", "autoregressive") == "joint":
+            commands = self.command_labels(batch, grad_params)
+            final_only = (
+                self.config.get("joint_plan_objective", "endpoint_deep")
+                == "waypoint_final"
+            )
+            high, low, _, diagnostics = self.policy(
+                batch["observations"],
+                batch["high_actor_goals"],
+                rng,
+                commands,
+                grad_params,
+                return_diagnostics=True,
+                return_planner_rounds=not final_only,
+            )
+            if final_only:
+                # One HRM segment contains all h/ell updates. Its final output
+                # alone is decoded; the per-waypoint objective preserves the
+                # CoGHP weights and scale, without division by h or ell.
+                high_loss, high_info = self.multi_high_actor_loss(
+                    batch, high, None, grad_params
+                )
+                high_info["joint_plan_loss"] = high_loss
+            else:
+                high_loss, high_info = self.joint_high_actor_loss(batch, high)
+            low_loss, low_info = self.low_actor_loss(batch, low)
+            return high_loss + low_loss, high_info, low_info, diagnostics
         if not self.position_mode:
             return self._full_state_actor_loss(batch, grad_params, rng)
         commands = self.command_labels(batch, grad_params)
@@ -1096,6 +1196,26 @@ def get_legacy_navigation_config():
 
 def get_config(profile=None):
     """Native method defaults; historical profiles are explicit compatibility inputs."""
+    if profile in ("joint_planner", "joint_planner_pilot"):
+        config = get_config()
+        config.planner_generation = "joint"
+        config.planner_core_type = "hrm"
+        config.planner_refinement_steps = 3
+        config.planner_bptt = False
+        config.num_subgoals = 3
+        if profile == "joint_planner":
+            # HRM is confined to the planner. The common representation/value
+            # networks, readout heads and executor retain CoGHP components.
+            config.network_backbone = "mlp"
+            config.action_core_type = "vanilla_coghp"
+            config.action_block_type = "coghp_gelu"
+            config.planner_mixer_intermediate_size = 32
+            config.hrm_mixer_intermediate_size = 32
+            config.planner_refinement_steps = 1
+            config.planner_bptt = True
+            config.joint_plan_objective = "waypoint_final"
+            config.navigation_protocol = "joint_planner_v0"
+        return config
     if profile == "legacy_action":
         return get_legacy_action_config()
     if profile == "legacy_navigation":
@@ -1146,16 +1266,22 @@ def get_config(profile=None):
             "high_discount": 0.8,
             "high_weight_source": "detail_value",
             "hrm_mixer_intermediate_size": 256,
+            "joint_plan_objective": "endpoint_deep",
+            "layer_norm": True,
             "low_alpha": 3.0,
             "low_const_std": True,
             "lr": 0.0003,
+            "mixer_hidden": 32,
             "navigation_protocol": "navigation_v1",
             "network_backbone": "swiglu_rmsnorm",
+            "num_mixer_blocks": 1,
             "num_subgoals": 1,
             "p_aug": 0.0,
             "planner_block_type": "swiglu_rmsnorm",
             "planner_bptt": True,
             "planner_core_type": "matched_feedforward",
+            "planner_generation": "autoregressive",
+            "planner_refinement_steps": 1,
             "planner_forward_dtype": "float32",
             "planner_h_cycles": 2,
             "planner_l_cycles": 2,

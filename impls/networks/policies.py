@@ -44,7 +44,7 @@ def resolve_action_block_type(
 
 
 class NavigationPolicy(nn.Module):
-    """CoGHP planner plus a configurable full-sequence action core."""
+    """Autoregressive or joint planner with a full-sequence action core."""
 
     state_dim: int
     high_actor_head: nn.Module
@@ -57,6 +57,8 @@ class NavigationPolicy(nn.Module):
     num_subgoals: int = 1
     causal_mixer: bool = True
     planner_core_type: str = "vanilla_coghp"
+    planner_generation: str = "autoregressive"
+    planner_refinement_steps: int = 1
     planner_block_type: str = "swiglu_rmsnorm"
     planner_num_layers: int = 1
     planner_mixer_intermediate_size: int = 256
@@ -95,6 +97,21 @@ class NavigationPolicy(nn.Module):
             raise ValueError("HRM-Action-CoGHP requires num_subgoals >= 1.")
         if self.num_mixer_blocks < 1:
             raise ValueError("num_mixer_blocks must be positive.")
+        if self.planner_generation not in ("autoregressive", "joint"):
+            raise ValueError("planner_generation must be autoregressive or joint.")
+        if self.planner_refinement_steps < 1:
+            raise ValueError("planner_refinement_steps must be positive.")
+        if self.planner_generation == "joint":
+            if self.planner_core_type not in ("hrm", "matched_feedforward"):
+                raise ValueError("Joint planning requires an HRM or matched feedforward core.")
+            if self.share_actor_core:
+                raise ValueError(
+                    "Joint planning currently requires separate planner/executor cores."
+                )
+            if self.planner_core_type != "hrm" and self.planner_refinement_steps != 1:
+                raise ValueError("Multiple planner refinements require an HRM core.")
+        elif self.planner_refinement_steps != 1:
+            raise ValueError("Autoregressive planning requires planner_refinement_steps=1.")
         if self.planner_core_type not in (
             "vanilla_coghp",
             "legacy_coghp",
@@ -270,7 +287,9 @@ class NavigationPolicy(nn.Module):
                 hidden_size=self.state_dim,
                 intermediate_size=self.action_hrm_intermediate_size,
                 head_dim=self.action_hrm_head_dim,
-                is_causal=self.causal_mixer,
+                is_causal=(
+                    False if self.planner_generation == "joint" else self.causal_mixer
+                ),
                 h_cycles=(
                     1
                     if self.planner_core_type == "matched_feedforward"
@@ -387,6 +406,32 @@ class NavigationPolicy(nn.Module):
             [self.feature_embed(observations), self.feature_embed(goals)], axis=1
         )
 
+    def _run_joint_planner(self, features, temperature, seed):
+        """Refine all waypoint slots together, without teacher-prefix inputs.
+
+        Each segment receives the same observation/goal/query sequence and the
+        preceding segment's detached HRM carry. Waypoint slots are far-to-near
+        for compatibility with the dataset and executor; this is not an
+        autoregressive generation order. Only the final plan is sampled.
+        """
+        queries = jnp.tile(self.planner_query_tokens, (features.shape[0], 1, 1))
+        inputs = jnp.concatenate([features, queries], axis=1)
+        carry = None
+        rounds = []
+        for _ in range(self.planner_refinement_steps):
+            carry, output = self.planner_core(carry, inputs)
+            rounds.append(
+                [
+                    self.high_actor_head(output[:, 2 + j, :], temperature=temperature)
+                    for j in range(self.num_subgoals)
+                ]
+            )
+        keys = jax.random.split(seed, self.num_subgoals)
+        predictions = jnp.stack(
+            [dist.sample(seed=key) for dist, key in zip(rounds[-1], keys)], axis=1
+        )
+        return rounds, predictions
+
     def _run_planner(
         self,
         features: jax.Array,
@@ -460,7 +505,7 @@ class NavigationPolicy(nn.Module):
             if subgoal_reps is None:
                 raise ValueError("Teacher action chain requested without subgoal_reps.")
             return subgoal_reps
-        if subgoal_reps is None:
+        if subgoal_reps is None or self.planner_generation == "joint":
             return predicted_subgoals
         _, free_running_subgoals = self._run_planner(
             features, teacher_subgoals=None, temperature=temperature, seed=seed
@@ -480,8 +525,14 @@ class NavigationPolicy(nn.Module):
         goal_rep_override: Optional[jax.Array] = None,
         detach_planner_commands: bool = False,
         return_latents: bool = False,
+        return_planner_rounds: bool = False,
     ):
-        """Generate subgoals and one primitive-action distribution."""
+        """Generate subgoals and one primitive-action distribution.
+
+        With ``return_planner_rounds``, the first result contains a list of
+        per-round distribution lists, instead of just the final round's list.
+        The remaining return values retain their usual meaning.
+        """
         del action_seq
         if seed is None:
             seed = jax.random.PRNGKey(0)
@@ -508,12 +559,21 @@ class NavigationPolicy(nn.Module):
             raise ValueError(
                 f"Expected exactly observation and goal feature tokens; got {features.shape[1]} tokens."
             )
-        high_dist_list, predicted_subgoals = self._run_planner(
-            planner_features,
-            teacher_subgoals=planner_subgoals,
-            temperature=temperature,
-            seed=planner_seed,
-        )
+        if self.planner_generation == "joint":
+            planner_rounds, predicted_subgoals = self._run_joint_planner(
+                planner_features, temperature, planner_seed
+            )
+            high_dist_list = planner_rounds[-1]
+        else:
+            high_dist_list, predicted_subgoals = self._run_planner(
+                planner_features,
+                teacher_subgoals=planner_subgoals,
+                temperature=temperature,
+                seed=planner_seed,
+            )
+            planner_rounds = [high_dist_list]
+        if return_planner_rounds:
+            high_dist_list = planner_rounds
         action_chain = self._resolve_action_chain(
             planner_features,
             subgoal_reps,

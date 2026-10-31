@@ -304,6 +304,42 @@ def build_checkpoint_metadata(
         ),
         'planner_executor_shared_core': share_actor_core,
     }
+    # Leave historical autoregressive signatures unchanged. Joint checkpoints
+    # must record both generation semantics and the supervised compute budget.
+    if config.get('planner_generation', 'autoregressive') == 'joint':
+        joint_plan_objective = config.get('joint_plan_objective', 'endpoint_deep')
+        signature.update(
+            planner_generation='joint',
+            planner_refinement_steps=config.get('planner_refinement_steps', 1),
+            planner_weighting='endpoint_delta',
+        )
+        # Archived joint-pilot checkpoints predate the objective selector. Do
+        # not add fields for that path: missing and explicit endpoint_deep
+        # must produce exactly the original signature. The first formal
+        # planner objective also restores the CoGHP peripheral architecture;
+        # record its actual Mixer and normalization controls, not the unused
+        # action-HRM defaults retained in the config for compatibility.
+        if joint_plan_objective == 'waypoint_final':
+            signature.update(
+                joint_plan_objective='waypoint_final',
+                planner_weighting='waypoint_delta',
+                planner_supervision='final_only',
+            )
+            for key, default in (
+                ('mixer_hidden', 32),
+                ('num_mixer_blocks', 1),
+                ('causal_mixer', True),
+                ('layer_norm', True),
+                ('planner_norm_eps', 1e-6),
+                ('planner_forward_dtype', 'float32'),
+                ('subgoal_steps', None),
+                ('high_alpha', None),
+                ('high_discount', None),
+                ('high_const_std', None),
+                ('low_const_std', None),
+                ('train_action_chain_source', 'teacher'),
+            ):
+                signature[key] = config.get(key, default)
     if 'network_backbone' in config:
         for key in ('network_backbone', 'actor_hidden_dims', 'value_hidden_dims', 'enc_hidden_dims'):
             value = config.get(key)

@@ -1,0 +1,223 @@
+{
+  "study_id": "joint_planner_v0_antmaze_giant_hlm_width32_seed0",
+  "question": "At fixed Mixer intermediate width 32, how do high-actor H/L recurrence depth and sparse-plan length affect offline AntMaze-Giant navigation?",
+  "interpretation": "Exploratory seed-0 factorial study. High actor uses final-only supervision with full within-segment BPTT and per-waypoint AWR. CoGHP-style MLP peripherals and a separate GELU Mixer executor remain fixed. External refinement K=1. h and l change compute rather than parameter count; M changes plan horizon, token count and token-mixer parameter count. Equal updates do not imply equal runtime. No original shared-core CoGHP baseline is included. AntMaze-Giant uses the established CoGHP latent width 128; this is distinct from Mixer intermediate width 32. Execution requested on physical GPU 1 with two concurrent training workers.",
+  "metric": {
+    "column": "evaluation/overall_success",
+    "steps": [
+      800000,
+      900000,
+      1000000
+    ]
+  },
+  "protocol": {
+    "train_steps": 1000000,
+    "log_interval": 5000,
+    "eval_interval": 100000,
+    "save_interval": 1000000,
+    "save_steps": [
+      800000,
+      900000,
+      1000000
+    ],
+    "eval_episodes": 50,
+    "eval_temperature": 0,
+    "video_episodes": 0,
+    "eval_on_cpu": 1,
+    "fixed_validation_batch": true,
+    "require_deterministic_gpu": true
+  },
+  "common_agent": {
+    "batch_size": 256,
+    "lr": 0.0003,
+    "actor_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "value_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "enc_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "feature_dim": 128,
+    "network_backbone": "mlp",
+    "layer_norm": true,
+    "gc_enc": "concat",
+    "command_content": "full_state",
+    "high_weight_source": "detail_value",
+    "navigation_protocol": "joint_planner_v0",
+    "discount": 0.99,
+    "high_discount": 0.8,
+    "low_alpha": 3,
+    "high_alpha": 3,
+    "awr_max_weight": 100,
+    "expectile": 0.7,
+    "tau": 0.005,
+    "high_const_std": true,
+    "low_const_std": true,
+    "planner_generation": "joint",
+    "planner_core_type": "hrm",
+    "planner_block_type": "swiglu_rmsnorm",
+    "planner_num_layers": 1,
+    "planner_mixer_intermediate_size": 32,
+    "planner_refinement_steps": 1,
+    "planner_bptt": true,
+    "joint_plan_objective": "waypoint_final",
+    "planner_norm_eps": 1e-06,
+    "planner_forward_dtype": "float32",
+    "action_core_type": "vanilla_coghp",
+    "action_block_type": "coghp_gelu",
+    "num_mixer_blocks": 1,
+    "mixer_hidden": 32,
+    "hrm_mixer_intermediate_size": 32,
+    "causal_mixer": true,
+    "share_actor_core": false,
+    "train_action_chain_source": "teacher",
+    "enable_action_hrm_validation": true
+  },
+  "methods": {
+    "hrm_h2l2_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 2,
+        "planner_l_cycles": 2,
+        "num_subgoals": 3
+      }
+    },
+    "hrm_h1l2_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 1,
+        "planner_l_cycles": 2,
+        "num_subgoals": 3
+      }
+    },
+    "hrm_h1l1_m1": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 1,
+        "planner_l_cycles": 1,
+        "num_subgoals": 1
+      }
+    },
+    "hrm_h1l1_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 1,
+        "planner_l_cycles": 1,
+        "num_subgoals": 3
+      }
+    },
+    "hrm_h1l2_m1": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 1,
+        "planner_l_cycles": 2,
+        "num_subgoals": 1
+      }
+    },
+    "hrm_h2l1_m1": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 2,
+        "planner_l_cycles": 1,
+        "num_subgoals": 1
+      }
+    },
+    "hrm_h2l1_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 2,
+        "planner_l_cycles": 1,
+        "num_subgoals": 3
+      }
+    },
+    "hrm_h2l2_m1": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 2,
+        "planner_l_cycles": 2,
+        "num_subgoals": 1
+      }
+    },
+    "hrm_h4l1_m1": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 4,
+        "planner_l_cycles": 1,
+        "num_subgoals": 1
+      }
+    },
+    "hrm_h4l1_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 4,
+        "planner_l_cycles": 1,
+        "num_subgoals": 3
+      }
+    },
+    "hrm_h4l2_m1": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 4,
+        "planner_l_cycles": 2,
+        "num_subgoals": 1
+      }
+    },
+    "hrm_h4l2_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 4,
+        "planner_l_cycles": 2,
+        "num_subgoals": 3
+      }
+    }
+  },
+  "environments": {
+    "antmaze-giant-navigate-v0": {
+      "subgoal_steps": 50
+    }
+  }
+}

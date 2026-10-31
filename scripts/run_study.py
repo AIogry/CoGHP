@@ -3,7 +3,8 @@
 
 Execution copies and hashes the actual source, including uncommitted changes.
 Training uses that snapshot; Git HEAD alone is never claimed to identify dirty
-code. Each GPU has one sequential worker. Existing attempts are never replaced.
+code. GPUs have a configurable number of workers. Existing attempts are never
+replaced.
 """
 
 import argparse
@@ -177,6 +178,12 @@ def child_environment(source, dataset_root, gpu, seed):
                PYTHONDONTWRITEBYTECODE='1', OGBENCH_DATASET_DIR=str(dataset_root),
                XLA_FLAGS='--xla_gpu_deterministic_ops', XLA_PYTHON_CLIENT_PREALLOCATE='false',
                OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', MUJOCO_GL='egl', PYOPENGL_PLATFORM='egl')
+    # CUDA visibility does not select MuJoCo's EGL device. Keep rendering on
+    # the requested physical GPU as well (CPU diagnostics retain their default).
+    if gpu:
+        env['MUJOCO_EGL_DEVICE_ID'] = gpu
+    else:
+        env.pop('MUJOCO_EGL_DEVICE_ID', None)
     for name in ('JAX_PLATFORMS', 'JAX_PLATFORM_NAME'):
         env.pop(name, None)
     return env
@@ -254,7 +261,7 @@ def freeze(campaign, study, datasets, source_root=None):
     return source, provenance
 
 
-def check_gpu_occupancy(gpus, allowed_processes=None):
+def check_gpu_occupancy(gpus, allowed_processes=None, owned_processes=None):
     output = subprocess.check_output(
         ['nvidia-smi', '--query-gpu=index,uuid,name', '--format=csv,noheader'], text=True)
     devices = {row[0].strip(): (row[1].strip(), row[2].strip()) for row in csv.reader(output.splitlines())}
@@ -263,6 +270,7 @@ def check_gpu_occupancy(gpus, allowed_processes=None):
     processes = subprocess.check_output(
         ['nvidia-smi', '--query-compute-apps=gpu_uuid,pid,process_name', '--format=csv,noheader'], text=True)
     selected = {devices[gpu][0] for gpu in gpus}
+    gpu_by_uuid = {devices[gpu][0]: gpu for gpu in gpus}
     allowed_processes = allowed_processes or {}
     occupied = []
     for line in processes.splitlines():
@@ -272,10 +280,55 @@ def check_gpu_occupancy(gpus, allowed_processes=None):
         # Exact PID AND executable matching, never a blanket occupancy bypass.
         if len(row) >= 3 and allowed_processes.get(row[1]) == row[2]:
             continue
+        # Live children of this launcher may share their assigned GPU. Verify
+        # /proc's executable instead of NVIDIA's sometimes-symlinked name.
+        if len(row) >= 3 and owned_processes is not None and owned_processes.owns(gpu_by_uuid[row[0]], row[1]):
+            continue
         occupied.append(line)
     if occupied:
         raise ValueError('Selected GPUs already have compute processes: ' + '; '.join(occupied))
     return devices
+
+
+class GPUProcessRegistry:
+    """Serialize occupancy checks and launches; recognize only live own children."""
+
+    def __init__(self, allowed_processes=None):
+        self.allowed_processes = dict(allowed_processes or {})
+        self._lock = threading.RLock()
+        self._processes = {}
+
+    def owns(self, gpu, pid):
+        with self._lock:
+            record = self._processes.get(str(pid))
+            if record is None:
+                return False
+            process, assigned_gpu, executable = record
+            if assigned_gpu != gpu or process.poll() is not None:
+                return False
+            try:
+                return Path(f'/proc/{process.pid}/exe').resolve(strict=True) == executable
+            except OSError:
+                # A disappearing process or inaccessible executable is not an
+                # ownership proof. Keep the occupancy check conservative.
+                return False
+
+    def spawn(self, gpu, cmd, **popen_kwargs):
+        executable = Path(cmd[0])
+        if not executable.is_absolute():
+            raise ValueError('Managed GPU child executable must be an absolute path.')
+        executable = executable.resolve(strict=True)
+        with self._lock:
+            check_gpu_occupancy([gpu], self.allowed_processes, owned_processes=self)
+            process = subprocess.Popen(cmd, **popen_kwargs)
+            self._processes[str(process.pid)] = (process, gpu, executable)
+            return process
+
+    def unregister(self, process):
+        with self._lock:
+            record = self._processes.get(str(process.pid))
+            if record is not None and record[0] is process:
+                del self._processes[str(process.pid)]
 
 
 def check_gpus(gpus, dataset_root, source, allowed_processes=None):
@@ -381,7 +434,24 @@ def run_diagnostics(job, study, source, dataset_root):
     return dict(status='completed', records=records)
 
 
-def run_one(job, gpu, study, source, provenance, dataset_root, wandb_mode, stop):
+def terminate_child(process):
+    """Stop a process group created by this launcher, and reap its direct child."""
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        pass
+    try:
+        process.wait(timeout=15)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.wait()
+
+
+def run_one(job, gpu, study, source, provenance, dataset_root, wandb_mode, stop,
+            launch_registry=None):
     run_dir = Path(job['run_dir'])
     run_dir.mkdir(parents=True, exist_ok=False)
     cmd = command(job, study, source, provenance, wandb_mode)
@@ -391,28 +461,32 @@ def run_one(job, gpu, study, source, provenance, dataset_root, wandb_mode, stop)
                     git_commit=provenance['git_commit'], python=sys.executable,
                     runtime_environment={k: env[k] for k in ('CUDA_VISIBLE_DEVICES', 'CUDA_DEVICE_ORDER',
                         'PYTHONPATH', 'PYTHONHASHSEED', 'OGBENCH_DATASET_DIR', 'XLA_FLAGS',
-                        'XLA_PYTHON_CLIENT_PREALLOCATE', 'OMP_NUM_THREADS', 'MKL_NUM_THREADS')})
+                        'XLA_PYTHON_CLIENT_PREALLOCATE', 'OMP_NUM_THREADS', 'MKL_NUM_THREADS',
+                        'MUJOCO_EGL_DEVICE_ID')})
     write_json(run_dir / 'run.json', metadata)
     print(f'START GPU={gpu} {job["method"]} {job["environment"]} seed={job["seed"]}', flush=True)
     try:
         with (run_dir / 'stdout.log').open('x') as log:
-            process = subprocess.Popen(cmd, cwd=source / 'impls', env=env, stdout=log,
-                                       stderr=subprocess.STDOUT, start_new_session=True)
-            metadata['pid'] = process.pid
-            write_json(run_dir / 'run.json', metadata)
-            while process.poll() is None:
-                if stop.wait(0.25):
-                    try:
-                        os.killpg(process.pid, signal.SIGTERM)
-                    except ProcessLookupError:
-                        pass
-                    try:
-                        process.wait(timeout=15)
-                    except subprocess.TimeoutExpired:
-                        os.killpg(process.pid, signal.SIGKILL)
-                        process.wait()
-                    break
-            metadata['returncode'] = process.returncode
+            options = dict(cwd=source / 'impls', env=env, stdout=log,
+                           stderr=subprocess.STDOUT, start_new_session=True)
+            process = (subprocess.Popen(cmd, **options) if launch_registry is None
+                       else launch_registry.spawn(gpu, cmd, **options))
+            try:
+                metadata['pid'] = process.pid
+                write_json(run_dir / 'run.json', metadata)
+                while process.poll() is None:
+                    if stop.wait(0.25):
+                        terminate_child(process)
+                        break
+                metadata['returncode'] = process.returncode
+            finally:
+                # Also reap a child if recording metadata or polling fails.
+                try:
+                    if process.poll() is None:
+                        terminate_child(process)
+                finally:
+                    if launch_registry is not None:
+                        launch_registry.unregister(process)
         if stop.is_set():
             metadata['status'] = 'cancelled'
         elif process.returncode != 0:
@@ -436,7 +510,9 @@ def run_one(job, gpu, study, source, provenance, dataset_root, wandb_mode, stop)
                or metadata.get('diagnostics', {}).get('status') == 'failed')
 
 
-def dispatch(jobs, gpus, runner, stop):
+def dispatch(jobs, gpus, runner, stop, workers_per_gpu=1):
+    if type(workers_per_gpu) is not int or workers_per_gpu <= 0:
+        raise ValueError('workers_per_gpu must be a positive integer')
     pending = queue.Queue()
     failed = threading.Event()
     for job in jobs:
@@ -459,8 +535,8 @@ def dispatch(jobs, gpus, runner, stop):
                 pending.task_done()
         return 1
 
-    with ThreadPoolExecutor(max_workers=len(gpus)) as pool:
-        futures = [pool.submit(worker, gpu) for gpu in gpus]
+    with ThreadPoolExecutor(max_workers=len(gpus) * workers_per_gpu) as pool:
+        futures = [pool.submit(worker, gpu) for gpu in gpus for _ in range(workers_per_gpu)]
         return int(any([future.result() for future in futures]))
 
 
@@ -539,7 +615,9 @@ def main(argv=None):
     parser.add_argument('--summarize-with', type=Path, action='append', default=[],
                         help='Pool with another campaign after checking protocol, source and data identity.')
     parser.add_argument('--dataset-root', type=Path, default=Path('/data/qijunrong/06-RL/offline-rl/data/raw_ogbench'))
-    parser.add_argument('--gpus', default='0,1', help='Comma-separated physical GPU indices; one worker per GPU.')
+    parser.add_argument('--gpus', default='0,1', help='Comma-separated unique physical GPU indices.')
+    parser.add_argument('--workers-per-gpu', type=int, default=1,
+                        help='Concurrent training processes per GPU (default: 1).')
     parser.add_argument('--allow-gpu-process', action='append', default=[], metavar='PID=EXECUTABLE',
                         help='Explicitly permit a verified background GPU process; exact PID and executable match required.')
     parser.add_argument('--methods', help='Comma-separated method IDs from the study.')
@@ -562,6 +640,8 @@ def main(argv=None):
     dataset_root = args.dataset_root.resolve()
     if args.attempt < 0:
         raise ValueError('--attempt must be non-negative')
+    if args.workers_per_gpu <= 0:
+        raise ValueError('--workers-per-gpu must be a positive integer')
     manifest_path = campaign / 'campaign.json'
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else None
     if args.study is None and manifest is None:
@@ -612,7 +692,9 @@ def main(argv=None):
         else:
             pending.append(job)
     print(f'Study={study["study_id"]} total={len(jobs)} completed={len(jobs)-len(pending)} pending={len(pending)}')
-    print(f'GPUs={gpus}; one worker/GPU; Python={sys.executable}; W&B={args.wandb_mode}')
+    print(f'GPUs={gpus}; workers/GPU={args.workers_per_gpu}; '
+          f'max concurrent runs={len(gpus) * args.workers_per_gpu}; '
+          f'Python={sys.executable}; W&B={args.wandb_mode}')
     print(f'Protocol={json.dumps(study["protocol"])}\nMetric={study["metric"]}')
     print(f'Datasets={len(datasets)} files; output={campaign}')
     preview = (manifest['source'] if manifest is not None
@@ -643,14 +725,15 @@ def main(argv=None):
         check_gpus(gpus, dataset_root, source, allowed_processes)
         write_json(campaign / 'launcher_runtime.json', dict(
             started_at=now(), launcher_pid=os.getpid(), physical_gpus=gpus,
+            workers_per_gpu=args.workers_per_gpu,
+            max_concurrent_runs=len(gpus) * args.workers_per_gpu,
             allowed_gpu_processes=allowed_processes))
         stop = threading.Event()
         previous = {sig: signal.signal(sig, lambda *_: stop.set()) for sig in (signal.SIGINT, signal.SIGTERM)}
         try:
             def run_and_report(job, gpu):
-                check_gpu_occupancy([gpu], allowed_processes)
                 result = run_one(job, gpu, study, source, provenance,
-                                 dataset_root, args.wandb_mode, stop)
+                                 dataset_root, args.wandb_mode, stop, launch_registry=launch_registry)
                 # Atomically publish completed exact-checkpoint scores plus the
                 # explicit incomplete queue after every run, including failures.
                 with report_lock:
@@ -661,7 +744,8 @@ def main(argv=None):
                     temporary.replace(campaign / 'results.txt')
                 return result
             report_lock = threading.Lock()
-            return dispatch(pending, gpus, run_and_report, stop)
+            launch_registry = GPUProcessRegistry(allowed_processes)
+            return dispatch(pending, gpus, run_and_report, stop, workers_per_gpu=args.workers_per_gpu)
         finally:
             for sig, handler in previous.items():
                 signal.signal(sig, handler)

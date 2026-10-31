@@ -62,11 +62,175 @@ The study runner also accepts the historical method IDs and resolves them to
 these profiles when the old implementation files are absent. Existing frozen
 experiment snapshots continue to use their own original entry files.
 
-Study JSON files and generated reports live outside this source tree in
-`../docs/CoGHP/experiments/`. A new campaign requires an explicit `--study` path;
+Historical study JSON files and generated reports live outside this source tree
+in `../docs/CoGHP/experiments/`. The current planner v0 specification is versioned
+with the implementation in `configs/joint_planner_v0.json`.
+A new campaign requires an explicit `--study` path;
 an existing campaign reads its frozen specification from `campaign.json`.
 Campaign-specific regression checks use that external directory, configurable
 through `COGHP_STUDY_DIR`.
+
+## Joint HRM planner v0
+
+`agents/navigation.py:joint_planner` selects the first controlled planner design.
+Only the high actor uses HRM: it updates the full plan's H/L states, then reads
+out **all sparse waypoints together at the end**. The planner never receives a
+ground-truth waypoint prefix. Its objective is `joint_plan_objective=waypoint_final`.
+
+| Component | v0 setting |
+| --- | --- |
+| State/goal encoders and value | CoGHP-style GELU MLPs, hidden-layer LayerNorm; encoder outputs retain length normalization |
+| High/low actor readout heads | CoGHP-style GELU MLPs, no LayerNorm |
+| Peripheral MLP dimensions | `(512,512,512)` |
+| Latent/token dimension | 32 by default; 128 in the AntMaze-Giant campaign |
+| Planner H/L blocks | SwiGLU Mixer with RMSNorm, intermediate dimension **32** |
+| Executor | Independent CoGHP-style GELU Mixer, token/channel intermediate dimensions **32** |
+| External refinement segments \(K\) | 1 |
+| Internal H cycles \(h\), L updates before each H cycle \(\ell\) | 2, 2 by default |
+| Sparse targets \(M\) | 3 by default |
+
+One planning call performs `h * l` L updates and `h` H updates, then applies the
+same high-actor head to every waypoint position. H and L blocks have separate
+parameters, reused across their respective updates. The final loss backpropagates
+through **all H/L updates within that call** (`planner_bptt=True`). External
+`planner_refinement_steps` is fixed to 1, so the generic detached returned carry
+does not truncate any v0 training path. Recurrent states reset on each planning
+call; full BPTT does not extend across environment steps.
+
+Planner SwiGLU token mixing is noncausal. The executor retains CoGHP's original
+partial triangular mask on `tm_weights`; its preceding token MLP still mixes
+all positions. This is not a strict causal attention mask. Planner and executor
+are separate cores (`share_actor_core=False`), unlike default original CoGHP's
+shared core. No SwiGLU/RMSNorm peripheral networks or HRM executor are used in v0.
+
+Research note (2026-10-28): prefer a **shared readout head for intermediate
+recurrent states and the final state**, with `y_r = D_phi(h_r)` using the same
+parameters `phi` across readout depths/rounds. Revisit this idea with the user
+when designing intermediate supervision, early exits or variable inference
+budgets. The pilot shared `high_actor_head` across refinement rounds. V0 uses
+only the final readout, with the same head shared across waypoint positions;
+optional intermediate H/L readouts remain a future design choice.
+
+The v0 objective assigns each data waypoint its own detached AWR weight:
+
+```text
+A_j = mean_twin V(s_target_j, g) - mean_twin V(s_current, g)
+w_j = stop_gradient(exp(min(high_alpha * A_j, log(awr_max_weight))))
+c_j = high_discount ** (M - j)       # j=1 is farthest, j=M is nearest
+L_high = -mean_batch [sum_j c_j * w_j * log p_final(target_j)] / (M * subgoal_steps)
+```
+
+Only the final plan is supervised, with no average or scaling by `h` or `l`.
+The data targets and weights retain stopped gradients. The fixed unit Gaussian
+variance makes this objective equivalent in planner gradient to weighted squared
+latent-target error. With `high_discount=0.8`, the far-to-near weights for M=3 are
+`[0.64, 0.8, 1.0]`. These are existing detail-value progress scores, not a new
+trajectory critic: no accumulated rewards or explicit segment-feasibility scores
+are introduced. Formal v0 experiments fix `high_weight_source=detail_value`.
+
+Targets are full-state **encoded commands**, preserving the existing goal
+encoder and executor interface; they are not raw-state predictions or a
+position/velocity-only reduction. Slots remain far-to-near with nominal offsets
+`[75, 50, 25]` under profile defaults; formal PointMaze-Large runs use
+`[150, 100, 50]` for M=3. Sampling clips targets at the relabeled goal or
+episode boundary, so repeated endpoint targets retain the existing padding
+semantics. The executor consumes the entire final plan. It still trains on data
+commands by default and replans at every environment step during evaluation.
+Thus planner-prefix teacher forcing is removed, while the executor's
+data-command/predicted-command distribution difference remains. Interval-based
+execution, online critic feedback and adaptive stopping are later experiments.
+
+Run a CPU pipeline check from the repository root (existing data only):
+
+```bash
+bash scripts/run_joint_planner_smoke.sh
+# Arguments are run directory, h, l, M; external K is always 1:
+bash scripts/run_joint_planner_smoke.sh "$PWD/impls/exp/joint_v0_h1l1_m1" 1 1 1
+# A cheaper check shrinks only peripheral MLPs, and is not a formal model run:
+SMOKE_SMALL=1 TRAIN_STEPS=16 bash scripts/run_joint_planner_smoke.sh
+```
+
+The default check uses full `(512,512,512)` peripheral networks, latent and Mixer
+dimensions 32, batch 16 and 128 updates on pointmaze-medium (`subgoal_steps=25`).
+It includes fixed-batch validation, one environment evaluation episode and
+checkpoint saving. `SMOKE_SMALL=1` changes peripheral MLPs to `(32,32)` while
+keeping the latent/Mixer dimensions at 32. Both modes are pipeline checks, not
+performance comparisons. The launcher prints the selected dimensions and saves
+the complete resolved configuration in `flags.json`. Set `PYTHON`,
+`OGBENCH_DATASET_DIR` and `TRAIN_STEPS` as needed. Each run directory must be new.
+
+### First formal h/l/M experiment
+
+`configs/joint_planner_v0.json` specifies 12 configurations with
+`h in {1,2,4}`, `l in {1,2}` and `M in {1,3}`, external K=1, and seed 0.
+It uses PointMaze-Large, `subgoal_steps=50`, latent/Mixer dimensions 32,
+peripheral MLPs `(512,512,512)`, batch 256, learning rate 3e-4 and 1M updates.
+Evaluation covers every task, with 50 episodes per task every 100k updates and
+temperature 0. The primary score averages updates 800k, 900k and 1M.
+
+The study runner loads the native agent entry point, so this JSON explicitly
+overrides its development defaults to the v0 settings. It does not rely on the
+native default configuration being changed. Preview it without starting training:
+
+```bash
+PYTHON=/home/eai/Tools/miniforge3/envs/brain_nav/bin/python
+RUN_ROOT=/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_width32_seed0
+"$PYTHON" scripts/run_study.py --study configs/joint_planner_v0.json --run-root "$RUN_ROOT" --gpus 0,1 --dry-run
+# Use --execute in place of --dry-run when starting the campaign.
+# Add --methods hrm_h2l2_m3 to start with the reference configuration alone.
+```
+
+The runner requires existing datasets and a campaign path outside this source
+tree, freezes the actual source/configuration, and records dataset hashes.
+Seed 0 is exploratory; add seeds 1/2 in a new study/campaign after reviewing this
+first pass, without modifying an existing campaign's frozen specification.
+Increasing h/l changes compute, while changing M also changes horizon, token
+count and token-mixer parameter count. Report update count and runtime alongside
+success. These are within-family HRM controls, not a capacity-matched comparison
+with original CoGHP.
+
+### Completed AntMaze-Giant campaign
+
+`configs/joint_planner_v0_antmaze_giant.json` records the October 29 campaign:
+the same 12 h/l/M combinations, seed 0, `subgoal_steps=50`, latent dimension
+**128**, and Mixer intermediate dimensions **32**. Only the planner uses HRM;
+the objective remains final-only, per-waypoint AWR with full within-call BPTT.
+Training used physical GPU 1 with two concurrent processes, and evaluations
+ran on CPU. The primary score remains the mean at 800k, 900k and 1M updates.
+
+Preview the corresponding launch settings with a new campaign directory:
+
+```bash
+PYTHON=/home/eai/Tools/miniforge3/envs/brain_nav/bin/python
+RUN_ROOT=/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_new
+"$PYTHON" scripts/run_study.py --study configs/joint_planner_v0_antmaze_giant.json \
+  --run-root "$RUN_ROOT" --gpus 1 --workers-per-gpu 2 --wandb-mode offline --dry-run
+```
+
+The runner checks GPU occupancy and tracks its own live children so that only
+the requested concurrent runs share the selected GPU. It freezes source and
+configuration before training and keeps existing attempts intact.
+
+The analysis entry points are `scripts/analyze_joint_planner_v0.py` (log
+snapshots and reports), `scripts/probe_joint_planner_checkpoints.py` (paired
+offline queries), `scripts/probe_joint_planner_rollouts.py` (local command
+interventions), `scripts/probe_joint_planner_task_paths.py` (task trajectories),
+`scripts/summarize_joint_planner_diagnostics.py` (combined diagnostic figures),
+and `scripts/audit_joint_planner_mechanisms.py` (shared-head readouts and gradient
+routing). They read frozen experiment sources and saved checkpoints; they do
+not update model parameters. Run each with `--help` for its inputs and output
+directory contract. Generated analysis outputs under `impls/exp/`, datasets,
+and checkpoints are separate from the versioned implementation.
+
+### Earlier endpoint/deep-supervision pilot
+
+`agents/navigation.py:joint_planner_pilot` preserves the October 27 prototype:
+three H2/L2 segments, detached cross-segment states, truncated within-segment
+gradients, a readout/loss at every segment, and one farthest-endpoint AWR weight
+shared by all waypoints and segments. It also retains the native SwiGLU/RMSNorm
+peripheral networks and HRM executor. Prior smoke results describe that pilot,
+not v0. Do not resume pilot checkpoints using the v0 objective or architecture.
+Autoregressive/default and historical profiles retain their original behavior.
 
 # Reproducing the main results
 An agent can be trained by executing `main.py` script.

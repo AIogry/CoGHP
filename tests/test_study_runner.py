@@ -173,6 +173,7 @@ class StudyRunnerTest(unittest.TestCase):
         self.assertIn('--require_gpu=True', cmd)
         self.assertIn('--save_steps=800000,900000,1000000', cmd)
         self.assertEqual(env['CUDA_VISIBLE_DEVICES'], '1')
+        self.assertEqual(env['MUJOCO_EGL_DEVICE_ID'], '1')
         self.assertEqual(env['XLA_FLAGS'], '--xla_gpu_deterministic_ops')
         self.assertNotIn('JAX_PLATFORMS', env)
 
@@ -211,6 +212,46 @@ class StudyRunnerTest(unittest.TestCase):
         self.assertEqual(sorted(seen), list(range(12)))
         self.assertFalse(overlap)
 
+    def test_two_workers_share_selected_gpu_and_dispatch_each_job_once(self):
+        first_pair = threading.Barrier(2)
+        lock = threading.Lock()
+        active = 0
+        peak = 0
+        seen = []
+        assigned_gpus = []
+
+        def run(job, gpu):
+            nonlocal active, peak
+            with lock:
+                active += 1
+                peak = max(peak, active)
+                assigned_gpus.append(gpu)
+            try:
+                # The first two jobs must both start before either can finish.
+                if job < 2:
+                    first_pair.wait(timeout=5)
+                time.sleep(0.005 if job % 2 else 0.015)
+                with lock:
+                    seen.append(job)
+            finally:
+                with lock:
+                    active -= 1
+            return 0
+
+        result = runner.dispatch(list(range(10)), ['1'], run, threading.Event(),
+                                 workers_per_gpu=2)
+        self.assertEqual(result, 0)
+        self.assertEqual(peak, 2)
+        self.assertEqual(active, 0)
+        self.assertEqual(sorted(seen), list(range(10)))
+        self.assertEqual(assigned_gpus, ['1'] * 10)
+
+    def test_dispatch_rejects_nonpositive_worker_count(self):
+        for workers in (0, -1):
+            with self.subTest(workers=workers), self.assertRaises(ValueError):
+                runner.dispatch([], ['1'], lambda *_: 0, threading.Event(),
+                                workers_per_gpu=workers)
+
     def test_failure_stops_queue_without_cancelling_inflight(self):
         stop = threading.Event()
         seen = []
@@ -219,6 +260,35 @@ class StudyRunnerTest(unittest.TestCase):
             return 1
         self.assertEqual(runner.dispatch(list(range(10)), ['0'], fail, stop), 1)
         self.assertEqual(seen, [0])
+        self.assertFalse(stop.is_set())
+
+    def test_failure_stops_dual_worker_queue_and_preserves_inflight_job(self):
+        first_pair = threading.Barrier(2)
+        failure_returning = threading.Event()
+        stop = threading.Event()
+        seen = []
+        completed = []
+        lock = threading.Lock()
+
+        def run(job, gpu):
+            with lock:
+                seen.append(job)
+            if job < 2:
+                first_pair.wait(timeout=5)
+            if job == 0:
+                failure_returning.set()
+                return 1
+            failure_returning.wait(timeout=5)
+            # Give the failed worker time to publish its dispatch-stop flag.
+            time.sleep(0.05)
+            with lock:
+                completed.append(job)
+            return 0
+
+        result = runner.dispatch(list(range(10)), ['1'], run, stop, workers_per_gpu=2)
+        self.assertEqual(result, 1)
+        self.assertEqual(sorted(seen), [0, 1])
+        self.assertEqual(completed, [1])
         self.assertFalse(stop.is_set())
 
     def test_freeze_captures_dirty_and_untracked_source_and_rejects_tampering(self):
@@ -356,6 +426,127 @@ for step in (800000,900000,1000000): (p/f'params_{step}.pkl').write_bytes(b'fixt
             with mock.patch.object(subprocess, 'check_output', side_effect=replies):
                 with self.assertRaisesRegex(ValueError, 'compute processes'):
                     runner.check_gpu_occupancy(['0'], allowed)
+
+    @staticmethod
+    def _terminate_children(processes):
+        for process in processes:
+            if process.poll() is None:
+                process.terminate()
+            process.wait(timeout=5)
+
+    def test_gpu_registry_only_allows_live_owned_children_on_assigned_gpu(self):
+        registry = runner.GPUProcessRegistry()
+        processes = []
+        self.addCleanup(self._terminate_children, processes)
+        devices = '0, GPU-a, A\n1, GPU-b, B\n'
+        command = [os.sys.executable, '-c', 'import time; time.sleep(30)']
+        with mock.patch.object(runner.subprocess, 'check_output', side_effect=[devices, '']):
+            owned = registry.spawn('1', command)
+        processes.append(owned)
+        foreign = subprocess.Popen(command)
+        processes.append(foreign)
+
+        self.assertTrue(registry.owns('1', str(owned.pid)))
+        self.assertFalse(registry.owns('0', str(owned.pid)))
+        self.assertFalse(registry.owns('1', str(foreign.pid)))
+
+        # Some drivers spell the executable differently; verify owned children
+        # against their live /proc executable instead of that display string.
+        own_report = f'GPU-b, {owned.pid}, python\n'
+        with mock.patch.object(runner.subprocess, 'check_output', side_effect=[devices, own_report]):
+            self.assertIn('1', runner.check_gpu_occupancy(['1'], owned_processes=registry))
+        with mock.patch.object(runner.subprocess, 'check_output', side_effect=[devices, own_report]):
+            with self.assertRaisesRegex(ValueError, 'compute processes'):
+                runner.check_gpu_occupancy(['1'])
+
+        both_report = own_report + f'GPU-b, {foreign.pid}, {os.sys.executable}\n'
+        with mock.patch.object(runner.subprocess, 'check_output', side_effect=[devices, both_report]):
+            with self.assertRaisesRegex(ValueError, str(foreign.pid)):
+                runner.check_gpu_occupancy(['1'], owned_processes=registry)
+
+        owned.terminate()
+        owned.wait(timeout=5)
+        self.assertFalse(registry.owns('1', str(owned.pid)))
+        registry.unregister(owned)
+        self.assertFalse(registry.owns('1', str(owned.pid)))
+
+    def test_gpu_registry_unregister_revokes_live_child_exception(self):
+        registry = runner.GPUProcessRegistry()
+        processes = []
+        self.addCleanup(self._terminate_children, processes)
+        with mock.patch.object(runner.subprocess, 'check_output',
+                               side_effect=['1, GPU-b, B\n', '']):
+            process = registry.spawn('1', [os.sys.executable, '-c', 'import time; time.sleep(30)'])
+        processes.append(process)
+        self.assertTrue(registry.owns('1', str(process.pid)))
+        registry.unregister(process)
+        self.assertIsNone(process.poll())
+        self.assertFalse(registry.owns('1', str(process.pid)))
+
+    def test_gpu_registry_serializes_check_spawn_and_registration(self):
+        registry = runner.GPUProcessRegistry()
+        processes = []
+        self.addCleanup(self._terminate_children, processes)
+        process_lock = threading.Lock()
+        start = threading.Barrier(2)
+        errors = []
+        completed = []
+        original_popen = subprocess.Popen
+
+        def gpu_query(command, **kwargs):
+            if any(arg.startswith('--query-gpu=') for arg in command):
+                return '1, GPU-b, B\n'
+            with process_lock:
+                return ''.join(f'GPU-b, {p.pid}, python\n' for p in processes)
+
+        def delayed_spawn(*args, **kwargs):
+            process = original_popen(*args, **kwargs)
+            with process_lock:
+                processes.append(process)
+            # Make a child visible to nvidia-smi before spawn() can register it.
+            # A competing unchecked launch would now misclassify it as foreign.
+            time.sleep(0.05)
+            return process
+
+        def worker():
+            try:
+                start.wait(timeout=5)
+                completed.append(registry.spawn(
+                    '1', [os.sys.executable, '-c', 'import time; time.sleep(30)']))
+            except Exception as error:
+                errors.append(error)
+
+        with mock.patch.object(runner.subprocess, 'check_output', side_effect=gpu_query), \
+             mock.patch.object(runner.subprocess, 'Popen', side_effect=delayed_spawn):
+            threads = [threading.Thread(target=worker) for _ in range(2)]
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join(timeout=5)
+            self.assertFalse(any(thread.is_alive() for thread in threads))
+        self.assertEqual(errors, [])
+        self.assertEqual(len(completed), 2)
+        self.assertTrue(all(registry.owns('1', str(p.pid)) for p in completed))
+
+    def test_run_one_unregisters_failed_child(self):
+        job = runner.plan(self.study, self.root)[0]
+        registry = runner.GPUProcessRegistry()
+        command = [os.sys.executable, '-c', 'raise SystemExit(7)']
+        with mock.patch.object(runner, 'command', return_value=command), \
+             mock.patch.object(runner.subprocess, 'check_output',
+                               side_effect=['1, GPU-b, B\n', '']), \
+             mock.patch.object(registry, 'unregister', wraps=registry.unregister) as unregister, \
+             contextlib.redirect_stdout(io.StringIO()):
+            status = runner.run_one(job, '1', self.study, ROOT,
+                                    dict(git_commit='sha', code_signature='hash'),
+                                    self.root, 'disabled', threading.Event(), launch_registry=registry)
+        self.assertEqual(status, 1)
+        unregister.assert_called_once()
+        process = unregister.call_args.args[0]
+        self.assertEqual(process.returncode, 7)
+        self.assertFalse(registry.owns('1', str(process.pid)))
+        state = json.loads((Path(job['run_dir']) / 'run.json').read_text())
+        self.assertEqual((state['status'], state['returncode']), ('failed', 7))
 
     def test_legacy_hrm_launcher_matches_all_six_environment_recipes(self):
         capture = self.root / 'arguments.json'
