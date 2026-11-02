@@ -1,0 +1,1095 @@
+{
+  "captured_at": "2026-10-31T17:34:53.609068+08:00",
+  "runs": {
+    "hrm_h2l1_m1": {
+      "version": "v0",
+      "h": 2,
+      "l": 1,
+      "M": 1,
+      "beta": 3.0,
+      "status": "completed",
+      "score": 0.636,
+      "evaluation": [
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.32,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.16,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.1,
+          "step": 100000
+        },
+        {
+          "evaluation/task1_success": 0.04,
+          "evaluation/task2_success": 0.76,
+          "evaluation/task3_success": 0.1,
+          "evaluation/task4_success": 0.2,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.22000000000000003,
+          "step": 200000
+        },
+        {
+          "evaluation/task1_success": 0.04,
+          "evaluation/task2_success": 0.9,
+          "evaluation/task3_success": 0.1,
+          "evaluation/task4_success": 0.48,
+          "evaluation/task5_success": 0.04,
+          "evaluation/overall_success": 0.312,
+          "step": 300000
+        },
+        {
+          "evaluation/task1_success": 0.08,
+          "evaluation/task2_success": 0.86,
+          "evaluation/task3_success": 0.3,
+          "evaluation/task4_success": 0.56,
+          "evaluation/task5_success": 0.6,
+          "evaluation/overall_success": 0.48,
+          "step": 400000
+        },
+        {
+          "evaluation/task1_success": 0.4,
+          "evaluation/task2_success": 0.88,
+          "evaluation/task3_success": 0.36,
+          "evaluation/task4_success": 0.66,
+          "evaluation/task5_success": 0.34,
+          "evaluation/overall_success": 0.528,
+          "step": 500000
+        },
+        {
+          "evaluation/task1_success": 0.66,
+          "evaluation/task2_success": 0.88,
+          "evaluation/task3_success": 0.54,
+          "evaluation/task4_success": 0.68,
+          "evaluation/task5_success": 0.46,
+          "evaluation/overall_success": 0.644,
+          "step": 600000
+        },
+        {
+          "evaluation/task1_success": 0.54,
+          "evaluation/task2_success": 0.88,
+          "evaluation/task3_success": 0.54,
+          "evaluation/task4_success": 0.78,
+          "evaluation/task5_success": 0.9,
+          "evaluation/overall_success": 0.728,
+          "step": 700000
+        },
+        {
+          "evaluation/task1_success": 0.3,
+          "evaluation/task2_success": 0.74,
+          "evaluation/task3_success": 0.58,
+          "evaluation/task4_success": 0.66,
+          "evaluation/task5_success": 0.7,
+          "evaluation/overall_success": 0.5960000000000001,
+          "step": 800000
+        },
+        {
+          "evaluation/task1_success": 0.4,
+          "evaluation/task2_success": 0.74,
+          "evaluation/task3_success": 0.54,
+          "evaluation/task4_success": 0.76,
+          "evaluation/task5_success": 0.62,
+          "evaluation/overall_success": 0.6120000000000001,
+          "step": 900000
+        },
+        {
+          "evaluation/task1_success": 0.56,
+          "evaluation/task2_success": 0.8,
+          "evaluation/task3_success": 0.52,
+          "evaluation/task4_success": 0.72,
+          "evaluation/task5_success": 0.9,
+          "evaluation/overall_success": 0.7,
+          "step": 1000000
+        }
+      ],
+      "per_task_score": [
+        0.42000000000000004,
+        0.76,
+        0.5466666666666666,
+        0.7133333333333334,
+        0.74
+      ]
+    },
+    "hrm_h4l2_m3": {
+      "version": "v0",
+      "h": 4,
+      "l": 2,
+      "M": 3,
+      "beta": 3.0,
+      "status": "completed",
+      "score": 0.5666666666666667,
+      "evaluation": [
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.56,
+          "evaluation/task3_success": 0.06,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.12800000000000003,
+          "step": 100000
+        },
+        {
+          "evaluation/task1_success": 0.02,
+          "evaluation/task2_success": 0.5,
+          "evaluation/task3_success": 0.06,
+          "evaluation/task4_success": 0.32,
+          "evaluation/task5_success": 0.02,
+          "evaluation/overall_success": 0.18400000000000002,
+          "step": 200000
+        },
+        {
+          "evaluation/task1_success": 0.06,
+          "evaluation/task2_success": 0.86,
+          "evaluation/task3_success": 0.04,
+          "evaluation/task4_success": 0.08,
+          "evaluation/task5_success": 0.02,
+          "evaluation/overall_success": 0.21200000000000002,
+          "step": 300000
+        },
+        {
+          "evaluation/task1_success": 0.04,
+          "evaluation/task2_success": 0.66,
+          "evaluation/task3_success": 0.42,
+          "evaluation/task4_success": 0.28,
+          "evaluation/task5_success": 0.32,
+          "evaluation/overall_success": 0.34400000000000003,
+          "step": 400000
+        },
+        {
+          "evaluation/task1_success": 0.36,
+          "evaluation/task2_success": 0.82,
+          "evaluation/task3_success": 0.14,
+          "evaluation/task4_success": 0.28,
+          "evaluation/task5_success": 0.38,
+          "evaluation/overall_success": 0.396,
+          "step": 500000
+        },
+        {
+          "evaluation/task1_success": 0.26,
+          "evaluation/task2_success": 0.76,
+          "evaluation/task3_success": 0.32,
+          "evaluation/task4_success": 0.46,
+          "evaluation/task5_success": 0.48,
+          "evaluation/overall_success": 0.45600000000000007,
+          "step": 600000
+        },
+        {
+          "evaluation/task1_success": 0.4,
+          "evaluation/task2_success": 0.82,
+          "evaluation/task3_success": 0.46,
+          "evaluation/task4_success": 0.6,
+          "evaluation/task5_success": 0.44,
+          "evaluation/overall_success": 0.5439999999999999,
+          "step": 700000
+        },
+        {
+          "evaluation/task1_success": 0.28,
+          "evaluation/task2_success": 0.68,
+          "evaluation/task3_success": 0.44,
+          "evaluation/task4_success": 0.58,
+          "evaluation/task5_success": 0.36,
+          "evaluation/overall_success": 0.46799999999999997,
+          "step": 800000
+        },
+        {
+          "evaluation/task1_success": 0.58,
+          "evaluation/task2_success": 0.72,
+          "evaluation/task3_success": 0.6,
+          "evaluation/task4_success": 0.56,
+          "evaluation/task5_success": 0.56,
+          "evaluation/overall_success": 0.604,
+          "step": 900000
+        },
+        {
+          "evaluation/task1_success": 0.46,
+          "evaluation/task2_success": 0.8,
+          "evaluation/task3_success": 0.44,
+          "evaluation/task4_success": 0.72,
+          "evaluation/task5_success": 0.72,
+          "evaluation/overall_success": 0.6279999999999999,
+          "step": 1000000
+        }
+      ],
+      "per_task_score": [
+        0.44,
+        0.7333333333333334,
+        0.49333333333333335,
+        0.62,
+        0.5466666666666666
+      ]
+    },
+    "hrm_beta05_h2l1_m1": {
+      "version": "v1",
+      "h": 2,
+      "l": 1,
+      "M": 1,
+      "beta": 0.5,
+      "status": "completed",
+      "score": 0.018666666666666668,
+      "evaluation": [
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.0,
+          "step": 100000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.02,
+          "evaluation/overall_success": 0.004,
+          "step": 200000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.0,
+          "step": 300000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.02,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.08,
+          "evaluation/overall_success": 0.02,
+          "step": 400000
+        },
+        {
+          "evaluation/task1_success": 0.02,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.06,
+          "evaluation/overall_success": 0.016,
+          "step": 500000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.04,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.04,
+          "evaluation/overall_success": 0.02,
+          "step": 600000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.08,
+          "evaluation/overall_success": 0.02,
+          "step": 700000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.04,
+          "evaluation/overall_success": 0.012,
+          "step": 800000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.04,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.04,
+          "evaluation/overall_success": 0.016,
+          "step": 900000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.14,
+          "evaluation/overall_success": 0.028000000000000004,
+          "step": 1000000
+        }
+      ],
+      "last_train_step": 1000000,
+      "per_task_score": [
+        0.0,
+        0.013333333333333334,
+        0.0,
+        0.006666666666666667,
+        0.07333333333333333
+      ]
+    },
+    "hrm_beta05_h4l2_m3": {
+      "version": "v1",
+      "h": 4,
+      "l": 2,
+      "M": 3,
+      "beta": 0.5,
+      "status": "completed",
+      "score": 0.116,
+      "evaluation": [
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.0,
+          "step": 100000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.0,
+          "step": 200000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.06,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.06,
+          "evaluation/task5_success": 0.14,
+          "evaluation/overall_success": 0.052000000000000005,
+          "step": 300000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.18,
+          "evaluation/task3_success": 0.04,
+          "evaluation/task4_success": 0.06,
+          "evaluation/task5_success": 0.3,
+          "evaluation/overall_success": 0.11600000000000002,
+          "step": 400000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.04,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.28,
+          "evaluation/overall_success": 0.07200000000000001,
+          "step": 500000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.12,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.24,
+          "evaluation/overall_success": 0.07999999999999999,
+          "step": 600000
+        },
+        {
+          "evaluation/task1_success": 0.04,
+          "evaluation/task2_success": 0.06,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.12,
+          "evaluation/task5_success": 0.26,
+          "evaluation/overall_success": 0.096,
+          "step": 700000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.02,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.12,
+          "evaluation/task5_success": 0.24,
+          "evaluation/overall_success": 0.076,
+          "step": 800000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.26,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.14,
+          "evaluation/overall_success": 0.084,
+          "step": 900000
+        },
+        {
+          "evaluation/task1_success": 0.04,
+          "evaluation/task2_success": 0.34,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.06,
+          "evaluation/task5_success": 0.5,
+          "evaluation/overall_success": 0.188,
+          "step": 1000000
+        }
+      ],
+      "last_train_step": 1000000,
+      "per_task_score": [
+        0.013333333333333334,
+        0.20666666666666667,
+        0.0,
+        0.06666666666666667,
+        0.29333333333333333
+      ]
+    },
+    "hrm_beta10_h2l1_m1": {
+      "version": "v1",
+      "h": 2,
+      "l": 1,
+      "M": 1,
+      "beta": 1.0,
+      "status": "completed",
+      "score": 0.05866666666666667,
+      "evaluation": [
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.0,
+          "step": 100000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.02,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.06,
+          "evaluation/overall_success": 0.016,
+          "step": 200000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.04,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.06,
+          "evaluation/overall_success": 0.02,
+          "step": 300000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.08,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.12,
+          "evaluation/overall_success": 0.04,
+          "step": 400000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.06,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.04,
+          "evaluation/task5_success": 0.18,
+          "evaluation/overall_success": 0.05600000000000001,
+          "step": 500000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.04,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.04,
+          "evaluation/overall_success": 0.02,
+          "step": 600000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.2,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.16,
+          "evaluation/overall_success": 0.076,
+          "step": 700000
+        },
+        {
+          "evaluation/task1_success": 0.02,
+          "evaluation/task2_success": 0.02,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.08,
+          "evaluation/task5_success": 0.06,
+          "evaluation/overall_success": 0.04,
+          "step": 800000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.16,
+          "evaluation/task3_success": 0.04,
+          "evaluation/task4_success": 0.04,
+          "evaluation/task5_success": 0.1,
+          "evaluation/overall_success": 0.068,
+          "step": 900000
+        },
+        {
+          "evaluation/task1_success": 0.02,
+          "evaluation/task2_success": 0.02,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.1,
+          "evaluation/task5_success": 0.2,
+          "evaluation/overall_success": 0.068,
+          "step": 1000000
+        }
+      ],
+      "last_train_step": 1000000,
+      "per_task_score": [
+        0.013333333333333334,
+        0.06666666666666667,
+        0.02,
+        0.07333333333333333,
+        0.12000000000000001
+      ]
+    },
+    "hrm_beta10_h4l2_m3": {
+      "version": "v1",
+      "h": 4,
+      "l": 2,
+      "M": 3,
+      "beta": 1.0,
+      "status": "completed",
+      "score": 0.188,
+      "evaluation": [
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.0,
+          "step": 100000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.06,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.02,
+          "evaluation/overall_success": 0.016,
+          "step": 200000
+        },
+        {
+          "evaluation/task1_success": 0.02,
+          "evaluation/task2_success": 0.06,
+          "evaluation/task3_success": 0.06,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.32,
+          "evaluation/overall_success": 0.092,
+          "step": 300000
+        },
+        {
+          "evaluation/task1_success": 0.08,
+          "evaluation/task2_success": 0.42,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.1,
+          "evaluation/task5_success": 0.42,
+          "evaluation/overall_success": 0.20800000000000002,
+          "step": 400000
+        },
+        {
+          "evaluation/task1_success": 0.04,
+          "evaluation/task2_success": 0.34,
+          "evaluation/task3_success": 0.06,
+          "evaluation/task4_success": 0.08,
+          "evaluation/task5_success": 0.38,
+          "evaluation/overall_success": 0.18,
+          "step": 500000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.22,
+          "evaluation/task3_success": 0.1,
+          "evaluation/task4_success": 0.14,
+          "evaluation/task5_success": 0.42,
+          "evaluation/overall_success": 0.176,
+          "step": 600000
+        },
+        {
+          "evaluation/task1_success": 0.04,
+          "evaluation/task2_success": 0.3,
+          "evaluation/task3_success": 0.12,
+          "evaluation/task4_success": 0.22,
+          "evaluation/task5_success": 0.44,
+          "evaluation/overall_success": 0.22399999999999998,
+          "step": 700000
+        },
+        {
+          "evaluation/task1_success": 0.08,
+          "evaluation/task2_success": 0.1,
+          "evaluation/task3_success": 0.08,
+          "evaluation/task4_success": 0.2,
+          "evaluation/task5_success": 0.26,
+          "evaluation/overall_success": 0.144,
+          "step": 800000
+        },
+        {
+          "evaluation/task1_success": 0.02,
+          "evaluation/task2_success": 0.3,
+          "evaluation/task3_success": 0.06,
+          "evaluation/task4_success": 0.12,
+          "evaluation/task5_success": 0.28,
+          "evaluation/overall_success": 0.156,
+          "step": 900000
+        },
+        {
+          "evaluation/task1_success": 0.12,
+          "evaluation/task2_success": 0.34,
+          "evaluation/task3_success": 0.08,
+          "evaluation/task4_success": 0.32,
+          "evaluation/task5_success": 0.46,
+          "evaluation/overall_success": 0.264,
+          "step": 1000000
+        }
+      ],
+      "last_train_step": 1000000,
+      "per_task_score": [
+        0.07333333333333333,
+        0.24666666666666667,
+        0.07333333333333333,
+        0.21333333333333335,
+        0.33333333333333337
+      ]
+    },
+    "hrm_beta20_h2l1_m1": {
+      "version": "v1",
+      "h": 2,
+      "l": 1,
+      "M": 1,
+      "beta": 2.0,
+      "status": "completed",
+      "score": 0.06533333333333333,
+      "evaluation": [
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.0,
+          "step": 100000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.02,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.0,
+          "evaluation/overall_success": 0.008,
+          "step": 200000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.08,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.02,
+          "evaluation/overall_success": 0.024,
+          "step": 300000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.1,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.14,
+          "evaluation/overall_success": 0.052000000000000005,
+          "step": 400000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.1,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.04,
+          "evaluation/task5_success": 0.22,
+          "evaluation/overall_success": 0.076,
+          "step": 500000
+        },
+        {
+          "evaluation/task1_success": 0.02,
+          "evaluation/task2_success": 0.04,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.16,
+          "evaluation/task5_success": 0.2,
+          "evaluation/overall_success": 0.088,
+          "step": 600000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.22,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.2,
+          "evaluation/overall_success": 0.092,
+          "step": 700000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.08,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.02,
+          "evaluation/task5_success": 0.24,
+          "evaluation/overall_success": 0.06799999999999999,
+          "step": 800000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.02,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.12,
+          "evaluation/task5_success": 0.06,
+          "evaluation/overall_success": 0.044,
+          "step": 900000
+        },
+        {
+          "evaluation/task1_success": 0.02,
+          "evaluation/task2_success": 0.04,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.06,
+          "evaluation/task5_success": 0.28,
+          "evaluation/overall_success": 0.084,
+          "step": 1000000
+        }
+      ],
+      "last_train_step": 1000000,
+      "per_task_score": [
+        0.006666666666666667,
+        0.04666666666666667,
+        0.013333333333333334,
+        0.06666666666666667,
+        0.19333333333333333
+      ]
+    },
+    "hrm_beta20_h4l2_m3": {
+      "version": "v1",
+      "h": 4,
+      "l": 2,
+      "M": 3,
+      "beta": 2.0,
+      "status": "running",
+      "score": null,
+      "evaluation": [
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.0,
+          "evaluation/task3_success": 0.0,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.02,
+          "evaluation/overall_success": 0.004,
+          "step": 100000
+        },
+        {
+          "evaluation/task1_success": 0.0,
+          "evaluation/task2_success": 0.04,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.0,
+          "evaluation/task5_success": 0.02,
+          "evaluation/overall_success": 0.016,
+          "step": 200000
+        },
+        {
+          "evaluation/task1_success": 0.02,
+          "evaluation/task2_success": 0.16,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.04,
+          "evaluation/task5_success": 0.34,
+          "evaluation/overall_success": 0.11600000000000002,
+          "step": 300000
+        },
+        {
+          "evaluation/task1_success": 0.08,
+          "evaluation/task2_success": 0.22,
+          "evaluation/task3_success": 0.08,
+          "evaluation/task4_success": 0.24,
+          "evaluation/task5_success": 0.34,
+          "evaluation/overall_success": 0.192,
+          "step": 400000
+        },
+        {
+          "evaluation/task1_success": 0.1,
+          "evaluation/task2_success": 0.28,
+          "evaluation/task3_success": 0.04,
+          "evaluation/task4_success": 0.2,
+          "evaluation/task5_success": 0.16,
+          "evaluation/overall_success": 0.156,
+          "step": 500000
+        },
+        {
+          "evaluation/task1_success": 0.06,
+          "evaluation/task2_success": 0.12,
+          "evaluation/task3_success": 0.02,
+          "evaluation/task4_success": 0.18,
+          "evaluation/task5_success": 0.28,
+          "evaluation/overall_success": 0.132,
+          "step": 600000
+        }
+      ],
+      "last_train_step": 685000,
+      "per_task_score": null
+    }
+  },
+  "paired_probes": {
+    "hrm_h2l1_m1": {
+      "near_mse": 0.1023953805367152,
+      "near_target_rank": 18.735533226181687,
+      "near_prediction_rank": 18.321987589291563,
+      "near_constant_prediction_mse": 0.8549387356942377,
+      "teacher_action_mse": 0.07457721481720607,
+      "predicted_action_mse": 0.07956214249134064,
+      "prediction_teacher_action_distance": 0.014090153699119886,
+      "near_unit_response_rms": 0.0285070047429408,
+      "far_unit_response_rms": 0.0,
+      "near_geometric_sign": 0.8994276369582993,
+      "near_distant_geometric_sign": 0.8408644400785854,
+      "near_cap_fraction": 0.5358072916666666,
+      "near_ess_fraction": 0.5704550033960807,
+      "local_success_counts": {
+        "predicted": 14,
+        "teacher": 29
+      }
+    },
+    "hrm_h4l2_m3": {
+      "near_mse": 0.09371902793645859,
+      "near_target_rank": 17.845683339964612,
+      "near_prediction_rank": 17.93792087784692,
+      "near_constant_prediction_mse": 0.8095314083480561,
+      "teacher_action_mse": 0.07755680630604427,
+      "predicted_action_mse": 0.08083569506804149,
+      "prediction_teacher_action_distance": 0.012614605637888113,
+      "near_unit_response_rms": 0.03257374499723992,
+      "far_unit_response_rms": 0.0033655174282754465,
+      "near_geometric_sign": 0.8934314527119106,
+      "near_distant_geometric_sign": 0.8316961362148003,
+      "near_cap_fraction": 0.5305989583333334,
+      "near_ess_fraction": 0.5674703025897896,
+      "local_success_counts": {
+        "predicted": 13,
+        "teacher": 32,
+        "corrected_near": 27,
+        "corrected_far": 19
+      }
+    },
+    "hrm_beta05_h2l1_m1": {
+      "near_mse": 0.14422222475210825,
+      "near_target_rank": 5.156774277823256,
+      "near_prediction_rank": 4.331635284946618,
+      "near_constant_prediction_mse": 0.6209213190596836,
+      "teacher_action_mse": 0.08455219119787216,
+      "predicted_action_mse": 0.08576111992200215,
+      "prediction_teacher_action_distance": 0.0018909526600812872,
+      "near_unit_response_rms": 0.012674285404454816,
+      "far_unit_response_rms": 0.0,
+      "near_geometric_sign": 0.8969746524938675,
+      "near_distant_geometric_sign": 0.8323510150622135,
+      "near_cap_fraction": 0.26123046875,
+      "near_ess_fraction": 0.3536037959998467,
+      "local_success_counts": {
+        "predicted": 12,
+        "teacher": 13
+      }
+    },
+    "hrm_beta05_h4l2_m3": {
+      "near_mse": 0.14692759017149606,
+      "near_target_rank": 5.156774277823256,
+      "near_prediction_rank": 4.401968676010226,
+      "near_constant_prediction_mse": 0.6209213190596836,
+      "teacher_action_mse": 0.09569643686215083,
+      "predicted_action_mse": 0.08214636892080307,
+      "prediction_teacher_action_distance": 0.01868672917286555,
+      "near_unit_response_rms": 0.012730407234748796,
+      "far_unit_response_rms": 0.041058022199262585,
+      "near_geometric_sign": 0.8969746524938675,
+      "near_distant_geometric_sign": 0.8323510150622135,
+      "near_cap_fraction": 0.26123046875,
+      "near_ess_fraction": 0.3536037959998467,
+      "local_success_counts": {
+        "predicted": 12,
+        "teacher": 5,
+        "corrected_near": 11,
+        "corrected_far": 6
+      }
+    },
+    "hrm_beta10_h2l1_m1": {
+      "near_mse": 0.14336694280306497,
+      "near_target_rank": 5.156774277823256,
+      "near_prediction_rank": 4.3266788795890205,
+      "near_constant_prediction_mse": 0.6209213190596836,
+      "teacher_action_mse": 0.0824928234020869,
+      "predicted_action_mse": 0.08256062865257263,
+      "prediction_teacher_action_distance": 0.0036616724294920764,
+      "near_unit_response_rms": 0.019695738218772577,
+      "far_unit_response_rms": 0.0,
+      "near_geometric_sign": 0.8969746524938675,
+      "near_distant_geometric_sign": 0.8323510150622135,
+      "near_cap_fraction": 0.3889973958333333,
+      "near_ess_fraction": 0.457042437422425,
+      "local_success_counts": {
+        "predicted": 15,
+        "teacher": 19
+      }
+    },
+    "hrm_beta10_h4l2_m3": {
+      "near_mse": 0.137705996632576,
+      "near_target_rank": 5.156774277823256,
+      "near_prediction_rank": 4.317816071626509,
+      "near_constant_prediction_mse": 0.6209213190596836,
+      "teacher_action_mse": 0.09236639241377513,
+      "predicted_action_mse": 0.08362264931201935,
+      "prediction_teacher_action_distance": 0.01654420265307029,
+      "near_unit_response_rms": 0.03622833611551513,
+      "far_unit_response_rms": 0.023366944837171083,
+      "near_geometric_sign": 0.8969746524938675,
+      "near_distant_geometric_sign": 0.8323510150622135,
+      "near_cap_fraction": 0.3889973958333333,
+      "near_ess_fraction": 0.457042437422425,
+      "local_success_counts": {
+        "predicted": 17,
+        "teacher": 12,
+        "corrected_near": 19,
+        "corrected_far": 7
+      }
+    },
+    "hrm_beta20_h2l1_m1": {
+      "near_mse": 0.1365215927362442,
+      "near_target_rank": 5.156774277823256,
+      "near_prediction_rank": 4.2398954990595445,
+      "near_constant_prediction_mse": 0.6209213190596836,
+      "teacher_action_mse": 0.08312559872865677,
+      "predicted_action_mse": 0.08427615463733673,
+      "prediction_teacher_action_distance": 0.004504707952340444,
+      "near_unit_response_rms": 0.022929027142782735,
+      "far_unit_response_rms": 0.0,
+      "near_geometric_sign": 0.8969746524938675,
+      "near_distant_geometric_sign": 0.8323510150622135,
+      "near_cap_fraction": 0.4873046875,
+      "near_ess_fraction": 0.5345291249068167,
+      "local_success_counts": {
+        "predicted": 12,
+        "teacher": 20
+      }
+    }
+  },
+  "gradient_probes": {
+    "hrm_beta05_h2l1_m1": {
+      "high_norm": 8.567709995496166,
+      "low_norm": 9.789455857092605,
+      "ratio_of_mean_norms": 1.1425988814092307,
+      "high_low_cosine_mean": 0.0155851867566313
+    },
+    "hrm_beta10_h2l1_m1": {
+      "high_norm": 14.77842994109969,
+      "low_norm": 12.916775102484586,
+      "ratio_of_mean_norms": 0.8740289160597682,
+      "high_low_cosine_mean": 0.043283528921431606
+    },
+    "hrm_beta20_h2l1_m1": {
+      "high_norm": 27.805976053712328,
+      "low_norm": 13.357910446481046,
+      "ratio_of_mean_norms": 0.480397106747046,
+      "high_low_cosine_mean": -0.011351300222559103
+    },
+    "hrm_beta05_h4l2_m3": {
+      "high_norm": 5.875793204853618,
+      "low_norm": 28.561330297581883,
+      "ratio_of_mean_norms": 4.860846748995384,
+      "high_low_cosine_mean": -0.01001632407486222
+    },
+    "hrm_beta10_h4l2_m3": {
+      "high_norm": 10.672974584644749,
+      "low_norm": 20.36485555003491,
+      "ratio_of_mean_norms": 1.9080768335505933,
+      "high_low_cosine_mean": -0.03630936450305956
+    }
+  },
+  "parameter_fingerprints": {
+    "hrm_beta05_h2l1_m1": {
+      "800000": {
+        "modules_goal_rep": "0357fe379ca86a0293c23ad0898eafbc01199b307a4df7ac76189afcad29eefa",
+        "modules_value": "bd48d2783dfb7c6f3b4d2b9dac60f7088d166a13cbc758e8b6989119e267b7ff",
+        "modules_target_value": "afa3954ac2305ecc0e89e108e9ea7168c1cf5e72fb2e9b69cebe1bc4662d1c3c"
+      },
+      "900000": {
+        "modules_goal_rep": "3fd0c013b0fc78ffdd86b2bd7a440497104edc8b8153d4cf0ff75063fad3502d",
+        "modules_value": "c1dbb97df67b9e18a1ee381a48e3bea1e658ea96522a93623c513b7309b8436e",
+        "modules_target_value": "6176cf9e15cb17a363a301dfcaa8a23db7159a74abddaa75ca10d4509ab9dab6"
+      },
+      "1000000": {
+        "modules_goal_rep": "ec6451d0eda15f8fd381d261db2a4537a44091c2923ac09033bc7b9cb3491ea2",
+        "modules_value": "b0a2f353389701aa67fde2a208e648f2bb91e40586610a07ee18d58b4bfbe57d",
+        "modules_target_value": "a85fb881183d2ae26a6fdb7eed70439b19c0fff42e9ec54c259ca5d2fec9ac66"
+      }
+    },
+    "hrm_beta05_h4l2_m3": {
+      "800000": {
+        "modules_goal_rep": "0357fe379ca86a0293c23ad0898eafbc01199b307a4df7ac76189afcad29eefa",
+        "modules_value": "bd48d2783dfb7c6f3b4d2b9dac60f7088d166a13cbc758e8b6989119e267b7ff",
+        "modules_target_value": "afa3954ac2305ecc0e89e108e9ea7168c1cf5e72fb2e9b69cebe1bc4662d1c3c"
+      },
+      "900000": {
+        "modules_goal_rep": "3fd0c013b0fc78ffdd86b2bd7a440497104edc8b8153d4cf0ff75063fad3502d",
+        "modules_value": "c1dbb97df67b9e18a1ee381a48e3bea1e658ea96522a93623c513b7309b8436e",
+        "modules_target_value": "6176cf9e15cb17a363a301dfcaa8a23db7159a74abddaa75ca10d4509ab9dab6"
+      },
+      "1000000": {
+        "modules_goal_rep": "ec6451d0eda15f8fd381d261db2a4537a44091c2923ac09033bc7b9cb3491ea2",
+        "modules_value": "b0a2f353389701aa67fde2a208e648f2bb91e40586610a07ee18d58b4bfbe57d",
+        "modules_target_value": "a85fb881183d2ae26a6fdb7eed70439b19c0fff42e9ec54c259ca5d2fec9ac66"
+      }
+    },
+    "hrm_beta10_h2l1_m1": {
+      "800000": {
+        "modules_goal_rep": "0357fe379ca86a0293c23ad0898eafbc01199b307a4df7ac76189afcad29eefa",
+        "modules_value": "bd48d2783dfb7c6f3b4d2b9dac60f7088d166a13cbc758e8b6989119e267b7ff",
+        "modules_target_value": "afa3954ac2305ecc0e89e108e9ea7168c1cf5e72fb2e9b69cebe1bc4662d1c3c"
+      },
+      "900000": {
+        "modules_goal_rep": "3fd0c013b0fc78ffdd86b2bd7a440497104edc8b8153d4cf0ff75063fad3502d",
+        "modules_value": "c1dbb97df67b9e18a1ee381a48e3bea1e658ea96522a93623c513b7309b8436e",
+        "modules_target_value": "6176cf9e15cb17a363a301dfcaa8a23db7159a74abddaa75ca10d4509ab9dab6"
+      },
+      "1000000": {
+        "modules_goal_rep": "ec6451d0eda15f8fd381d261db2a4537a44091c2923ac09033bc7b9cb3491ea2",
+        "modules_value": "b0a2f353389701aa67fde2a208e648f2bb91e40586610a07ee18d58b4bfbe57d",
+        "modules_target_value": "a85fb881183d2ae26a6fdb7eed70439b19c0fff42e9ec54c259ca5d2fec9ac66"
+      }
+    },
+    "hrm_beta10_h4l2_m3": {
+      "800000": {
+        "modules_goal_rep": "0357fe379ca86a0293c23ad0898eafbc01199b307a4df7ac76189afcad29eefa",
+        "modules_value": "bd48d2783dfb7c6f3b4d2b9dac60f7088d166a13cbc758e8b6989119e267b7ff",
+        "modules_target_value": "afa3954ac2305ecc0e89e108e9ea7168c1cf5e72fb2e9b69cebe1bc4662d1c3c"
+      },
+      "900000": {
+        "modules_goal_rep": "3fd0c013b0fc78ffdd86b2bd7a440497104edc8b8153d4cf0ff75063fad3502d",
+        "modules_value": "c1dbb97df67b9e18a1ee381a48e3bea1e658ea96522a93623c513b7309b8436e",
+        "modules_target_value": "6176cf9e15cb17a363a301dfcaa8a23db7159a74abddaa75ca10d4509ab9dab6"
+      },
+      "1000000": {
+        "modules_goal_rep": "ec6451d0eda15f8fd381d261db2a4537a44091c2923ac09033bc7b9cb3491ea2",
+        "modules_value": "b0a2f353389701aa67fde2a208e648f2bb91e40586610a07ee18d58b4bfbe57d",
+        "modules_target_value": "a85fb881183d2ae26a6fdb7eed70439b19c0fff42e9ec54c259ca5d2fec9ac66"
+      }
+    },
+    "hrm_beta20_h2l1_m1": {
+      "800000": {
+        "modules_goal_rep": "0357fe379ca86a0293c23ad0898eafbc01199b307a4df7ac76189afcad29eefa",
+        "modules_value": "bd48d2783dfb7c6f3b4d2b9dac60f7088d166a13cbc758e8b6989119e267b7ff",
+        "modules_target_value": "afa3954ac2305ecc0e89e108e9ea7168c1cf5e72fb2e9b69cebe1bc4662d1c3c"
+      },
+      "900000": {
+        "modules_goal_rep": "3fd0c013b0fc78ffdd86b2bd7a440497104edc8b8153d4cf0ff75063fad3502d",
+        "modules_value": "c1dbb97df67b9e18a1ee381a48e3bea1e658ea96522a93623c513b7309b8436e",
+        "modules_target_value": "6176cf9e15cb17a363a301dfcaa8a23db7159a74abddaa75ca10d4509ab9dab6"
+      },
+      "1000000": {
+        "modules_goal_rep": "ec6451d0eda15f8fd381d261db2a4537a44091c2923ac09033bc7b9cb3491ea2",
+        "modules_value": "b0a2f353389701aa67fde2a208e648f2bb91e40586610a07ee18d58b4bfbe57d",
+        "modules_target_value": "a85fb881183d2ae26a6fdb7eed70439b19c0fff42e9ec54c259ca5d2fec9ac66"
+      }
+    }
+  },
+  "identifiability": "Beta comparisons are conditional on the v1 bundle. Command and encoder changes are confounded in training outcomes.",
+  "value_and_goal_encoder_identical_across_v1_completed": true
+}

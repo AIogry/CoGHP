@@ -340,6 +340,14 @@ def build_checkpoint_metadata(
                 ('train_action_chain_source', 'teacher'),
             ):
                 signature[key] = config.get(key, default)
+    # Explicit new semantics must not resume older checkpoints accidentally.
+    # Missing/default controls preserve historical signatures exactly.
+    if (not config.get('actor_goal_rep_grad', True)
+            or config.get('planner_command_mode', 'sample') != 'sample'):
+        signature.update(
+            actor_goal_rep_grad=config.get('actor_goal_rep_grad', True),
+            planner_command_mode=config.get('planner_command_mode', 'sample'),
+        )
     if 'network_backbone' in config:
         for key in ('network_backbone', 'actor_hidden_dims', 'value_hidden_dims', 'enc_hidden_dims'):
             value = config.get(key)

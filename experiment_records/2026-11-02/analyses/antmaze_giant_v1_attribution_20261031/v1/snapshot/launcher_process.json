@@ -1,0 +1,24 @@
+{
+  "pid": 725708,
+  "started_at": "2026-10-31T11:03:50.442653+08:00",
+  "command": [
+    "/home/eai/Tools/miniforge3/envs/brain_nav/bin/python",
+    "-u",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/source/scripts/run_study.py",
+    "--run-root",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031",
+    "--gpus",
+    "1",
+    "--workers-per-gpu",
+    "2",
+    "--wandb-mode",
+    "offline",
+    "--execute"
+  ],
+  "source_signature": "f94d946fad012955571648dbe0f813b4529ca62abff1988fca37c6bd95379718",
+  "git_base_commit": "6cb0ec59054509d681cd02639850d4d4f5568715",
+  "physical_gpu": "1",
+  "workers_per_gpu": 2,
+  "tests_passed": 84,
+  "smoke_run": "/home/eai/Research/CoGHP/impls/exp/joint_planner_v1_smoke_20261031"
+}

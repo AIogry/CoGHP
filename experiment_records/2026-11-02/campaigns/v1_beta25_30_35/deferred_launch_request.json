@@ -1,0 +1,35 @@
+{
+  "prepared_at": "2026-10-31T17:17:39.171615+08:00",
+  "status": "started_and_verified",
+  "automation_id": "coghp-beta",
+  "check_interval_minutes": 15,
+  "dependency": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031",
+  "dependency_source_signature": "f94d946fad012955571648dbe0f813b4529ca62abff1988fca37c6bd95379718",
+  "source_signature": "0b2c531bdcd5154003a618b816876743578160d569819d2fc5649ec7a5ceff0b",
+  "physical_gpu": "1",
+  "workers_per_gpu": 2,
+  "runs": 6,
+  "high_alpha_values": [
+    2.5,
+    3.0,
+    3.5
+  ],
+  "seed": 0,
+  "guard_tests_passed": 7,
+  "training_code_identical_to_parent": true,
+  "start_command": [
+    "/home/eai/Tools/miniforge3/envs/brain_nav/bin/python",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/source/scripts/launch_study_after.py",
+    "--after",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031",
+    "--run-root",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031",
+    "--gpus",
+    "1",
+    "--workers-per-gpu",
+    "2",
+    "--execute"
+  ],
+  "started_at": "2026-10-31T10:21:00.931035+00:00",
+  "automation_status": "PAUSED"
+}

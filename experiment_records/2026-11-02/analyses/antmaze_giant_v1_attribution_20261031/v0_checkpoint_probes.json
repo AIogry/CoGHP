@@ -1,0 +1,360 @@
+{
+  "protocol": "paired-offline-queries-v1",
+  "source_signature": "bae29f550ea14a5ab516164ed3dbd321c4b06f85a90e9c3b7e354e3071a678e3",
+  "samples": 2048,
+  "query_seed": 20261030,
+  "backend": "cpu",
+  "derivative_method": "central_finite_difference",
+  "fd_epsilon": 0.02,
+  "caveats": [
+    "Geometric cell progress is a diagnostic proxy, not dynamics-optimal distance.",
+    "Action metrics are one-step agreement/sensitivity, not local rollout success.",
+    "One-step action metrics use the Gaussian mean before environment action clipping.",
+    "Latent representations differ across checkpoints; MSE is not physical waypoint error.",
+    "The same M=3 raw-state query pool is used for all models; M=1 selects its nearest target.",
+    "Finite differences bypass stop_gradient on external commands; autodiff JVP would be zero by construction in value-only mode."
+  ],
+  "repeated_far_near_target_fraction": 0.1181640625,
+  "runs": {
+    "hrm_h2l1_m1": {
+      "800000": {
+        "checkpoint_sha256": "0e2ebaf7cb5fcb5375c7bba296b2f57b1b221737a5b75d651ab9c9394cb2064e",
+        "waypoints": [
+          {
+            "index_far_to_near": 0,
+            "nominal_offset": 50,
+            "mse": 0.10474757850170135,
+            "weighted_mse": 0.052539297679096555,
+            "error_p90": 0.3000028133392334,
+            "cosine_mean": 0.9455906306713935,
+            "target_norm_mean": 11.313708192671662,
+            "predicted_norm_mean": 11.014407546081838,
+            "constant_target_mean_mse": 0.8540953807043858,
+            "target_effective_rank": 18.722919785750623,
+            "predicted_effective_rank": 18.20020580409892,
+            "weight_mean": 55.776401294746165,
+            "cap_fraction": 0.537109375,
+            "ess_fraction": 0.5702116956178181,
+            "geometric_non_tie_pairs": 1223,
+            "geometric_sign_agreement": 0.9002452984464432,
+            "distant_geometric_sign_agreement": 0.8408644400785854,
+            "geometrically_backward_capped_fraction": 0.05166051660516605
+          }
+        ],
+        "actions": {
+          "teacher_data_mse": 0.07362694293260574,
+          "predicted_data_mse": 0.07862634211778641,
+          "corrected_near_data_mse": 0.07362694293260574,
+          "corrected_far_data_mse": 0.07862634211778641,
+          "predicted_teacher_action_distance": 0.01438656821846962,
+          "near_replacement_action_distance": 0.01438656821846962,
+          "far_replacement_action_distance": 0.0,
+          "near_unit_direction_action_fd_mse": 0.0007733649108558893,
+          "far_unit_direction_action_fd_mse": 0.0
+        }
+      },
+      "900000": {
+        "checkpoint_sha256": "b200c4413ea3bc5592ebb95fab642b4df636fba2ebc736ec8af50e293205800b",
+        "waypoints": [
+          {
+            "index_far_to_near": 0,
+            "nominal_offset": 50,
+            "mse": 0.10014146566390991,
+            "weighted_mse": 0.050566734095227814,
+            "error_p90": 0.27562302350997925,
+            "cosine_mean": 0.9481980491194186,
+            "target_norm_mean": 11.31370820752927,
+            "predicted_norm_mean": 11.06691517119189,
+            "constant_target_mean_mse": 0.8568148246256309,
+            "target_effective_rank": 18.894925534364923,
+            "predicted_effective_rank": 18.462319242202238,
+            "weight_mean": 55.48980063974393,
+            "cap_fraction": 0.53173828125,
+            "ess_fraction": 0.5676016218058907,
+            "geometric_non_tie_pairs": 1223,
+            "geometric_sign_agreement": 0.8994276369582993,
+            "distant_geometric_sign_agreement": 0.8428290766208252,
+            "geometrically_backward_capped_fraction": 0.052565707133917394
+          }
+        ],
+        "actions": {
+          "teacher_data_mse": 0.0746489018201828,
+          "predicted_data_mse": 0.079814612865448,
+          "corrected_near_data_mse": 0.0746489018201828,
+          "corrected_far_data_mse": 0.079814612865448,
+          "predicted_teacher_action_distance": 0.013796299695968628,
+          "near_replacement_action_distance": 0.013796299695968628,
+          "far_replacement_action_distance": 0.0,
+          "near_unit_direction_action_fd_mse": 0.0008360199863091111,
+          "far_unit_direction_action_fd_mse": 0.0
+        }
+      },
+      "1000000": {
+        "checkpoint_sha256": "2c354b3c97b01f0de9a40bad5b896dc5443c7fabfad3391f4f38eee71f399f90",
+        "waypoints": [
+          {
+            "index_far_to_near": 0,
+            "nominal_offset": 50,
+            "mse": 0.1022970974445343,
+            "weighted_mse": 0.04771183541149682,
+            "error_p90": 0.3111940324306488,
+            "cosine_mean": 0.947244012005553,
+            "target_norm_mean": 11.31370822754634,
+            "predicted_norm_mean": 11.064997875065403,
+            "constant_target_mean_mse": 0.8539060017526965,
+            "target_effective_rank": 18.58875435842951,
+            "predicted_effective_rank": 18.303437721573527,
+            "weight_mean": 56.06343730561087,
+            "cap_fraction": 0.53857421875,
+            "ess_fraction": 0.5735516927645333,
+            "geometric_non_tie_pairs": 1223,
+            "geometric_sign_agreement": 0.8986099754701553,
+            "distant_geometric_sign_agreement": 0.8388998035363457,
+            "geometrically_backward_capped_fraction": 0.0524390243902439
+          }
+        ],
+        "actions": {
+          "teacher_data_mse": 0.07545579969882965,
+          "predicted_data_mse": 0.0802454724907875,
+          "corrected_near_data_mse": 0.07545579969882965,
+          "corrected_far_data_mse": 0.0802454724907875,
+          "predicted_teacher_action_distance": 0.01408759318292141,
+          "near_replacement_action_distance": 0.01408759318292141,
+          "far_replacement_action_distance": 0.0,
+          "near_unit_direction_action_fd_mse": 0.0008285630610771477,
+          "far_unit_direction_action_fd_mse": 0.0
+        }
+      }
+    },
+    "hrm_h4l2_m3": {
+      "800000": {
+        "checkpoint_sha256": "abe39075222c9d0aa5ee7df62f71e0f5fd475ce6c3b56cfa2071f9c47a4783d4",
+        "waypoints": [
+          {
+            "index_far_to_near": 0,
+            "nominal_offset": 150,
+            "mse": 0.15632741153240204,
+            "weighted_mse": 0.06798994793572666,
+            "error_p90": 0.5603501200675964,
+            "cosine_mean": 0.9180187728489582,
+            "target_norm_mean": 11.313708170806972,
+            "predicted_norm_mean": 10.999527567541596,
+            "constant_target_mean_mse": 0.8580563935420953,
+            "target_effective_rank": 15.985059088901812,
+            "predicted_effective_rank": 16.372318000773912,
+            "weight_mean": 64.26344587084736,
+            "cap_fraction": 0.6318359375,
+            "ess_fraction": 0.6490976735158162,
+            "geometric_non_tie_pairs": 1299,
+            "geometric_sign_agreement": 0.9260969976905312,
+            "distant_geometric_sign_agreement": 0.8906810035842294,
+            "geometrically_backward_capped_fraction": 0.03680336487907466
+          },
+          {
+            "index_far_to_near": 1,
+            "nominal_offset": 100,
+            "mse": 0.14744529128074646,
+            "weighted_mse": 0.06795019180261039,
+            "error_p90": 0.5022802352905273,
+            "cosine_mean": 0.9228005173035718,
+            "target_norm_mean": 11.313708154116465,
+            "predicted_norm_mean": 11.015357555855475,
+            "constant_target_mean_mse": 0.8468551488469253,
+            "target_effective_rank": 16.32718769881043,
+            "predicted_effective_rank": 16.942124682613407,
+            "weight_mean": 60.82826502979866,
+            "cap_fraction": 0.5908203125,
+            "ess_fraction": 0.618388669745156,
+            "geometric_non_tie_pairs": 1275,
+            "geometric_sign_agreement": 0.9129411764705883,
+            "distant_geometric_sign_agreement": 0.8731617647058824,
+            "geometrically_backward_capped_fraction": 0.042600896860986545
+          },
+          {
+            "index_far_to_near": 2,
+            "nominal_offset": 50,
+            "mse": 0.0973321795463562,
+            "weighted_mse": 0.05161895580325444,
+            "error_p90": 0.2775390148162842,
+            "cosine_mean": 0.9499621671940287,
+            "target_norm_mean": 11.313708181930938,
+            "predicted_norm_mean": 11.080704610941478,
+            "constant_target_mean_mse": 0.8056442241656885,
+            "target_effective_rank": 18.06405890333807,
+            "predicted_effective_rank": 18.34578408488549,
+            "weight_mean": 55.28438084262319,
+            "cap_fraction": 0.52783203125,
+            "ess_fraction": 0.5655370811172524,
+            "geometric_non_tie_pairs": 1223,
+            "geometric_sign_agreement": 0.892886345053148,
+            "distant_geometric_sign_agreement": 0.8349705304518664,
+            "geometrically_backward_capped_fraction": 0.05408805031446541
+          }
+        ],
+        "actions": {
+          "teacher_data_mse": 0.07830549776554108,
+          "predicted_data_mse": 0.08149600028991699,
+          "corrected_near_data_mse": 0.0790892094373703,
+          "corrected_far_data_mse": 0.08314403146505356,
+          "predicted_teacher_action_distance": 0.01298675686120987,
+          "near_replacement_action_distance": 0.014227363280951977,
+          "far_replacement_action_distance": 0.0007145346025936306,
+          "near_unit_direction_action_fd_mse": 0.0010995364282280207,
+          "far_unit_direction_action_fd_mse": 1.2114674063923303e-05
+        }
+      },
+      "900000": {
+        "checkpoint_sha256": "02868735df55491ea699397ce05e357998de593567ddc333ac75704fd19919b6",
+        "waypoints": [
+          {
+            "index_far_to_near": 0,
+            "nominal_offset": 150,
+            "mse": 0.15101714432239532,
+            "weighted_mse": 0.06387095852768042,
+            "error_p90": 0.5404747724533081,
+            "cosine_mean": 0.9208689437805435,
+            "target_norm_mean": 11.313708203061903,
+            "predicted_norm_mean": 10.98192587108922,
+            "constant_target_mean_mse": 0.854201081489916,
+            "target_effective_rank": 15.336445353656936,
+            "predicted_effective_rank": 15.825907050848178,
+            "weight_mean": 64.11200114116525,
+            "cap_fraction": 0.62646484375,
+            "ess_fraction": 0.648888010940487,
+            "geometric_non_tie_pairs": 1299,
+            "geometric_sign_agreement": 0.9176289453425712,
+            "distant_geometric_sign_agreement": 0.8799283154121864,
+            "geometrically_backward_capped_fraction": 0.03699788583509514
+          },
+          {
+            "index_far_to_near": 1,
+            "nominal_offset": 100,
+            "mse": 0.14075110852718353,
+            "weighted_mse": 0.06174429811097369,
+            "error_p90": 0.5000728368759155,
+            "cosine_mean": 0.9263569359903812,
+            "target_norm_mean": 11.31370822167964,
+            "predicted_norm_mean": 10.986827583426315,
+            "constant_target_mean_mse": 0.8460052266709555,
+            "target_effective_rank": 15.567213419747592,
+            "predicted_effective_rank": 16.234127102623077,
+            "weight_mean": 60.75473570085519,
+            "cap_fraction": 0.59130859375,
+            "ess_fraction": 0.6166295920204913,
+            "geometric_non_tie_pairs": 1275,
+            "geometric_sign_agreement": 0.9050980392156863,
+            "distant_geometric_sign_agreement": 0.8566176470588235,
+            "geometrically_backward_capped_fraction": 0.04035874439461883
+          },
+          {
+            "index_far_to_near": 2,
+            "nominal_offset": 50,
+            "mse": 0.09493153542280197,
+            "weighted_mse": 0.04699424030057047,
+            "error_p90": 0.27609169483184814,
+            "cosine_mean": 0.9509144677396035,
+            "target_norm_mean": 11.313708183900436,
+            "predicted_norm_mean": 11.039131837432894,
+            "constant_target_mean_mse": 0.8161118109950287,
+            "target_effective_rank": 17.347876176312795,
+            "predicted_effective_rank": 17.411080849336194,
+            "weight_mean": 55.10453885836175,
+            "cap_fraction": 0.52880859375,
+            "ess_fraction": 0.5636227049569871,
+            "geometric_non_tie_pairs": 1223,
+            "geometric_sign_agreement": 0.8887980376124285,
+            "distant_geometric_sign_agreement": 0.8330058939096268,
+            "geometrically_backward_capped_fraction": 0.04887218045112782
+          }
+        ],
+        "actions": {
+          "teacher_data_mse": 0.07773873209953308,
+          "predicted_data_mse": 0.08094944059848785,
+          "corrected_near_data_mse": 0.07831916213035583,
+          "corrected_far_data_mse": 0.0822562575340271,
+          "predicted_teacher_action_distance": 0.01300875749439001,
+          "near_replacement_action_distance": 0.01395299844443798,
+          "far_replacement_action_distance": 0.0006626149406656623,
+          "near_unit_direction_action_fd_mse": 0.0010257530957460403,
+          "far_unit_direction_action_fd_mse": 1.1563432053662837e-05
+        }
+      },
+      "1000000": {
+        "checkpoint_sha256": "f712be15534c51c1f47987add67f15087472ae406185e9229c25cb91bec62132",
+        "waypoints": [
+          {
+            "index_far_to_near": 0,
+            "nominal_offset": 150,
+            "mse": 0.1479526311159134,
+            "weighted_mse": 0.06257418628284553,
+            "error_p90": 0.5299919843673706,
+            "cosine_mean": 0.9228981579615265,
+            "target_norm_mean": 11.313708215020991,
+            "predicted_norm_mean": 11.043223004381936,
+            "constant_target_mean_mse": 0.8486307660336754,
+            "target_effective_rank": 15.8364883521243,
+            "predicted_effective_rank": 16.2202818504188,
+            "weight_mean": 64.99427302870927,
+            "cap_fraction": 0.63525390625,
+            "ess_fraction": 0.65791690822717,
+            "geometric_non_tie_pairs": 1299,
+            "geometric_sign_agreement": 0.9160892994611239,
+            "distant_geometric_sign_agreement": 0.8763440860215054,
+            "geometrically_backward_capped_fraction": 0.03404255319148936
+          },
+          {
+            "index_far_to_near": 1,
+            "nominal_offset": 100,
+            "mse": 0.13533300161361694,
+            "weighted_mse": 0.059225728351996895,
+            "error_p90": 0.47732335329055786,
+            "cosine_mean": 0.9294506558431597,
+            "target_norm_mean": 11.31370820679289,
+            "predicted_norm_mean": 11.03646066289046,
+            "constant_target_mean_mse": 0.8395872256657472,
+            "target_effective_rank": 16.156864729333975,
+            "predicted_effective_rank": 16.64164951953855,
+            "weight_mean": 61.47141545995713,
+            "cap_fraction": 0.5947265625,
+            "ess_fraction": 0.6255794261387094,
+            "geometric_non_tie_pairs": 1275,
+            "geometric_sign_agreement": 0.912156862745098,
+            "distant_geometric_sign_agreement": 0.8621323529411765,
+            "geometrically_backward_capped_fraction": 0.04288939051918736
+          },
+          {
+            "index_far_to_near": 2,
+            "nominal_offset": 50,
+            "mse": 0.08889336884021759,
+            "weighted_mse": 0.04357650674602749,
+            "error_p90": 0.25801873207092285,
+            "cosine_mean": 0.954362159300276,
+            "target_norm_mean": 11.31370821150763,
+            "predicted_norm_mean": 11.114996554121596,
+            "constant_target_mean_mse": 0.8068381898834514,
+            "target_effective_rank": 18.125114940242973,
+            "predicted_effective_rank": 18.05689769931908,
+            "weight_mean": 55.977495475174564,
+            "cap_fraction": 0.53515625,
+            "ess_fraction": 0.5732511216951294,
+            "geometric_non_tie_pairs": 1223,
+            "geometric_sign_agreement": 0.8986099754701553,
+            "distant_geometric_sign_agreement": 0.8271119842829077,
+            "geometrically_backward_capped_fraction": 0.04875
+          }
+        ],
+        "actions": {
+          "teacher_data_mse": 0.07662618905305862,
+          "predicted_data_mse": 0.0800616443157196,
+          "corrected_near_data_mse": 0.07737778127193451,
+          "corrected_far_data_mse": 0.0814797580242157,
+          "predicted_teacher_action_distance": 0.01184830255806446,
+          "near_replacement_action_distance": 0.012727199122309685,
+          "far_replacement_action_distance": 0.0005871352623216808,
+          "near_unit_direction_action_fd_mse": 0.001057857065461576,
+          "far_unit_direction_action_fd_mse": 1.030201656249119e-05
+        }
+      }
+    }
+  }
+}

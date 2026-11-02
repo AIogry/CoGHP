@@ -89,6 +89,10 @@ class NavigationPolicy(nn.Module):
     action_hrm_rope_theta: float = 10000.0
     action_hrm_forward_dtype: str = "float32"
     train_action_chain_source: str = "teacher"
+    # Keep legacy sampling and actor/representation gradients unless the
+    # experiment explicitly selects the predicted-mean, value-only protocol.
+    planner_command_mode: str = "sample"
+    actor_goal_rep_grad: bool = True
 
     def setup(self):
         if self.state_dim < 1:
@@ -97,6 +101,10 @@ class NavigationPolicy(nn.Module):
             raise ValueError("HRM-Action-CoGHP requires num_subgoals >= 1.")
         if self.num_mixer_blocks < 1:
             raise ValueError("num_mixer_blocks must be positive.")
+        if self.planner_command_mode not in ("sample", "mean"):
+            raise ValueError("planner_command_mode must be sample or mean.")
+        if not isinstance(self.actor_goal_rep_grad, bool):
+            raise ValueError("actor_goal_rep_grad must be a bool.")
         if self.planner_generation not in ("autoregressive", "joint"):
             raise ValueError("planner_generation must be autoregressive or joint.")
         if self.planner_refinement_steps < 1:
@@ -401,6 +409,10 @@ class NavigationPolicy(nn.Module):
             )
             observation_feature = self.feature_embed(features[0])
             goal_feature = features[1]
+            if not self.actor_goal_rep_grad:
+                # This shared goal representation conditions BOTH the planner
+                # and executor. Stop here, not only on the high-loss labels.
+                goal_feature = jax.lax.stop_gradient(goal_feature)
             return jnp.concatenate([observation_feature, goal_feature], axis=1)
         return jnp.concatenate(
             [self.feature_embed(observations), self.feature_embed(goals)], axis=1
@@ -412,7 +424,8 @@ class NavigationPolicy(nn.Module):
         Each segment receives the same observation/goal/query sequence and the
         preceding segment's detached HRM carry. Waypoint slots are far-to-near
         for compatibility with the dataset and executor; this is not an
-        autoregressive generation order. Only the final plan is sampled.
+        autoregressive generation order. Only the final plan becomes executor
+        commands, using the configured sample or mean rule.
         """
         queries = jnp.tile(self.planner_query_tokens, (features.shape[0], 1, 1))
         inputs = jnp.concatenate([features, queries], axis=1)
@@ -428,9 +441,21 @@ class NavigationPolicy(nn.Module):
             )
         keys = jax.random.split(seed, self.num_subgoals)
         predictions = jnp.stack(
-            [dist.sample(seed=key) for dist, key in zip(rounds[-1], keys)], axis=1
+            [self._planner_command(dist, key) for dist, key in zip(rounds[-1], keys)],
+            axis=1,
         )
         return rounds, predictions
+
+    def _planner_command(self, distribution, seed):
+        """Separate executor command generation from training NLL temperature.
+
+        Mean commands match deterministic inference while preserving a unit
+        training density. They remain differentiable so the executor loss can
+        train the planner through the command input.
+        """
+        if self.planner_command_mode == "mean":
+            return distribution.mode()
+        return distribution.sample(seed=seed)
 
     def _run_planner(
         self,
@@ -479,7 +504,7 @@ class NavigationPolicy(nn.Module):
             )
             high_dist_list.append(high_dist)
             predicted_subgoals = predicted_subgoals.at[:, subgoal_idx, :].set(
-                high_dist.sample(seed=subgoal_keys[subgoal_idx])
+                self._planner_command(high_dist, subgoal_keys[subgoal_idx])
             )
         return (high_dist_list, predicted_subgoals)
 
@@ -534,6 +559,10 @@ class NavigationPolicy(nn.Module):
         The remaining return values retain their usual meaning.
         """
         del action_seq
+        if subgoal_reps is not None and not self.actor_goal_rep_grad:
+            # Only externally supplied data commands are detached. Predicted
+            # commands below keep their path to the planner parameters.
+            subgoal_reps = jax.lax.stop_gradient(subgoal_reps)
         if seed is None:
             seed = jax.random.PRNGKey(0)
         planner_seed, free_planner_seed, action_seed = jax.random.split(seed, 3)

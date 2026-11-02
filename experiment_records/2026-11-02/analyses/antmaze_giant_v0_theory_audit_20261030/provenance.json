@@ -1,0 +1,29 @@
+{
+  "created_at": "2026-10-30T13:53:14.088948+08:00",
+  "source_signature": "bae29f550ea14a5ab516164ed3dbd321c4b06f85a90e9c3b7e354e3071a678e3",
+  "training_code_unchanged": true,
+  "parameters_updated": false,
+  "checkpoints": 6,
+  "paired_queries_per_model": 256,
+  "gradient_batches_per_model": 4,
+  "shared_head_final_exact_match": true,
+  "artifacts_sha256": {
+    "report.html": "ca532a4c2932724b3f68134f7bc9a8c3997bf6349b5b1c337496596badebfa6f",
+    "mechanism_probes.json": "4d5d6592b12f442966c4a2da74c833d2ed324c9e5f9a1489e2f5b4a72942fb3c",
+    "recurrent_readout_audit.png": "ddec6dd221dc0ee004b3dd053fbc710c505cf811fd4458eaa2e3b8dd856483c3",
+    "analysis_code/audit_joint_planner_mechanisms.py": "e3ae9ecbf20f940d405d1043f5c30955083b031c3109d6152819e80b4c34bde9"
+  },
+  "source_files_sha256": {
+    "impls/agents/navigation.py": "7e2c07a8c182c1ae78e18103a577a8e53bbf8f624881fce992f7181b40e17205",
+    "impls/networks/policies.py": "5bec928eda0b7eaaadc44aaf96fd755e1df78ebd0c6cd6d4fbc54575dfa51fa0",
+    "impls/networks/backbones.py": "f04f933061442b6efddfbb9d7ab75809719c26532f63f3749ea3231fe3fc156c",
+    "impls/utils/networks.py": "bfd2d66e2693a94157a222b9fb47c55e0d632fa3a66423f4639480d1844bd4b0",
+    "impls/utils/datasets.py": "9447ac64eb476718617a90b8fe85ef600ea1e7f36885586bb4dd83198e64b390",
+    "impls/utils/encoders.py": "e2dd2605791f76f54c56d462221d643e8e19a79be1fb913fff5f03acaed060a3",
+    "impls/utils/flax_utils.py": "9a1e38557ece217a250cb39f64fd64cadbfc6f0bc899c803dccdda5d12760eee"
+  },
+  "literature_sources": [
+    "https://arxiv.org/html/2506.21734v3",
+    "https://github.com/sapientinc/HRM/blob/main/models/hrm/hrm_act_v1.py"
+  ]
+}

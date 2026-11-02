@@ -1,0 +1,15 @@
+method | environment | seed | 800000 | 900000 | 1000000 | mean (%)
+hrm_beta25_h2l1_m1 | antmaze-giant-navigate-v0 | 0 | 8.80 | 13.60 | 6.00 | 9.47
+hrm_beta25_h4l2_m3 | antmaze-giant-navigate-v0 | 0 | 20.00 | 18.40 | 17.20 | 18.53
+hrm_beta30_h2l1_m1 | antmaze-giant-navigate-v0 | 0 | 4.80 | 9.60 | 8.80 | 7.73
+hrm_beta30_h4l2_m3 | antmaze-giant-navigate-v0 | 0 | 28.40 | 15.60 | 36.40 | 26.80
+hrm_beta35_h2l1_m1 | antmaze-giant-navigate-v0 | 0 | 11.60 | 14.00 | 6.40 | 10.67
+hrm_beta35_h4l2_m3 | antmaze-giant-navigate-v0 | 0 | 12.40 | 24.00 | 25.20 | 20.53
+
+Across-seed summaries (sample standard deviation; no SD for a single seed):
+hrm_beta25_h2l1_m1 | antmaze-giant-navigate-v0 | n=1 | 9.47 | SD=N/A (single seed)
+hrm_beta25_h4l2_m3 | antmaze-giant-navigate-v0 | n=1 | 18.53 | SD=N/A (single seed)
+hrm_beta30_h2l1_m1 | antmaze-giant-navigate-v0 | n=1 | 7.73 | SD=N/A (single seed)
+hrm_beta30_h4l2_m3 | antmaze-giant-navigate-v0 | n=1 | 26.80 | SD=N/A (single seed)
+hrm_beta35_h2l1_m1 | antmaze-giant-navigate-v0 | n=1 | 10.67 | SD=N/A (single seed)
+hrm_beta35_h4l2_m3 | antmaze-giant-navigate-v0 | n=1 | 20.53 | SD=N/A (single seed)

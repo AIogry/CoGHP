@@ -1,0 +1,372 @@
+{
+  "created_at": "2026-10-31T09:16:07.778211+00:00",
+  "datasets": {
+    "antmaze-giant-navigate-v0-val.npz": {
+      "bytes": 24052175,
+      "mtime_ns": 1729091417000000000,
+      "path": "/data/qijunrong/06-RL/offline-rl/data/raw_ogbench/antmaze-giant-navigate-v0-val.npz",
+      "sha256": "61d40e91899f496030fb4ee73ffd61c20dad502ab6cc8075744867097930ce71"
+    },
+    "antmaze-giant-navigate-v0.npz": {
+      "bytes": 241141207,
+      "mtime_ns": 1729091410000000000,
+      "path": "/data/qijunrong/06-RL/offline-rl/data/raw_ogbench/antmaze-giant-navigate-v0.npz",
+      "sha256": "387791c414cfba2d77eda64a47f3b6db7950bdf146ae901e4f08c2c2f9e0f3aa"
+    }
+  },
+  "source": {
+    "code_signature": "0b2c531bdcd5154003a618b816876743578160d569819d2fc5649ec7a5ceff0b",
+    "files": {
+      ".gitignore": "0fe382cd08dfea52bdccb3de8c172a89b70e7317395e86da4c58a280c8b17878",
+      "LICENSE": "0b9a659d9e7650e6a2c8f1c956c4a4b8f97459f66fdd1b3e940d823048822c86",
+      "README.md": "4b3e4f595380e4146ec880df3c28458cf6fff5d7c9ab30826480dee0106659db",
+      "assets/coghp.png": "85b7d4f0051eb4a4431acb182a51db2c959d777ef36a32016c933e808148ab39",
+      "configs/joint_planner_v0.json": "c0b8139c528f4fc085f4959deec14056c849a115f4254a9ecc38640f7b209ab7",
+      "configs/joint_planner_v0_antmaze_giant.json": "0fa8e848485b7783e5b4e16fd47ba5fb12615bf955ca5d77dd589d3f0252cb35",
+      "configs/joint_planner_v1_antmaze_giant.json": "5015835e599ab8259959df58ab566ef34e2397909fd7517a757d3763a7c1beaf",
+      "configs/joint_planner_v1_antmaze_giant_beta25_30_35.json": "b900a6e6150dae687f7497c649efa1337d909e8688263d579cb3a61a90e75d7a",
+      "docs/reproducibility.md": "7c167647ea1a257a1c19b37b1fe9b6356d2ed7a0414cbf0d1d0afbea11d25f6a",
+      "impls/agents/__init__.py": "16e57e728c07a601c7d36e0258c0dc98ea106ef355fbb00d73eea70ce1b8c7b3",
+      "impls/agents/coghp.py": "93f84f2a015adf99c997a2764f0deae344a821649ee9e3af83426bb3c57c58c7",
+      "impls/agents/navigation.py": "7eb4b46f582bd9a2902d154e4060274c619b68f5f128687e08a5dd280c39bb56",
+      "impls/main.py": "590a79304c55537502b12ebaf5ef55c5ac758190d7bb2d70adffd120494cbafb",
+      "impls/networks/__init__.py": "04f2d7d44b79ece8b4e7c13ebd4c0cfcd9633a14e5bac4705226db1a521fdcdf",
+      "impls/networks/backbones.py": "f04f933061442b6efddfbb9d7ab75809719c26532f63f3749ea3231fe3fc156c",
+      "impls/networks/policies.py": "da1588c23ae8d817bd888a3039a666d1190c6dcfba306b5a4eaf876d9455f358",
+      "impls/requirements.txt": "131375e19086af484cabd3c9a9e0c812f542bcb36e064f7970e3c80f33f796c1",
+      "impls/utils/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "impls/utils/coghp_network.py": "24aa4a6362f7d72ed52f57ea705d805fb530c52e1c8ca96fc381bbfd025c67d5",
+      "impls/utils/datasets.py": "9447ac64eb476718617a90b8fe85ef600ea1e7f36885586bb4dd83198e64b390",
+      "impls/utils/encoders.py": "e2dd2605791f76f54c56d462221d643e8e19a79be1fb913fff5f03acaed060a3",
+      "impls/utils/env_utils.py": "a83541b0383543c0418069c89838ad7f36e6fa66814d9ded509186d1edf7365c",
+      "impls/utils/evaluation.py": "851abfd08993064f0b400ea0ca8e637c28689958493555376b51d7bd00a0da30",
+      "impls/utils/flax_utils.py": "5fb852cd75f7c6213950df43f195492cac5ad165dd05b39c208e344065fd9e2a",
+      "impls/utils/log_utils.py": "ca39c0b93db4ad442832cde5a90ff37fb3afcd16f131e72fac097b1ae5f041ea",
+      "impls/utils/networks.py": "bfd2d66e2693a94157a222b9fb47c55e0d632fa3a66423f4639480d1844bd4b0",
+      "ogbench/__init__.py": "b692dba53ffff6152a9e117447dde62f164ec640f967a174807ff2faff0925f1",
+      "ogbench/locomaze/__init__.py": "f8f0875cf73fdf25eb5230d5a7fe5c8e41c7a6ae0419de79783b01b1ca17991c",
+      "ogbench/locomaze/ant.py": "ebe45ff724ecf5e35e643e339cd7c1d6315e49f8f0f8f96d516fd1130fd1e363",
+      "ogbench/locomaze/assets/ant.xml": "daea13ccff56dd5daf906acfad7d78682e58a870555d17c92912a2e4527d14f3",
+      "ogbench/locomaze/assets/humanoid.xml": "eedc725cb3af429a396f5d16a001b7db197b059864c5abf773804c7738edcb46",
+      "ogbench/locomaze/assets/point.xml": "5d9f268a59c8fca516fcd082b8af140d0149770a494e5b965af8224a6bc37da4",
+      "ogbench/locomaze/humanoid.py": "656643255db15062d629e9708695d55d77bce7418b9b9e14399938e50fcd17e8",
+      "ogbench/locomaze/maze.py": "65f6aad962e3d8eafba0381137983cf9aa4c8ef7e0f9a33015ee2bfd16dafaa7",
+      "ogbench/locomaze/point.py": "eb9125a4b0f0cbeeb4a6a5a1e45bfd8b938a8bad9352a3e5d72dc2ac8f1987f6",
+      "ogbench/manipspace/__init__.py": "bdc987baf97660ea673a3ea8681fb7a4077fb90b57397e310f101b92d5cb8db5",
+      "ogbench/manipspace/controllers/__init__.py": "f92c1be658e56af29c17598605f3383027b1141d17b1024e8c6371395dc6b4e2",
+      "ogbench/manipspace/controllers/diff_ik.py": "4914ea5fbf6428daa4f475a0490a8786514fafd15072c5e18c5d4a5213b8f1be",
+      "ogbench/manipspace/descriptions/button_inner.xml": "280967b579e30810b076b651701f78c04362090a617e63f0778565f7d4018061",
+      "ogbench/manipspace/descriptions/button_outer.xml": "d0f85e517bd3396aebcef7263e70723e5ef6efb58863362b620997d842128b47",
+      "ogbench/manipspace/descriptions/buttons.xml": "b03f6dcdfb53b2b5fa104e1f9d347d3d017ae3b3ba966e05522584e8652c48c3",
+      "ogbench/manipspace/descriptions/cube.xml": "26c95a148f880c90edf391b92963003514c0a6ba945074c039a1670a8ea4c824",
+      "ogbench/manipspace/descriptions/cube_inner.xml": "03ae5a10aa56c08f46cb0152767e8d835e2a55f23267d718b825a336886e6b52",
+      "ogbench/manipspace/descriptions/cube_outer.xml": "94d484308fa9d7468a84a0b5b00c53d8801d0c1cb5c80805ea9d101ecd26c86a",
+      "ogbench/manipspace/descriptions/drawer.xml": "985ad3be042dff5a58b640b6fc8c2acec731e6b1c8982771ec86043485fcfcbf",
+      "ogbench/manipspace/descriptions/floor_wall.xml": "07130a20409c9629e187b303662ae26eb614ae5ec9e8ba9f78bad8e5e079603b",
+      "ogbench/manipspace/descriptions/metaworld/button/button.stl": "6e0e7be872e114c481638881e8afadbe1c40d0d3cae9c4bd9e8fca6fcb58d7b6",
+      "ogbench/manipspace/descriptions/metaworld/button/buttonring.stl": "ffe37724fc49443ff5ff3465955365ac7da236d5878885e893abde251e40f72f",
+      "ogbench/manipspace/descriptions/metaworld/button/metal1.png": "0d25fa8affbb0f579220f0cdad6ee74f875495822ee79bb5afd23d73671f6363",
+      "ogbench/manipspace/descriptions/metaworld/button/stopbot.stl": "1138a14c536572739ea82883dacea804b4b2ec65988dea745a9d37b5646e725e",
+      "ogbench/manipspace/descriptions/metaworld/button/stopbutton.stl": "4aa06aabb28827a3b4b1f26c856337ff0145b18a131abe0d032aef32af3cc65b",
+      "ogbench/manipspace/descriptions/metaworld/button/stopbuttonrim.stl": "e4ada0b3b4c29861a2f01a18889acfcc74163720474170ce1b62485c9957c286",
+      "ogbench/manipspace/descriptions/metaworld/button/stopbuttonrod.stl": "658379479da3cd1449d1d7d547ac75f6b6b6485f1bd84b0443952302c02962f6",
+      "ogbench/manipspace/descriptions/metaworld/button/stoptop.stl": "03290b090ec1026caac8f7c25d02cbad9cd6eb7be44e322174338d657239e2bc",
+      "ogbench/manipspace/descriptions/metaworld/drawer/drawer.stl": "f0daf114a1906faef106737c0fc6b51722c70ccaf277f88e1a2e89136162e593",
+      "ogbench/manipspace/descriptions/metaworld/drawer/drawercase.stl": "c5df53a728afd63feb684bf408e89d6f379982cc94589f9534af14769b3a331d",
+      "ogbench/manipspace/descriptions/metaworld/drawer/drawerhandle.stl": "5c9b0e1af0eac443b219cf29883ed857cd1b41f7f867ed481e841a309bb84563",
+      "ogbench/manipspace/descriptions/metaworld/window/window_base.stl": "710a07781ad107d0d34ac84461ddcbaf2011177b47e45088cff6f9383aab79f1",
+      "ogbench/manipspace/descriptions/metaworld/window/window_frame.stl": "e895814914e70a5e5acab5aaab8d519bb1882487f48285c4b696a198a38810e8",
+      "ogbench/manipspace/descriptions/metaworld/window/window_h_base.stl": "88f7cf4f7fcc54106e07572da71d4f92c8248f21d00bdcc52df2834e76ef5bd1",
+      "ogbench/manipspace/descriptions/metaworld/window/window_h_frame.stl": "38f13ea160357b04c128cd5e1d6569743daceedde74766579ea368522d69784e",
+      "ogbench/manipspace/descriptions/metaworld/window/windowa_frame.stl": "d27c58927e1ee58b9fdafbb550b5351d7c85f1d75e663d8c36f2786d536bd001",
+      "ogbench/manipspace/descriptions/metaworld/window/windowa_glass.stl": "9a45b186cf24db33025d394a6944f3a4de0bc148ab39ab9a4482eeb11a3d93fd",
+      "ogbench/manipspace/descriptions/metaworld/window/windowa_h_frame.stl": "fa7ebc69793a2937c59be02f0431dd3d1f6cb3ca634c8a46fd72195973c7a0c4",
+      "ogbench/manipspace/descriptions/metaworld/window/windowa_h_glass.stl": "c4de54e996abf80e9b77e108a168936e389f906c8000275cb2dc9949985dc0d2",
+      "ogbench/manipspace/descriptions/metaworld/window/windowb_frame.stl": "386c218c5fa3ee2b433e4debf6933ab697ba3ec88de4a3745ed34907a89c0aea",
+      "ogbench/manipspace/descriptions/metaworld/window/windowb_glass.stl": "40dbe651264556eb4c85f0616351fc94308bf4a44f5c52e88896f855dcd5bf66",
+      "ogbench/manipspace/descriptions/metaworld/window/windowb_h_frame.stl": "d8af150ba902822f5d7dd6403df9b5bdbd3cda4a8500a93754e62f40aa1b3c6a",
+      "ogbench/manipspace/descriptions/metaworld/window/windowb_h_glass.stl": "eb4d078f4102767450801631f1285755992946b714b2b70caa7c272a17e2ef97",
+      "ogbench/manipspace/descriptions/robotiq_2f85/2f85.png": "cce07123183ffe562768aadcdbaa487336c0c2a485c2a26c47697750630bc912",
+      "ogbench/manipspace/descriptions/robotiq_2f85/2f85.xml": "b8dbdad1a805ed3e2ab67c60fdaec4ca04fc2ea7ae06eb55cd14ab7f957cf953",
+      "ogbench/manipspace/descriptions/robotiq_2f85/LICENSE": "3d5edd18d1e22a17666e9bb84270171ed5ac90b192d24e0177fd171708ea2316",
+      "ogbench/manipspace/descriptions/robotiq_2f85/README.md": "7eb68400829e6ee929452fd333dfb214aed963b0a217af7d03df8363600e795b",
+      "ogbench/manipspace/descriptions/robotiq_2f85/assets/base.stl": "1c7b9f2bd92d705fc4e897c94e905973a3c05f406845e942229433deb7041453",
+      "ogbench/manipspace/descriptions/robotiq_2f85/assets/base_mount.stl": "87971dfdd6e5311b5a723e7b73c4701ebf5c2364df671500f30dfc1c53c8e61a",
+      "ogbench/manipspace/descriptions/robotiq_2f85/assets/coupler.stl": "d5ee95e62f8415bf5b6e503c831a958f5fc1990bf9b2865329ec38a28932727c",
+      "ogbench/manipspace/descriptions/robotiq_2f85/assets/driver.stl": "bbd6e868b1778bead60d2516c7ede581d7ad4e431744b1828757d6ea5129c112",
+      "ogbench/manipspace/descriptions/robotiq_2f85/assets/follower.stl": "633793332c081641ce200df27a40643cc293b29956e3cb5cb29cb811c33ef1c7",
+      "ogbench/manipspace/descriptions/robotiq_2f85/assets/pad.stl": "4af1fa8d9bb285abecbf5dfc88e74cb30f059a7a074c2030dc35e9ee4316019d",
+      "ogbench/manipspace/descriptions/robotiq_2f85/assets/silicone_pad.stl": "ca20c0fa61e6d3ce7b04bed25360e048e31dfd88ace04187aa6d9e8f4ca3fd0f",
+      "ogbench/manipspace/descriptions/robotiq_2f85/assets/spring_link.stl": "4fb74a8a0d76c0e471cf19fd48bc676fd5b19123798e7a39eb6aa56869354283",
+      "ogbench/manipspace/descriptions/robotiq_2f85/scene.xml": "7e584c60ba751b6572d66982adbc93923a82a85d7d3880c1242b9d4005ff4493",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/LICENSE": "5ec71ccf66c8d03261448f2441a586765b97f2248c860a1ae19689fb1c45cee6",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/README.md": "dd5a3c510fe94586afa8751de04a5ca38a993dfc629b64d2077528a7a9270c33",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_0.obj": "9a3b21f1524baef6af8a52d7af90b6e94b79f7e3c2b04a0f6581f74d22291b0b",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/base_1.obj": "cf7d54691a2c1eeda280955ebd6bd83c2dbecfc46fb53c10198f05d107511b50",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_0.obj": "64c049a55149c2ab355594d52302b53d3e34da3677ceaa1917c427cde7743146",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_1.obj": "a96fe203015cf532b193f414cd01268c7c36795e51a837dd33afd122334f81f2",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_2.obj": "05b436505fc595aeab26675590c2b56b88a65b2d52d6352096fed9f07cb4c4ca",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/forearm_3.obj": "fa31af19cfad7a765b62e8a2d5931cb014b88de84195a7850b4e5ee902112e9a",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_0.obj": "477387a7e7312782a6040484a3c2c2fcee33f40109f419076e31b6f6e1692c68",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_1.obj": "8537bba02804640ddf6e260f79fe66e895b3229ed3d44298a95e8e027eb5d435",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/shoulder_2.obj": "291714518416bb8f0bafbf123867db011ecbf5146a05245ca5893ee8c57d4e21",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_0.obj": "14143d4f1175a7dbacc8e2f2f98f1cac5a2b2e238cd46cd03654d31f2610eb53",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_1.obj": "272899e927f4a32b7c25e34560ec70654c0346cc8ed1c616c0555f3f53b32d14",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_2.obj": "86c05350d60eb0e7e28a81b544267478b7db997baba41cef19088ebbeffecfa1",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/upperarm_3.obj": "b257dab441e6fab64ea03b4b87029d8a96554ad1a513cce944d56acba0ad948a",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_0.obj": "7ef0c59b5c5d56a9902435c9a058b27d2a38c85fe2bae02d00a9284dd1f4d519",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_1.obj": "ee6d5c562e6becef94109b0543329080d285d1aef521a01ed98e18a5bf1e8684",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist1_2.obj": "88c66dc64f15391287147d50add37729a3f41dadd80b1f859cf2cb6d45daf32a",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_0.obj": "2ac2e2e39d8f7005bc3b3ab26cd61634be2e14930074615da5318b9ee7c569a8",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_1.obj": "a721d06dc61d3b3a8ec58c035c9e3358ed30d6991a72e077d8abf3c3c203b633",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist2_2.obj": "6df4335c8bd5e881fda2c224f770115ffe9ddd0cd321ebe3c0a4a310796f0987",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/assets/wrist3.obj": "0e51748f9c93bd66604360a5cf7e2e8a6e754550be64076333ff4fc19ec90c61",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/scene.xml": "368d1ebb8453804554156dfd958cd8a00fa84816fb799150687858e8d2bac9ef",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/ur5e.png": "90310086f1187fcda94252ff68f8c4f8be97f65bec8f4eea449179b0979da795",
+      "ogbench/manipspace/descriptions/universal_robots_ur5e/ur5e.xml": "e7d805a7a03c3194ad5992d47661aca34675c93275043aaa66045968043f5a6a",
+      "ogbench/manipspace/descriptions/window.xml": "df3555e7a36149e524d9a20c699250592d602b1bc489f4ae9a92f9fc1f1917d9",
+      "ogbench/manipspace/envs/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ogbench/manipspace/envs/cube_env.py": "211a198c6f327332e3bd938b17a59249c1ee9e61aaa0048b2157f248a9df682e",
+      "ogbench/manipspace/envs/env.py": "7af9c7aa009dd325bfd4b9a36e828d9f6b4d2e8c54a399f7fb9a47f00a857ab2",
+      "ogbench/manipspace/envs/manipspace_env.py": "52c5287f4b932aabea344b06e2711cdec63c801c48730c17f430325bcf06ca09",
+      "ogbench/manipspace/envs/puzzle_env.py": "b181276b595c7c422c6e7ff5b7ea77b898916b36b90030f6daf1ee0995e6f089",
+      "ogbench/manipspace/envs/scene_env.py": "d0db7a11ef981f598b797bb0bea96490339abb434a0597bb8bb6345e96ffd890",
+      "ogbench/manipspace/lie/__init__.py": "6ae00df58e42c3d2812449831cc8b6bb54ec621aa2d537c532f76df25660ecb2",
+      "ogbench/manipspace/lie/se3.py": "a918b8ecdbc676bd0ddcfd64a312e5074d48892db2074748a6c979e308fb1b92",
+      "ogbench/manipspace/lie/so3.py": "35d1ffbd6d93e9466e49ecb2d914843cd379a302914c5ea9f79af69a7392105f",
+      "ogbench/manipspace/lie/utils.py": "71796041701c863eb91ccdb81e3f482f29735d0ad29c021052a8b7f67d79d147",
+      "ogbench/manipspace/mjcf_utils.py": "52bc5dfd77c4d82c8556ef553feaf6a357585bdb2e27fa381c25c99ddfb07b5d",
+      "ogbench/manipspace/oracles/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ogbench/manipspace/oracles/markov/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ogbench/manipspace/oracles/markov/button_markov.py": "2d302ef7b2b1c6cd5202dfcafca07ee9c50601d50f8d33ca38e8bf1cecf6abc8",
+      "ogbench/manipspace/oracles/markov/cube_markov.py": "67943a0eb3d4a22cf4191dbe2a2ae70c92847fb6b81fb5ce198c86ca94ed2f6f",
+      "ogbench/manipspace/oracles/markov/drawer_markov.py": "d828b1898a0cb5fcdfa4c8ecab495ed194fec1433591dff204527447091a9325",
+      "ogbench/manipspace/oracles/markov/markov_oracle.py": "409537d2c12136a5d3d1b15e30ac6754cc66bbe4d01fd459c98247b0c1a9913b",
+      "ogbench/manipspace/oracles/markov/window_markov.py": "b1a504c9fb0ee2ec3af46300c01efc005e158d47322c2d721e9bc50f2667a7f6",
+      "ogbench/manipspace/oracles/plan/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ogbench/manipspace/oracles/plan/button_plan.py": "f2c31ee54b70843b8be3f7a7b368a37568aa7a644514884cba3188dab19c1157",
+      "ogbench/manipspace/oracles/plan/cube_plan.py": "4b31900946c682ba8fb57a38d3e08714d2aaeca186745bc7c8cf88d4ae102b28",
+      "ogbench/manipspace/oracles/plan/drawer_plan.py": "f4dd776c45d1680dc574673d0e1196d77a7a4e5e312f0442774eef4c551db87f",
+      "ogbench/manipspace/oracles/plan/plan_oracle.py": "cd977fe1fd107911a1d50c1eb1bd0b2f25586d6e861638b36103322de3559329",
+      "ogbench/manipspace/oracles/plan/window_plan.py": "96894697e2af9b9f50372369eb14d166d925ee7a34fd93b6d82c4ce5db47b841",
+      "ogbench/manipspace/viewer_utils.py": "c1ac0e1f4efc6f70e9bc49f024757d2c08c02b6648e33deb980c1e8d8d110502",
+      "ogbench/online_locomotion/__init__.py": "627897cdb0c18cd6cb204d31b1850efc6fa75a2fb5f474648812b837855f9bce",
+      "ogbench/online_locomotion/ant.py": "4ec264966f2cdbab29831b0d1f8d3ee312188944fe6127ed0bb5753009753456",
+      "ogbench/online_locomotion/ant_ball.py": "7bbc95c72fcc19e12c156bbd2e8fa4edcd685c33035799a526b9e2bd6bd54604",
+      "ogbench/online_locomotion/assets/ant.xml": "92f8b73d7e59519b7bad384e213aecf47aac8d8113e2f4b348d8a918737e7756",
+      "ogbench/online_locomotion/assets/humanoid.xml": "6834ba77ec51ab7d69b52461a0b62505c1ff7fb16a231887e55f05ea98ddbc1a",
+      "ogbench/online_locomotion/humanoid.py": "06c73978134cca3cbc9c20ca4feb5a167931f765b5c6973211dc717780243add",
+      "ogbench/online_locomotion/wrappers.py": "d7320339affc656e9d183f6dc739dadaad090015f1af11339ad3d52ba2711625",
+      "ogbench/powderworld/__init__.py": "a191bab9a6bbcae799b26c59222b24182a10fd4ae9b6c912a643c6d4e6e2cd57",
+      "ogbench/powderworld/behaviors.py": "18dad54d747dff6d024cfe2d9e71cbd09cba1c02989801c04c7be5209122b681",
+      "ogbench/powderworld/powderworld_env.py": "d2bb936ce28d98c46de45e2cfd3729fa2f983f3456f7a2c67f3304d395852c40",
+      "ogbench/powderworld/sim.py": "96a595104fceebe50b848bedaa830e4676859489cff05846f1a616d6f48e59dd",
+      "ogbench/relabel_utils.py": "7b7ff7ea20fb81301ef251fc41b591de8c5f859dc96de2b4ba4a3a9bebfaa1a7",
+      "ogbench/utils.py": "4bd43783c86d09da2d347f5c18f277b07bb9097a0a5878c3e7bd7ed1915aa66e",
+      "scripts/analyze_joint_planner_v0.py": "7555b11928963276a862fa6f7e65c0afa905b18f6ff0c7a209df58cd6fba20c3",
+      "scripts/analyze_navigation_campaigns.py": "6b3d99e294d8191649dd30bba22ff67e5e1dd80954496fc8f4499726d29f8082",
+      "scripts/audit_joint_planner_mechanisms.py": "e3ae9ecbf20f940d405d1043f5c30955083b031c3109d6152819e80b4c34bde9",
+      "scripts/diagnose_navigation_commands.py": "64a109d2d96c95adf1bc029f7d05ab00f342a0f2ddd04e96e35105faa74232dc",
+      "scripts/diagnose_navigation_values.py": "73a013b76616589b28a5b7281125804a7a7c22f3c58f416af3dc7ce6b9199988",
+      "scripts/download_ogbench_all.py": "04b8e376b8174c21f847b35c4ae2297104febe3753b823f826018bb7428b7176",
+      "scripts/env_xhumanoidserver.sh": "bec3469eefd45f6011afef838b355a2f2769469c5219ebf8fa870d3880a3ef3e",
+      "scripts/launch_study_after.py": "cc84263b789556732dbde221ba8968eebb7bb8fe95bbf709d9bbba9e5ebc7e69",
+      "scripts/navigation_literature.py": "5a50050ec0c6db735909c12bd290ccb0ce8195098bae4beff1de1a73e4aed334",
+      "scripts/probe_joint_planner_checkpoints.py": "cfc7771bde75b4a6a3c998047602fcf5121656ab3adf22c557ec0f3bd57f9088",
+      "scripts/probe_joint_planner_rollouts.py": "5d2c9c0853325fd0eac9ef4e2994da7a01a72f6103307b7bba8161fb55b64e90",
+      "scripts/probe_joint_planner_task_paths.py": "42a8f58978bf959e6ddf44f51a42262c07075838f016be71535c3183162db8e7",
+      "scripts/run_hrm_action_grid.sh": "0ec231e53219982b4fd67dec20f5f61e8e38de0fecdc20f38033df8c5c528689",
+      "scripts/run_joint_planner_smoke.sh": "7a78c47964926e96340f8c4390eed99139ba3710ae27e1f5132bef9a125e679e",
+      "scripts/run_noon_hrm_action_a800.sh": "d830e9f852386d1af01d202d17c917ddc6f2fd3b04821bc0fc18725953c820bd",
+      "scripts/run_planner_executor_grid.sh": "0863c61cc971453b6f653202cd7f2054121f0d95708a771426cb040ec28af388",
+      "scripts/run_study.py": "8e355ec1b52a3f6d655129a417bb81d079b022371dc7f8a31557cd470af998df",
+      "scripts/summarize_joint_planner_diagnostics.py": "224701ac50c17eae8f80fdfcce22b4b026c703eeeff6d962aad4307a61c090d7",
+      "scripts/test_reproducibility.sh": "16f89c191504945018e97b1dc23e2916cb7d6d6ec4bc6d66dc18fb1c503d7a3b",
+      "scripts/train_coghp.sh": "a7fccb9ae60c72481ea1f12b8812b73a914e6a95757840296a9d39dea7c3b4f9",
+      "scripts/train_hrm_action_coghp.sh": "3c89a33678713d05ad5a2352be402660663d39fc7a9722f7c886a96ecd13d817",
+      "scripts/verify_navigation_baseline.py": "66d7886a718018f27a151d3e0bd4a3e466b512ef1f3b04f21ed7cecc6eb25a28",
+      "scripts/verify_navigation_resume.py": "368ade17a5ce6f9dffe2a341aa09bbe63c685e0a5cf2b0681b2c51abf686b9fd",
+      "scripts/verify_reproducibility.py": "9788272cd19fd87b0a8ac8d48344cf5cefd14955a6590aef4a856cf814a5be43",
+      "tests/__init__.py": "57df2c5b1401e3d68afaa64b9b62d0c037db8445db548cf71f01bca8291a88fe",
+      "tests/test_backbones.py": "656701dc55f0e6d30cb5f9ad1b476fafbc16d692909bf706f60c19802a14da14",
+      "tests/test_deferred_study.py": "ef0aed690524e67710708f86d07dd21534f5caa1e53298a17134850555ace42f",
+      "tests/test_joint_planner.py": "750fdd2ff099b5ee6514677c8c6cca78ad0d003fe75825a98a71099128868ec9",
+      "tests/test_joint_planner_v0.py": "b310d985b5ec1a1b779184695892bf72d3aa9629f07ff54d836fbba6f12f0fba",
+      "tests/test_joint_planner_v1.py": "de38e7f913193103c23abad2b20c14fb61bdae33fb759b855c7ff9abc8470d86",
+      "tests/test_maze_reproducibility.py": "1c030d461204077082a305dd8e8461879c8f9a2776c4c91bb8aafc672d75851e",
+      "tests/test_navigation.py": "ea00adf82732cc97f4bea9b612a214ba517dd50f6d0ed7ced98c182619e33213",
+      "tests/test_navigation_policy.py": "1dcabd40b9ebc0166b0631612858c948d17312aaa493109346279b32a65aa563",
+      "tests/test_reproducibility.py": "59da47fda64a9efeb01f6567a2ebf4051ec2d1e93dc76717a8edd3fcd03d804e",
+      "tests/test_study_runner.py": "f6aa53c9a20e4b20ba6007518cf49aea95c6262b3c3971de5f1fde32cdaab109"
+    },
+    "git_branch": "research/navigation",
+    "git_commit": "6cb0ec59054509d681cd02639850d4d4f5568715",
+    "git_status": " M README.md\n M impls/agents/navigation.py\n M impls/networks/policies.py\n M impls/utils/flax_utils.py\n?? configs/joint_planner_v1_antmaze_giant.json\n?? configs/joint_planner_v1_antmaze_giant_beta25_30_35.json\n?? scripts/launch_study_after.py\n?? tests/test_deferred_study.py\n?? tests/test_joint_planner_v1.py\n",
+    "original_worktree": "/home/eai/Research/CoGHP"
+  },
+  "source_dir": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/source",
+  "study": {
+    "common_agent": {
+      "action_block_type": "coghp_gelu",
+      "action_core_type": "vanilla_coghp",
+      "actor_goal_rep_grad": false,
+      "actor_hidden_dims": [
+        512,
+        512,
+        512
+      ],
+      "awr_max_weight": 100,
+      "batch_size": 256,
+      "causal_mixer": true,
+      "command_content": "full_state",
+      "discount": 0.99,
+      "enable_action_hrm_validation": true,
+      "enc_hidden_dims": [
+        512,
+        512,
+        512
+      ],
+      "expectile": 0.7,
+      "feature_dim": 128,
+      "gc_enc": "concat",
+      "high_const_std": true,
+      "high_discount": 0.8,
+      "high_weight_source": "detail_value",
+      "hrm_mixer_intermediate_size": 32,
+      "joint_plan_objective": "waypoint_final",
+      "layer_norm": true,
+      "low_alpha": 3,
+      "low_const_std": true,
+      "lr": 0.0003,
+      "mixer_hidden": 32,
+      "navigation_protocol": "joint_planner_v1_predicted_value_only",
+      "network_backbone": "mlp",
+      "num_mixer_blocks": 1,
+      "planner_block_type": "swiglu_rmsnorm",
+      "planner_bptt": true,
+      "planner_command_mode": "mean",
+      "planner_core_type": "hrm",
+      "planner_forward_dtype": "float32",
+      "planner_generation": "joint",
+      "planner_mixer_intermediate_size": 32,
+      "planner_norm_eps": 1e-06,
+      "planner_num_layers": 1,
+      "planner_refinement_steps": 1,
+      "share_actor_core": false,
+      "tau": 0.005,
+      "train_action_chain_source": "predicted",
+      "value_hidden_dims": [
+        512,
+        512,
+        512
+      ]
+    },
+    "environments": {
+      "antmaze-giant-navigate-v0": {
+        "subgoal_steps": 50
+      }
+    },
+    "interpretation": "Six supplemental seed-0 runs: H2/L1/M1 and H4/L2/M3 for each high_alpha in {2.5,3.0,3.5}. All model, optimizer, data, evaluation and checkpoint settings match the parent v1 campaign. Training and inference use predicted mean commands; only value loss updates goal_rep; low loss backpropagates through commands to the planner. low_alpha remains 3. No adjacent-difference weighting, supervision changes or horizon changes. Run on physical GPU 1 with two concurrent workers only after every parent run completes successfully. This is a separate campaign; do not modify the parent frozen specification.",
+    "methods": {
+      "hrm_beta25_h2l1_m1": {
+        "agent": "navigation",
+        "overrides": {
+          "high_alpha": 2.5,
+          "num_subgoals": 1,
+          "planner_h_cycles": 2,
+          "planner_l_cycles": 1
+        },
+        "seeds": [
+          0
+        ]
+      },
+      "hrm_beta25_h4l2_m3": {
+        "agent": "navigation",
+        "overrides": {
+          "high_alpha": 2.5,
+          "num_subgoals": 3,
+          "planner_h_cycles": 4,
+          "planner_l_cycles": 2
+        },
+        "seeds": [
+          0
+        ]
+      },
+      "hrm_beta30_h2l1_m1": {
+        "agent": "navigation",
+        "overrides": {
+          "high_alpha": 3.0,
+          "num_subgoals": 1,
+          "planner_h_cycles": 2,
+          "planner_l_cycles": 1
+        },
+        "seeds": [
+          0
+        ]
+      },
+      "hrm_beta30_h4l2_m3": {
+        "agent": "navigation",
+        "overrides": {
+          "high_alpha": 3.0,
+          "num_subgoals": 3,
+          "planner_h_cycles": 4,
+          "planner_l_cycles": 2
+        },
+        "seeds": [
+          0
+        ]
+      },
+      "hrm_beta35_h2l1_m1": {
+        "agent": "navigation",
+        "overrides": {
+          "high_alpha": 3.5,
+          "num_subgoals": 1,
+          "planner_h_cycles": 2,
+          "planner_l_cycles": 1
+        },
+        "seeds": [
+          0
+        ]
+      },
+      "hrm_beta35_h4l2_m3": {
+        "agent": "navigation",
+        "overrides": {
+          "high_alpha": 3.5,
+          "num_subgoals": 3,
+          "planner_h_cycles": 4,
+          "planner_l_cycles": 2
+        },
+        "seeds": [
+          0
+        ]
+      }
+    },
+    "metric": {
+      "column": "evaluation/overall_success",
+      "steps": [
+        800000,
+        900000,
+        1000000
+      ]
+    },
+    "protocol": {
+      "eval_episodes": 50,
+      "eval_interval": 100000,
+      "eval_on_cpu": 1,
+      "eval_temperature": 0,
+      "fixed_validation_batch": true,
+      "log_interval": 5000,
+      "require_deterministic_gpu": true,
+      "save_interval": 1000000,
+      "save_steps": [
+        800000,
+        900000,
+        1000000
+      ],
+      "train_steps": 1000000,
+      "video_episodes": 0
+    },
+    "question": "After the beta 0.5/1.0/2.0 campaign finishes, extend the same predicted-command/value-only-encoder experiment to high beta 2.5/3.0/3.5.",
+    "study_id": "joint_planner_v1_antmaze_giant_predicted_value_only_beta25_30_35_seed0"
+  }
+}

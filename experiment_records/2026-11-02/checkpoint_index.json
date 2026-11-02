@@ -1,0 +1,578 @@
+[
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l1_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59535925,
+    "sha256": "ca7f2522a1acd21be79ce2564362c1507cc29034a043fe99a8f088e5e0fb3727"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l1_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59535925,
+    "sha256": "7ceeb88dda955fad0e82df42603472a08bd1ce5a39812a8ca57f940e5c808ac6"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l1_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59535925,
+    "sha256": "d62897bb0d0b3238463186e27b3ed64c2a80e1a2cc27d6c70785f99f2ad59447"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l1_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545405,
+    "sha256": "b255c21046843642060b3fc0dc225f63b7d525db9e650d995c2e47e01034eeed"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l1_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545405,
+    "sha256": "cf5df2228e38b4811c1448f8603ed7d18b848c399c61f2ee69f0c20e76b23b7a"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l1_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545405,
+    "sha256": "db0194e2cb986c0952e1862aaa37ab1084c176645b28170b12e48ac25611b225"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l2_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59535925,
+    "sha256": "5258ecac3d787514b4ded816b72f16c833f31af2e01e2d598c5ed8d7a7db8b09"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l2_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59535925,
+    "sha256": "66163c2656ebbd43675ace3d3ef68018ddba009182d871b7e389e48ed7e96ab0"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l2_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59535925,
+    "sha256": "451bf71df07102da8b0a9bf347eb9da6044b1a9d68e808f7ccd02354586430dc"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l2_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545405,
+    "sha256": "4c77bf0608376d9038c2fb54ac5b683353653e204f339d8ff4dbe072e1809305"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l2_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545405,
+    "sha256": "ed9fe31bf266d8b7be3b5d29e666f62f52ec226cab61c6177af65a08cf4f1439"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h1l2_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545405,
+    "sha256": "bbaef74ccd2e04c5f38732189e474554dab67bd4ae5d739bc059d878ec9d5d0a"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l1_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59535925,
+    "sha256": "0e2ebaf7cb5fcb5375c7bba296b2f57b1b221737a5b75d651ab9c9394cb2064e"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l1_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59535925,
+    "sha256": "b200c4413ea3bc5592ebb95fab642b4df636fba2ebc736ec8af50e293205800b"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l1_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59535925,
+    "sha256": "2c354b3c97b01f0de9a40bad5b896dc5443c7fabfad3391f4f38eee71f399f90"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l1_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545405,
+    "sha256": "87a730e84bcc10c86fce1aa5f350e2753dd11219bba378394e6ae96ebf1e7c0f"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l1_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545405,
+    "sha256": "0742af162bf87926e4a3f81090c947e4b74fb791659ef52e7e102b7bb7a02d55"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l1_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545405,
+    "sha256": "0bb292a43975022d7934069d48f7ed4da28ca09548fa9f3b02e541223b5ed64b"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l2_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59535925,
+    "sha256": "bc568821de9cce168600ac08270cd12e01211267927882d0c2f4b3b53b763b16"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l2_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59535925,
+    "sha256": "ce8746635322820a48e6015f1cba2d59340e28d1a7db51f61817f8c51f8f8e53"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l2_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59535925,
+    "sha256": "99a81bb4015620f1dc929f4469b2db29610557861cd25e36c1c86b5a0eda141c"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l2_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545405,
+    "sha256": "cfe64fc51d9c1a2e9bb79eee0941dd8c641494f6ca51cd91edfa504bec2c003b"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l2_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545405,
+    "sha256": "15f7387513ab8613021b90b638828e5d33a010d121a893a9c38f923c73534adf"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h2l2_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545405,
+    "sha256": "ae1d7cb93c0a738ed983cd290658732be2f7ed94c74a1cfbbcdf3ce16ed40fcd"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l1_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59535925,
+    "sha256": "8da9402c120bde693ffbcd97fd012614ef17d8bf4068321f4f82931c380cee11"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l1_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59535925,
+    "sha256": "86afc4843d744ceda29d2f68a9d8adea5ec417a2d9233c8cae7f8d959790be50"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l1_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59535925,
+    "sha256": "0af8125e5a91a9a81612b9ba780f59bae8ed06caa7ab2305d52e165e62f3b47f"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l1_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545405,
+    "sha256": "81487b67145a63198b4802b85c252906a5ae805ff4037b12d37dd4fba7533cfb"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l1_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545405,
+    "sha256": "20bc55c892c3ca98fa14c40f824d66552036384ca29fe0a9714775fd8f367f02"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l1_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545405,
+    "sha256": "9c1f98dbeec431099e9e1406442f1cbef06ff90e20abae5782e580151f279eac"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l2_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59535925,
+    "sha256": "d76affabfdfb03e6571781c08aed99f940a4bd806c7d84ca7bfed47e9927c9e6"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l2_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59535925,
+    "sha256": "74b8cbada27cf147b57d5bcd46f44cfdd7f96079e4ce376d9c742379c2b2474f"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l2_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59535925,
+    "sha256": "d689c3b4b2de696d8db66380b258d08e8d0791a3d4f8ee5877f4971a78f22cf5"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l2_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545405,
+    "sha256": "abe39075222c9d0aa5ee7df62f71e0f5fd475ce6c3b56cfa2071f9c47a4783d4"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l2_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545405,
+    "sha256": "02868735df55491ea699397ce05e357998de593567ddc333ac75704fd19919b6"
+  },
+  {
+    "campaign": "v0_grid",
+    "method": "hrm_h4l2_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545405,
+    "sha256": "f712be15534c51c1f47987add67f15087472ae406185e9229c25cb91bec62132"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta05_h2l1_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59536001,
+    "sha256": "cbacc31a334dd8141e277d8b976c86cf6d95ef5d283180f3bedb55548219f740"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta05_h2l1_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59536001,
+    "sha256": "aeb6b7ffdcba5ca86080488714b1f73b7411e6ae50e0ece42925edd9e7ebf258"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta05_h2l1_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59536001,
+    "sha256": "82516d23f2a3ecbbc6617eb843ab15cee8fad44640378d90c95bb142716dca35"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta05_h4l2_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545481,
+    "sha256": "e1cfd0d3a7b78abd7cbd0552e329a017cd9ebe2bb57474d5185c31f3ca0d804b"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta05_h4l2_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545481,
+    "sha256": "849f023a13682e7a9ceb2307143371c846f586269cdc8abb8591384260daaf4a"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta05_h4l2_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545481,
+    "sha256": "605611f7a9a22c9663581813141d7c8575f73cd30e8392b8604b02ee724fdb1c"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta10_h2l1_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59536001,
+    "sha256": "d536327ca4516f95499f49399a009b39d49f16af6ac411a36498e844e9f55079"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta10_h2l1_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59536001,
+    "sha256": "f03276286a9b26c8bf04eb8446460c60151591f980827e78e833c60c30c22e86"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta10_h2l1_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59536001,
+    "sha256": "5680791d14737e0b83562b40ef6d0f3dc67bf4a6c1aac5920f56d275a2a7c9b8"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta10_h4l2_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545481,
+    "sha256": "46a14ef1a54cd0a73ed6e00ca81653917385bff877858f340cd53dc7c220d9be"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta10_h4l2_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545481,
+    "sha256": "30b750034a433c9ae4afb7c374a6fcc5b16c2b76291421adda386c5fb870498f"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta10_h4l2_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545481,
+    "sha256": "51e214c52fafb9f96734665cb507b336907499cc73a6f09effa17f1a7096fe20"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta20_h2l1_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59536001,
+    "sha256": "493588a77e44dbf7f3984baa8084043625d5401f1efac8b32dfbabcec7d6f02b"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta20_h2l1_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59536001,
+    "sha256": "15560b6fa69b20416ceba4149910eb242a955d4d5b8a7820c8e2a60bb830b4f2"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta20_h2l1_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59536001,
+    "sha256": "5f82453dfee2ac85eb41af6e5aa402f2478b009f935dc75c7bb7cda55cb47f36"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta20_h4l2_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545481,
+    "sha256": "290f5b0b38d1c808e5481415fd552d098fb2112bc282c63602f5989c9b1f83b0"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta20_h4l2_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545481,
+    "sha256": "2d7d865d1c98656680757419e056c8b0a89f276d2c7423483f9e627e4904adc2"
+  },
+  {
+    "campaign": "v1_beta05_10_20",
+    "method": "hrm_beta20_h4l2_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545481,
+    "sha256": "2538552a2a2e9f138bfe5cff4772d5905b2de8bfa6d2f116a6c0167c350f2016"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta25_h2l1_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59536001,
+    "sha256": "223725651debaf19f9bc334f9c69f6025fdba62bea3f37ec858629a8d02d009d"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta25_h2l1_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59536001,
+    "sha256": "41e1a52c760b5a898bc3f8062910bb97d6687cbd8569beca1cd5753faa89a811"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta25_h2l1_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59536001,
+    "sha256": "4d6803773bd9bbad704551de36aa002d6f99fb1b88555c0e4c2e751dfbeecafe"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta25_h4l2_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545481,
+    "sha256": "f4c586f12d75cc813ab4bad1d45e1208d7e93e3bd01f4431061bc2a28fca8b6b"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta25_h4l2_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545481,
+    "sha256": "f7d32c2ca6521df45a7ee98bcd1bd3f2c1e7f7561638cbe4b1fdcc8bdec12294"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta25_h4l2_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545481,
+    "sha256": "2e293b9c79a22d0a7f36f5c4479002eb61c4d62d6cea11ebe5a03dc50e13a941"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta30_h2l1_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59536001,
+    "sha256": "b4b49471c8d4d6ecf91f3955d253401171c10f3946d8eb56400efb15a30a3f52"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta30_h2l1_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59536001,
+    "sha256": "13c17edab1681dcfe72a8be593b40b2acafb9ed18623b7abe4c8d3d33879cd8f"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta30_h2l1_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59536001,
+    "sha256": "f351102db0f51239a68d1e9ae35a3aacc71cb9c7b3cfd2270a45d8e73f7b115d"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta30_h4l2_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545481,
+    "sha256": "ed22d285bc2e259597d92b0b6ec2b95a93769dcd70967f7cbd3f2ee757214eba"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta30_h4l2_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545481,
+    "sha256": "a05b5b029612aae1263098f6de6dbb354eb410275ae9257873494481b7213763"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta30_h4l2_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545481,
+    "sha256": "9e1e44dfc8d82fb0c1d0229852c0656aa608c7df47369709ac056a574ebafc4e"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta35_h2l1_m1",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59536001,
+    "sha256": "74132337760875b08c6bc511eb7674387d1acb215b2ee7e88d8b9d14e41ca260"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta35_h2l1_m1",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59536001,
+    "sha256": "70afa4ea6450d257f04603a834d70644a8bd0b1c313f03ae868eb05a00d38459"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta35_h2l1_m1",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59536001,
+    "sha256": "27795ae7ac1f2a7a57d89f6527231284d40648544ff452186096074e0686acd9"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta35_h4l2_m3",
+    "step": 800000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_800000.pkl",
+    "bytes": 59545481,
+    "sha256": "2fd7155cc25d9cd097594ae76d9faccf3a001d14d5c39957cce5cb37b15b15ad"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta35_h4l2_m3",
+    "step": 900000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_900000.pkl",
+    "bytes": 59545481,
+    "sha256": "70e915a7930728533812b21a167a36d6ca3b32f99a921a3370afa57d50c92424"
+  },
+  {
+    "campaign": "v1_beta25_30_35",
+    "method": "hrm_beta35_h4l2_m3",
+    "step": 1000000,
+    "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl",
+    "bytes": 59545481,
+    "sha256": "b838432b8aa1310bd9338574072a8d2abb273b1125d6bde0af2296183a2bac38"
+  }
+]

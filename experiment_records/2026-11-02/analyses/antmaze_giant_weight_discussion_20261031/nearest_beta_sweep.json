@@ -1,0 +1,32 @@
+[
+  {
+    "beta": 3.0,
+    "cap_fraction": 0.53515625,
+    "ess_fraction": 0.5732511553968737,
+    "mean_weight": 55.97749810485406
+  },
+  {
+    "beta": 1.0,
+    "cap_fraction": 0.3759765625,
+    "ess_fraction": 0.4501316263856342,
+    "mean_weight": 42.14738687387294
+  },
+  {
+    "beta": 0.3,
+    "cap_fraction": 0.13525390625,
+    "ess_fraction": 0.2480769807234528,
+    "mean_weight": 20.01951342915516
+  },
+  {
+    "beta": 0.1,
+    "cap_fraction": 0.0,
+    "ess_fraction": 0.3087650880988115,
+    "mean_weight": 2.6665066956290358
+  },
+  {
+    "beta": 0.03,
+    "cap_fraction": 0.0,
+    "ess_fraction": 0.9097947568226602,
+    "mean_weight": 1.193701114602693
+  }
+]

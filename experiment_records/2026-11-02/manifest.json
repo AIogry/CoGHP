@@ -1,0 +1,38 @@
+{
+  "created_at": "2026-11-02T23:06:31.757619+08:00",
+  "campaigns": [
+    {
+      "alias": "v0_grid",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029",
+      "source_signature": "bae29f550ea14a5ab516164ed3dbd321c4b06f85a90e9c3b7e354e3071a678e3",
+      "git_base": "f412163ceb57a1a7d355424a0bcadb5e811e4376",
+      "source_files": 170
+    },
+    {
+      "alias": "v1_beta05_10_20",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031",
+      "source_signature": "f94d946fad012955571648dbe0f813b4529ca62abff1988fca37c6bd95379718",
+      "git_base": "6cb0ec59054509d681cd02639850d4d4f5568715",
+      "source_files": 178
+    },
+    {
+      "alias": "v1_beta25_30_35",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031",
+      "source_signature": "0b2c531bdcd5154003a618b816876743578160d569819d2fc5649ec7a5ceff0b",
+      "git_base": "6cb0ec59054509d681cd02639850d4d4f5568715",
+      "source_files": 181
+    }
+  ],
+  "runs": 24,
+  "checkpoint_count": 72,
+  "checkpoint_bytes": 4286930616,
+  "checkpoint_storage": "Binary checkpoints and raw datasets remain at their original /data paths; this Git archive contains their provenance and checksum indexes, not the binaries.",
+  "source_archive": {
+    "path": "frozen_source_blobs.tar.gz",
+    "sha256": "91074a0a51feb322c3b4527d65098b99b3eb58df6cf7566711a0acc4ca8cdf01",
+    "bytes": 9304737,
+    "unique_blobs": 182,
+    "restore": "Read campaigns/<alias>/campaign.json source.files; each value h maps to archive member blobs/h. Copy each blob to its corresponding relative path and restore permissions from source_modes.json."
+  },
+  "analysis_note": "Historical analysis snapshots are preserved with their original capture dates; they may describe partial results. scores.json contains the verified complete results for all 24 runs."
+}

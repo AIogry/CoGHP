@@ -1,0 +1,7 @@
+{
+  "time": "2026-10-30T10:48:55.924674+08:00",
+  "campaign": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029",
+  "source_signature": "bae29f550ea14a5ab516164ed3dbd321c4b06f85a90e9c3b7e354e3071a678e3",
+  "source_hashes_verified": true,
+  "note": "Logs captured once per file; active runs may advance after this snapshot. Incomplete trailing CSV rows are excluded."
+}

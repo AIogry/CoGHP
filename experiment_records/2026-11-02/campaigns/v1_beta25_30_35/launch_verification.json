@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-10-31T18:23:33.793083+08:00",
+  "status": "started_and_verified",
+  "active": [
+    {
+      "method": "hrm_beta25_h2l1_m1",
+      "pid": 837014,
+      "physical_gpu": "1",
+      "latest_logged_step": 25000,
+      "metrics_finite": true
+    },
+    {
+      "method": "hrm_beta25_h4l2_m3",
+      "pid": 837009,
+      "physical_gpu": "1",
+      "latest_logged_step": 15000,
+      "metrics_finite": true
+    }
+  ],
+  "pending_runs": 4,
+  "automation_id": "coghp-beta",
+  "automation_status": "PAUSED"
+}

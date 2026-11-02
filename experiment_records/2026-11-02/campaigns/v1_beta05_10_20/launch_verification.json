@@ -1,0 +1,29 @@
+{
+  "checked_at": "2026-10-31T11:06:11.893801+08:00",
+  "source_signature": "f94d946fad012955571648dbe0f813b4529ca62abff1988fca37c6bd95379718",
+  "total_scheduled_runs": 6,
+  "active": [
+    {
+      "method": "hrm_beta05_h2l1_m1",
+      "pid": 725850,
+      "physical_gpu": "1",
+      "latest_logged_step": 20000,
+      "metrics_finite": true,
+      "high_alpha": 0.5,
+      "M": 1
+    },
+    {
+      "method": "hrm_beta05_h4l2_m3",
+      "pid": 725845,
+      "physical_gpu": "1",
+      "latest_logged_step": 10000,
+      "metrics_finite": true,
+      "high_alpha": 0.5,
+      "M": 3
+    }
+  ],
+  "pending_runs": 4,
+  "preflight_tests_passed": 84,
+  "smoke_completed": true,
+  "note": "Status snapshot at launch verification; training continues independently. Only README queue wording was clarified in the development tree after freezing."
+}

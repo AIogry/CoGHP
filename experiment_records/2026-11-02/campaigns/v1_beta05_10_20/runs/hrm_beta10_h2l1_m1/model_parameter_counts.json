@@ -1,0 +1,10 @@
+{
+  "by_group": {
+    "modules_goal_rep": 624256,
+    "modules_value": 1219586,
+    "modules_target_value": 1219586,
+    "modules_actor_mixer": 1896284
+  },
+  "total_stored_parameters": 4959712,
+  "note": "Includes target copies and any inactive legacy modules; not an active-compute count."
+}

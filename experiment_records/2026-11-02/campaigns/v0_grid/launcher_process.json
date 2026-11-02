@@ -1,0 +1,19 @@
+{
+  "pid": 3136901,
+  "started_at": "2026-10-29T12:35:07.522435+00:00",
+  "command": [
+    "/home/eai/Tools/miniforge3/envs/brain_nav/bin/python",
+    "-u",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/source/scripts/run_study.py",
+    "--run-root",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029",
+    "--gpus",
+    "1",
+    "--workers-per-gpu",
+    "2",
+    "--wandb-mode",
+    "offline",
+    "--execute"
+  ],
+  "stdout": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/launcher.log"
+}

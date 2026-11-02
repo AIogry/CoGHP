@@ -1,0 +1,25 @@
+Creating navigation agent
+Restored from /data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl
+{"method": "hrm_h1l1_m1", "task": 1, "success_count": 4, "count": 8, "mean_best_distance_cells": 6.375, "mean_final_distance_cells": 6.375}
+{"method": "hrm_h1l1_m1", "task": 5, "success_count": 8, "count": 8, "mean_best_distance_cells": 0.0, "mean_final_distance_cells": 0.0}
+Creating navigation agent
+Restored from /data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl
+{"method": "hrm_h2l1_m1", "task": 1, "success_count": 1, "count": 8, "mean_best_distance_cells": 12.625, "mean_final_distance_cells": 13.0}
+{"method": "hrm_h2l1_m1", "task": 5, "success_count": 7, "count": 8, "mean_best_distance_cells": 1.375, "mean_final_distance_cells": 1.625}
+Creating navigation agent
+Restored from /data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl
+{"method": "hrm_h4l1_m1", "task": 1, "success_count": 2, "count": 8, "mean_best_distance_cells": 9.875, "mean_final_distance_cells": 10.0}
+{"method": "hrm_h4l1_m1", "task": 5, "success_count": 2, "count": 8, "mean_best_distance_cells": 10.25, "mean_final_distance_cells": 11.5}
+Creating navigation agent
+Restored from /data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl
+{"method": "hrm_h4l1_m3", "task": 1, "success_count": 1, "count": 8, "mean_best_distance_cells": 3.0, "mean_final_distance_cells": 3.25}
+{"method": "hrm_h4l1_m3", "task": 5, "success_count": 3, "count": 8, "mean_best_distance_cells": 9.375, "mean_final_distance_cells": 9.875}
+Creating navigation agent
+Restored from /data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl
+{"method": "hrm_h4l2_m1", "task": 1, "success_count": 0, "count": 8, "mean_best_distance_cells": 16.0, "mean_final_distance_cells": 16.75}
+{"method": "hrm_h4l2_m1", "task": 5, "success_count": 4, "count": 8, "mean_best_distance_cells": 7.875, "mean_final_distance_cells": 7.875}
+Creating navigation agent
+Restored from /data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl
+{"method": "hrm_h4l2_m3", "task": 1, "success_count": 3, "count": 8, "mean_best_distance_cells": 3.5, "mean_final_distance_cells": 3.875}
+{"method": "hrm_h4l2_m3", "task": 5, "success_count": 4, "count": 8, "mean_best_distance_cells": 3.125, "mean_final_distance_cells": 3.875}
+Saved task paths: /home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/official_task_paths.json

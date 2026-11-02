@@ -222,6 +222,48 @@ not update model parameters. Run each with `--help` for its inputs and output
 directory contract. Generated analysis outputs under `impls/exp/`, datasets,
 and checkpoints are separate from the versioned implementation.
 
+### Predicted-command and value-only encoder experiment (v1)
+
+`configs/joint_planner_v1_antmaze_giant.json` defines six seed-0 runs on
+AntMaze-Giant: the best v0 configuration for each plan length, **H2/L1/M1**
+and **H4/L2/M3**, each with high-actor AWR beta (`high_alpha`) **0.5, 1.0,
+2.0**. `low_alpha` remains 3. These are two bundled changes relative to v0:
+
+- Executor training and inference both use the planner's predicted **mean**
+  commands (`train_action_chain_source=predicted`, `planner_command_mode=mean`).
+  Low actor loss differentiates through those commands into the planner.
+- Only value loss updates the target encoder `goal_rep`
+  (`actor_goal_rep_grad=false`); high and low actor inputs retain its encoded
+  information but stop their gradients at that encoder's outputs.
+
+Offline action labels and low-actor AWR remain based on dataset transitions.
+The high objective retains cumulative, per-waypoint AWR, final-only supervision
+and full BPTT; there is no adjacent-difference weighting or intermediate/deep
+supervision. All other v0 settings remain unchanged: external K=1, Delta=50,
+latent width 128, Mixer width 32, 1M updates, evaluation every 100k with 50
+episodes for each of all five tasks, and the primary 800k/900k/1M score.
+`agents/navigation.py:joint_planner_v1` supplies the corresponding model profile;
+the study JSON explicitly specifies the settings for the native entry point.
+The distinct protocol identifier is `joint_planner_v1_predicted_value_only`.
+
+Use a new output directory and physical GPU 1 with two concurrent workers:
+
+```bash
+PYTHON=/home/eai/Tools/miniforge3/envs/brain_nav/bin/python
+RUN_ROOT=/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_new
+"$PYTHON" scripts/run_study.py --study configs/joint_planner_v1_antmaze_giant.json \
+  --run-root "$RUN_ROOT" --gpus 1 --workers-per-gpu 2 --wandb-mode offline --dry-run
+# Replace --dry-run with --execute to start the campaign.
+```
+
+Method names sort by beta with M1/M3 queued consecutively. The beta=0.5 pair
+starts concurrently; later jobs start whenever a worker becomes free, without
+a synchronization barrier between beta values. As with v0, logs/checkpoints live under
+`<run-root>/runs/<method>/antmaze-giant-navigate-v0/seed_000/attempt_000/`, while
+`<run-root>/source/` contains the frozen implementation. This single-seed study
+compares beta under the combined changes; it does not separate their individual
+effects.
+
 ### Earlier endpoint/deep-supervision pilot
 
 `agents/navigation.py:joint_planner_pilot` preserves the October 27 prototype:

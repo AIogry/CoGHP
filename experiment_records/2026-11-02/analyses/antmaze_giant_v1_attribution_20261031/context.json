@@ -1,0 +1,5 @@
+{
+  "v0_analysis": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030",
+  "v1_campaign": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031",
+  "scope": "Frozen-data diagnostic analysis; no training, stopping or schedule changes."
+}

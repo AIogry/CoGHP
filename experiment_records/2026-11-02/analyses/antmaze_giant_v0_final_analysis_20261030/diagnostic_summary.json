@@ -1,0 +1,847 @@
+{
+  "checkpoints": {
+    "hrm_h1l1_m1": {
+      "near_mse": 0.11913506438334782,
+      "near_weighted_mse": 0.061550180055050904,
+      "near_error_to_constant_variance": 0.15016136029128566,
+      "target_rank": 19.83782631615305,
+      "predicted_rank": 19.161757570553032,
+      "near_to_far_unit_response_rms_ratio": null,
+      "near_cap_fraction": 0.53466796875,
+      "far_cap_fraction": 0.53466796875,
+      "coefficient_mass_share": [
+        1.0
+      ],
+      "near_geometric_sign_agreement": 0.890978468247479,
+      "far_geometric_sign_agreement": 0.890978468247479,
+      "near_distant_geometric_sign_agreement": 0.8297314996725605,
+      "backward_capped_fraction": 0.04280691692152972
+    },
+    "hrm_h1l1_m3": {
+      "near_mse": 0.10365941375494003,
+      "near_weighted_mse": 0.05106516042484368,
+      "near_error_to_constant_variance": 0.13238073792143723,
+      "target_rank": 16.746811108482316,
+      "predicted_rank": 16.47388353198326,
+      "near_to_far_unit_response_rms_ratio": 6.572093570914433,
+      "near_cap_fraction": 0.53955078125,
+      "far_cap_fraction": 0.6404622395833334,
+      "coefficient_mass_share": [
+        0.2820444765118357,
+        0.3369951500323021,
+        0.3809603734558623
+      ],
+      "near_geometric_sign_agreement": 0.8969746524938675,
+      "far_geometric_sign_agreement": 0.9227610982807287,
+      "near_distant_geometric_sign_agreement": 0.839554682383759,
+      "backward_capped_fraction": 0.05044500095984034
+    },
+    "hrm_h1l2_m1": {
+      "near_mse": 0.09378522386153539,
+      "near_weighted_mse": 0.04440802302356614,
+      "near_error_to_constant_variance": 0.10834629880430262,
+      "target_rank": 19.10302282916072,
+      "predicted_rank": 19.352907420552214,
+      "near_to_far_unit_response_rms_ratio": null,
+      "near_cap_fraction": 0.5408528645833334,
+      "far_cap_fraction": 0.5408528645833334,
+      "coefficient_mass_share": [
+        1.0
+      ],
+      "near_geometric_sign_agreement": 0.9005178522758245,
+      "far_geometric_sign_agreement": 0.9005178522758245,
+      "near_distant_geometric_sign_agreement": 0.8480681074001309,
+      "backward_capped_fraction": 0.05144923218561974
+    },
+    "hrm_h1l2_m3": {
+      "near_mse": 0.08671741932630539,
+      "near_weighted_mse": 0.0445745980999015,
+      "near_error_to_constant_variance": 0.10771065613351673,
+      "target_rank": 17.90489121766545,
+      "predicted_rank": 17.92507910516026,
+      "near_to_far_unit_response_rms_ratio": 10.95655275903151,
+      "near_cap_fraction": 0.5353190104166666,
+      "far_cap_fraction": 0.6389973958333334,
+      "coefficient_mass_share": [
+        0.2838152695280772,
+        0.3352350658354503,
+        0.3809496646364725
+      ],
+      "near_geometric_sign_agreement": 0.8773507767784138,
+      "far_geometric_sign_agreement": 0.9171157300487555,
+      "near_distant_geometric_sign_agreement": 0.8028814669286182,
+      "backward_capped_fraction": 0.06229944822633993
+    },
+    "hrm_h2l1_m1": {
+      "near_mse": 0.1023953805367152,
+      "near_weighted_mse": 0.050272622395273726,
+      "near_error_to_constant_variance": 0.11977233340808346,
+      "target_rank": 18.735533226181687,
+      "predicted_rank": 18.321987589291563,
+      "near_to_far_unit_response_rms_ratio": null,
+      "near_cap_fraction": 0.5358072916666666,
+      "far_cap_fraction": 0.5358072916666666,
+      "coefficient_mass_share": [
+        1.0
+      ],
+      "near_geometric_sign_agreement": 0.8994276369582993,
+      "far_geometric_sign_agreement": 0.8994276369582993,
+      "near_distant_geometric_sign_agreement": 0.8408644400785854,
+      "backward_capped_fraction": 0.05222174937644245
+    },
+    "hrm_h2l1_m3": {
+      "near_mse": 0.106325830022494,
+      "near_weighted_mse": 0.053329167762578435,
+      "near_error_to_constant_variance": 0.13446231034308906,
+      "target_rank": 18.96805834144459,
+      "predicted_rank": 18.713281489486903,
+      "near_to_far_unit_response_rms_ratio": 7.303266350417695,
+      "near_cap_fraction": 0.541015625,
+      "far_cap_fraction": 0.6324869791666666,
+      "coefficient_mass_share": [
+        0.2809939878440077,
+        0.33506336498714245,
+        0.38394264716884985
+      ],
+      "near_geometric_sign_agreement": 0.8937040065412919,
+      "far_geometric_sign_agreement": 0.9232743135745446,
+      "near_distant_geometric_sign_agreement": 0.825147347740668,
+      "backward_capped_fraction": 0.04895422057543178
+    },
+    "hrm_h2l2_m1": {
+      "near_mse": 0.08700095117092133,
+      "near_weighted_mse": 0.04021355866935635,
+      "near_error_to_constant_variance": 0.09986754466152133,
+      "target_rank": 20.943355566129775,
+      "predicted_rank": 21.237375862625154,
+      "near_to_far_unit_response_rms_ratio": null,
+      "near_cap_fraction": 0.5348307291666666,
+      "far_cap_fraction": 0.5348307291666666,
+      "coefficient_mass_share": [
+        1.0
+      ],
+      "near_geometric_sign_agreement": 0.8939765603706732,
+      "far_geometric_sign_agreement": 0.8939765603706732,
+      "near_distant_geometric_sign_agreement": 0.8415193189259987,
+      "backward_capped_fraction": 0.048288578570302394
+    },
+    "hrm_h2l2_m3": {
+      "near_mse": 0.10116409262021382,
+      "near_weighted_mse": 0.04897871198938178,
+      "near_error_to_constant_variance": 0.12662974073861574,
+      "target_rank": 18.4510946616501,
+      "predicted_rank": 18.246061966349973,
+      "near_to_far_unit_response_rms_ratio": 6.906605523950187,
+      "near_cap_fraction": 0.5390625,
+      "far_cap_fraction": 0.6398111979166666,
+      "coefficient_mass_share": [
+        0.2832256733036125,
+        0.3350794088776049,
+        0.38169491781878256
+      ],
+      "near_geometric_sign_agreement": 0.8912510220768601,
+      "far_geometric_sign_agreement": 0.9189119835771106,
+      "near_distant_geometric_sign_agreement": 0.825147347740668,
+      "backward_capped_fraction": 0.04923702815275347
+    },
+    "hrm_h4l1_m1": {
+      "near_mse": 0.0860514094432195,
+      "near_weighted_mse": 0.0450231080076118,
+      "near_error_to_constant_variance": 0.10348122443576548,
+      "target_rank": 24.011857319504706,
+      "predicted_rank": 24.825254026742655,
+      "near_to_far_unit_response_rms_ratio": null,
+      "near_cap_fraction": 0.52978515625,
+      "far_cap_fraction": 0.52978515625,
+      "coefficient_mass_share": [
+        1.0
+      ],
+      "near_geometric_sign_agreement": 0.8680839465794494,
+      "far_geometric_sign_agreement": 0.8680839465794494,
+      "near_distant_geometric_sign_agreement": 0.787819253438114,
+      "backward_capped_fraction": 0.06936173311148025
+    },
+    "hrm_h4l1_m3": {
+      "near_mse": 0.10167935738960902,
+      "near_weighted_mse": 0.051874296503859885,
+      "near_error_to_constant_variance": 0.12207726597221634,
+      "target_rank": 17.128409470815118,
+      "predicted_rank": 17.273605668499997,
+      "near_to_far_unit_response_rms_ratio": 7.040227565738065,
+      "near_cap_fraction": 0.5390625,
+      "far_cap_fraction": 0.6368815104166666,
+      "coefficient_mass_share": [
+        0.2817770834619802,
+        0.33602046643102507,
+        0.3822024501069948
+      ],
+      "near_geometric_sign_agreement": 0.886617606977378,
+      "far_geometric_sign_agreement": 0.9207082371054658,
+      "near_distant_geometric_sign_agreement": 0.8159790438768828,
+      "backward_capped_fraction": 0.057560812365261026
+    },
+    "hrm_h4l2_m1": {
+      "near_mse": 0.08696168661117554,
+      "near_weighted_mse": 0.04364402103420522,
+      "near_error_to_constant_variance": 0.10551065835367106,
+      "target_rank": 17.743210246243493,
+      "predicted_rank": 18.116781894915196,
+      "near_to_far_unit_response_rms_ratio": null,
+      "near_cap_fraction": 0.533203125,
+      "far_cap_fraction": 0.533203125,
+      "coefficient_mass_share": [
+        1.0
+      ],
+      "near_geometric_sign_agreement": 0.8800763150722267,
+      "far_geometric_sign_agreement": 0.8800763150722267,
+      "near_distant_geometric_sign_agreement": 0.8068107400130976,
+      "backward_capped_fraction": 0.061987157086209235
+    },
+    "hrm_h4l2_m3": {
+      "near_mse": 0.09371902793645859,
+      "near_weighted_mse": 0.047396567616617466,
+      "near_error_to_constant_variance": 0.11576984914954587,
+      "target_rank": 17.845683339964612,
+      "predicted_rank": 17.93792087784692,
+      "near_to_far_unit_response_rms_ratio": 9.67891418416291,
+      "near_cap_fraction": 0.5305989583333334,
+      "far_cap_fraction": 0.6311848958333334,
+      "coefficient_mass_share": [
+        0.2834770906127277,
+        0.33544376360087463,
+        0.38107914578639773
+      ],
+      "near_geometric_sign_agreement": 0.8934314527119106,
+      "far_geometric_sign_agreement": 0.9199384141647421,
+      "near_distant_geometric_sign_agreement": 0.8316961362148003,
+      "backward_capped_fraction": 0.05057007692186441
+    }
+  },
+  "local_interventions": {
+    "hrm_h1l1_m1": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 15,
+          "success_rate": 0.46875,
+          "success_at_50": 0.375,
+          "mean_final_distance": 3.191468853393375,
+          "mean_minimum_distance": 0.8150772533380578,
+          "mean_steps": 74.21875,
+          "action_saturation_fraction": 0.0147179371976471
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 28,
+          "success_rate": 0.875,
+          "success_at_50": 0.375,
+          "mean_final_distance": 0.7647546109507412,
+          "mean_minimum_distance": 0.5995509605807297,
+          "mean_steps": 59.8125,
+          "action_saturation_fraction": 0.012497897683028579
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 17,
+          "lost": 4
+        }
+      }
+    },
+    "hrm_h1l1_m3": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 15,
+          "success_rate": 0.46875,
+          "success_at_50": 0.3125,
+          "mean_final_distance": 3.539876485411098,
+          "mean_minimum_distance": 0.8551230695434242,
+          "mean_steps": 75.71875,
+          "action_saturation_fraction": 0.01102079340238903
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 28,
+          "success_rate": 0.875,
+          "success_at_50": 0.40625,
+          "mean_final_distance": 0.6502279076064303,
+          "mean_minimum_distance": 0.572998373179015,
+          "mean_steps": 58.5625,
+          "action_saturation_fraction": 0.01548666843023011
+        },
+        "corrected_near": {
+          "count": 32,
+          "success_count": 29,
+          "success_rate": 0.90625,
+          "success_at_50": 0.375,
+          "mean_final_distance": 0.54283564578495,
+          "mean_minimum_distance": 0.45778889796470446,
+          "mean_steps": 58.25,
+          "action_saturation_fraction": 0.017282156010997952
+        },
+        "corrected_far": {
+          "count": 32,
+          "success_count": 14,
+          "success_rate": 0.4375,
+          "success_at_50": 0.3125,
+          "mean_final_distance": 3.5541113375678,
+          "mean_minimum_distance": 0.9685930474372939,
+          "mean_steps": 75.625,
+          "action_saturation_fraction": 0.015037707131980065
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 15,
+          "lost": 2
+        },
+        "corrected_near": {
+          "rescued": 15,
+          "lost": 1
+        },
+        "corrected_far": {
+          "rescued": 5,
+          "lost": 6
+        }
+      }
+    },
+    "hrm_h1l2_m1": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 14,
+          "success_rate": 0.4375,
+          "success_at_50": 0.34375,
+          "mean_final_distance": 3.352572656527381,
+          "mean_minimum_distance": 0.9385201443549092,
+          "mean_steps": 76.4375,
+          "action_saturation_fraction": 0.013884292727144346
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 30,
+          "success_rate": 0.9375,
+          "success_at_50": 0.5625,
+          "mean_final_distance": 0.5902870273016763,
+          "mean_minimum_distance": 0.5129853558477402,
+          "mean_steps": 55.65625,
+          "action_saturation_fraction": 0.01262475509528977
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 16,
+          "lost": 0
+        }
+      }
+    },
+    "hrm_h1l2_m3": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 14,
+          "success_rate": 0.4375,
+          "success_at_50": 0.3125,
+          "mean_final_distance": 4.00108959986804,
+          "mean_minimum_distance": 0.8322386941571143,
+          "mean_steps": 76.5,
+          "action_saturation_fraction": 0.012703913866122532
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 30,
+          "success_rate": 0.9375,
+          "success_at_50": 0.40625,
+          "mean_final_distance": 0.5628527931455686,
+          "mean_minimum_distance": 0.43919605851679233,
+          "mean_steps": 57.4375,
+          "action_saturation_fraction": 0.011662507521267833
+        },
+        "corrected_near": {
+          "count": 32,
+          "success_count": 30,
+          "success_rate": 0.9375,
+          "success_at_50": 0.40625,
+          "mean_final_distance": 0.47798985257110965,
+          "mean_minimum_distance": 0.4433758634829493,
+          "mean_steps": 58.78125,
+          "action_saturation_fraction": 0.01270423593163434
+        },
+        "corrected_far": {
+          "count": 32,
+          "success_count": 11,
+          "success_rate": 0.34375,
+          "success_at_50": 0.28125,
+          "mean_final_distance": 4.067514223225903,
+          "mean_minimum_distance": 0.9930374437631388,
+          "mean_steps": 79.8125,
+          "action_saturation_fraction": 0.014274836347499223
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 17,
+          "lost": 1
+        },
+        "corrected_near": {
+          "rescued": 17,
+          "lost": 1
+        },
+        "corrected_far": {
+          "rescued": 3,
+          "lost": 6
+        }
+      }
+    },
+    "hrm_h2l1_m1": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 14,
+          "success_rate": 0.4375,
+          "success_at_50": 0.3125,
+          "mean_final_distance": 3.803682602310693,
+          "mean_minimum_distance": 0.7851478140866609,
+          "mean_steps": 75.5625,
+          "action_saturation_fraction": 0.015503869651065016
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 29,
+          "success_rate": 0.90625,
+          "success_at_50": 0.46875,
+          "mean_final_distance": 0.489421150537099,
+          "mean_minimum_distance": 0.4448689159697692,
+          "mean_steps": 59.09375,
+          "action_saturation_fraction": 0.014784476708352113
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 17,
+          "lost": 2
+        }
+      }
+    },
+    "hrm_h2l1_m3": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 13,
+          "success_rate": 0.40625,
+          "success_at_50": 0.3125,
+          "mean_final_distance": 4.062691281991665,
+          "mean_minimum_distance": 0.9098898921847389,
+          "mean_steps": 78.4375,
+          "action_saturation_fraction": 0.012289338073051319
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 31,
+          "success_rate": 0.96875,
+          "success_at_50": 0.53125,
+          "mean_final_distance": 0.5250868141643901,
+          "mean_minimum_distance": 0.5250868141643901,
+          "mean_steps": 53.03125,
+          "action_saturation_fraction": 0.015706495419637975
+        },
+        "corrected_near": {
+          "count": 32,
+          "success_count": 30,
+          "success_rate": 0.9375,
+          "success_at_50": 0.59375,
+          "mean_final_distance": 0.47234436497656807,
+          "mean_minimum_distance": 0.4453858965979837,
+          "mean_steps": 49.4375,
+          "action_saturation_fraction": 0.013726494085529325
+        },
+        "corrected_far": {
+          "count": 32,
+          "success_count": 15,
+          "success_rate": 0.46875,
+          "success_at_50": 0.28125,
+          "mean_final_distance": 3.3485709129746155,
+          "mean_minimum_distance": 0.8629813976636236,
+          "mean_steps": 75.96875,
+          "action_saturation_fraction": 0.014204586689558624
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 19,
+          "lost": 1
+        },
+        "corrected_near": {
+          "rescued": 18,
+          "lost": 1
+        },
+        "corrected_far": {
+          "rescued": 7,
+          "lost": 5
+        }
+      }
+    },
+    "hrm_h2l2_m1": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 13,
+          "success_rate": 0.40625,
+          "success_at_50": 0.3125,
+          "mean_final_distance": 3.959196621029631,
+          "mean_minimum_distance": 0.7487526897511207,
+          "mean_steps": 78.15625,
+          "action_saturation_fraction": 0.015304597066539428
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 29,
+          "success_rate": 0.90625,
+          "success_at_50": 0.5625,
+          "mean_final_distance": 0.6316843524629113,
+          "mean_minimum_distance": 0.5398154163690455,
+          "mean_steps": 54.125,
+          "action_saturation_fraction": 0.01329076061366729
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 17,
+          "lost": 1
+        }
+      }
+    },
+    "hrm_h2l2_m3": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 15,
+          "success_rate": 0.46875,
+          "success_at_50": 0.28125,
+          "mean_final_distance": 3.3413945461953944,
+          "mean_minimum_distance": 0.8785668336105038,
+          "mean_steps": 76.5625,
+          "action_saturation_fraction": 0.011393438140313464
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 31,
+          "success_rate": 0.96875,
+          "success_at_50": 0.59375,
+          "mean_final_distance": 0.5040600552096733,
+          "mean_minimum_distance": 0.4607321675642351,
+          "mean_steps": 53.53125,
+          "action_saturation_fraction": 0.011701917435935471
+        },
+        "corrected_near": {
+          "count": 32,
+          "success_count": 29,
+          "success_rate": 0.90625,
+          "success_at_50": 0.4375,
+          "mean_final_distance": 0.5270464099974899,
+          "mean_minimum_distance": 0.47447168859244426,
+          "mean_steps": 56.71875,
+          "action_saturation_fraction": 0.011973177195467246
+        },
+        "corrected_far": {
+          "count": 32,
+          "success_count": 17,
+          "success_rate": 0.53125,
+          "success_at_50": 0.3125,
+          "mean_final_distance": 2.3914886571037925,
+          "mean_minimum_distance": 0.872109496787786,
+          "mean_steps": 73.1875,
+          "action_saturation_fraction": 0.013460566621266221
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 16,
+          "lost": 0
+        },
+        "corrected_near": {
+          "rescued": 16,
+          "lost": 2
+        },
+        "corrected_far": {
+          "rescued": 5,
+          "lost": 3
+        }
+      }
+    },
+    "hrm_h4l1_m1": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 13,
+          "success_rate": 0.40625,
+          "success_at_50": 0.28125,
+          "mean_final_distance": 3.6630250289811803,
+          "mean_minimum_distance": 1.0520674751574868,
+          "mean_steps": 78.59375,
+          "action_saturation_fraction": 0.015678105635422775
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 26,
+          "success_rate": 0.8125,
+          "success_at_50": 0.53125,
+          "mean_final_distance": 0.9901500177333793,
+          "mean_minimum_distance": 0.5332338570097602,
+          "mean_steps": 59.28125,
+          "action_saturation_fraction": 0.014399556924954161
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 18,
+          "lost": 5
+        }
+      }
+    },
+    "hrm_h4l1_m3": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 14,
+          "success_rate": 0.4375,
+          "success_at_50": 0.28125,
+          "mean_final_distance": 4.0509680893705795,
+          "mean_minimum_distance": 0.9878342000748516,
+          "mean_steps": 76.125,
+          "action_saturation_fraction": 0.011588480040877345
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 30,
+          "success_rate": 0.9375,
+          "success_at_50": 0.34375,
+          "mean_final_distance": 0.4821517914171254,
+          "mean_minimum_distance": 0.4383296979347797,
+          "mean_steps": 58.3125,
+          "action_saturation_fraction": 0.015063315980339356
+        },
+        "corrected_near": {
+          "count": 32,
+          "success_count": 31,
+          "success_rate": 0.96875,
+          "success_at_50": 0.59375,
+          "mean_final_distance": 0.49281890146071006,
+          "mean_minimum_distance": 0.452007996336905,
+          "mean_steps": 54.375,
+          "action_saturation_fraction": 0.01435807610049897
+        },
+        "corrected_far": {
+          "count": 32,
+          "success_count": 18,
+          "success_rate": 0.5625,
+          "success_at_50": 0.46875,
+          "mean_final_distance": 2.7250717321945697,
+          "mean_minimum_distance": 0.7962826279442187,
+          "mean_steps": 67.9375,
+          "action_saturation_fraction": 0.012447269070149378
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 17,
+          "lost": 1
+        },
+        "corrected_near": {
+          "rescued": 18,
+          "lost": 1
+        },
+        "corrected_far": {
+          "rescued": 6,
+          "lost": 2
+        }
+      }
+    },
+    "hrm_h4l2_m1": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 16,
+          "success_rate": 0.5,
+          "success_at_50": 0.375,
+          "mean_final_distance": 3.6508443988070303,
+          "mean_minimum_distance": 0.7915481944614932,
+          "mean_steps": 74.03125,
+          "action_saturation_fraction": 0.012366713766061035
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 31,
+          "success_rate": 0.96875,
+          "success_at_50": 0.5625,
+          "mean_final_distance": 0.4533542822602201,
+          "mean_minimum_distance": 0.4442649343475814,
+          "mean_steps": 52.03125,
+          "action_saturation_fraction": 0.012428109278253708
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 16,
+          "lost": 1
+        }
+      }
+    },
+    "hrm_h4l2_m3": {
+      "summary": {
+        "predicted": {
+          "count": 32,
+          "success_count": 13,
+          "success_rate": 0.40625,
+          "success_at_50": 0.3125,
+          "mean_final_distance": 3.559309971859678,
+          "mean_minimum_distance": 0.8088058882977578,
+          "mean_steps": 77.375,
+          "action_saturation_fraction": 0.012465415603606339
+        },
+        "teacher": {
+          "count": 32,
+          "success_count": 32,
+          "success_rate": 1.0,
+          "success_at_50": 0.53125,
+          "mean_final_distance": 0.4360236827970645,
+          "mean_minimum_distance": 0.4360236827970645,
+          "mean_steps": 53.25,
+          "action_saturation_fraction": 0.011393940788660347
+        },
+        "corrected_near": {
+          "count": 32,
+          "success_count": 27,
+          "success_rate": 0.84375,
+          "success_at_50": 0.5,
+          "mean_final_distance": 0.7151366777687919,
+          "mean_minimum_distance": 0.6175704795308332,
+          "mean_steps": 57.9375,
+          "action_saturation_fraction": 0.016252716770730754
+        },
+        "corrected_far": {
+          "count": 32,
+          "success_count": 19,
+          "success_rate": 0.59375,
+          "success_at_50": 0.34375,
+          "mean_final_distance": 2.3089818032046483,
+          "mean_minimum_distance": 0.7496535758799112,
+          "mean_steps": 71.28125,
+          "action_saturation_fraction": 0.014756096061734766
+        }
+      },
+      "paired_changes": {
+        "teacher": {
+          "rescued": 19,
+          "lost": 0
+        },
+        "corrected_near": {
+          "rescued": 15,
+          "lost": 1
+        },
+        "corrected_far": {
+          "rescued": 12,
+          "lost": 6
+        }
+      }
+    }
+  },
+  "observations": "Descriptive seed-0 comparisons; no between-seed significance tests.",
+  "official_task_path_subset": {
+    "hrm_h1l1_m1": {
+      "1": {
+        "success_count": 4,
+        "count": 8,
+        "mean_best_distance_cells": 6.375,
+        "mean_final_distance_cells": 6.375
+      },
+      "5": {
+        "success_count": 8,
+        "count": 8,
+        "mean_best_distance_cells": 0.0,
+        "mean_final_distance_cells": 0.0
+      }
+    },
+    "hrm_h2l1_m1": {
+      "1": {
+        "success_count": 1,
+        "count": 8,
+        "mean_best_distance_cells": 12.625,
+        "mean_final_distance_cells": 13.0
+      },
+      "5": {
+        "success_count": 7,
+        "count": 8,
+        "mean_best_distance_cells": 1.375,
+        "mean_final_distance_cells": 1.625
+      }
+    },
+    "hrm_h4l1_m1": {
+      "1": {
+        "success_count": 2,
+        "count": 8,
+        "mean_best_distance_cells": 9.875,
+        "mean_final_distance_cells": 10.0
+      },
+      "5": {
+        "success_count": 2,
+        "count": 8,
+        "mean_best_distance_cells": 10.25,
+        "mean_final_distance_cells": 11.5
+      }
+    },
+    "hrm_h4l1_m3": {
+      "1": {
+        "success_count": 1,
+        "count": 8,
+        "mean_best_distance_cells": 3.0,
+        "mean_final_distance_cells": 3.25
+      },
+      "5": {
+        "success_count": 3,
+        "count": 8,
+        "mean_best_distance_cells": 9.375,
+        "mean_final_distance_cells": 9.875
+      }
+    },
+    "hrm_h4l2_m1": {
+      "1": {
+        "success_count": 0,
+        "count": 8,
+        "mean_best_distance_cells": 16.0,
+        "mean_final_distance_cells": 16.75
+      },
+      "5": {
+        "success_count": 4,
+        "count": 8,
+        "mean_best_distance_cells": 7.875,
+        "mean_final_distance_cells": 7.875
+      }
+    },
+    "hrm_h4l2_m3": {
+      "1": {
+        "success_count": 3,
+        "count": 8,
+        "mean_best_distance_cells": 3.5,
+        "mean_final_distance_cells": 3.875
+      },
+      "5": {
+        "success_count": 4,
+        "count": 8,
+        "mean_best_distance_cells": 3.125,
+        "mean_final_distance_cells": 3.875
+      }
+    }
+  },
+  "reproduction_check": {
+    "method": "hrm_h2l1_m1",
+    "task": 1,
+    "checkpoint": 1000000,
+    "success_count": 28,
+    "episodes": 50,
+    "replayed_success": 0.56,
+    "logged_success": 0.56,
+    "match": true
+  }
+}

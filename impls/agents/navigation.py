@@ -303,6 +303,10 @@ class NavigationAgent(flax.struct.PyTreeNode):
     def _create_core(cls, seed, ex_observations, ex_actions, config):
         if config["num_subgoals"] < 1:
             raise ValueError("Navigation requires num_subgoals >= 1.")
+        if not isinstance(config.get("actor_goal_rep_grad", True), bool):
+            raise ValueError("actor_goal_rep_grad must be a bool.")
+        if config.get("planner_command_mode", "sample") not in ("sample", "mean"):
+            raise ValueError("planner_command_mode must be sample or mean.")
         joint_objective = config.get("joint_plan_objective", "endpoint_deep")
         if joint_objective not in ("endpoint_deep", "waypoint_final"):
             raise ValueError("Unknown joint_plan_objective.")
@@ -484,6 +488,8 @@ class NavigationAgent(flax.struct.PyTreeNode):
             action_hrm_rope_theta=config.get("action_hrm_rope_theta", 10000.0),
             action_hrm_forward_dtype=config["action_hrm_forward_dtype"],
             train_action_chain_source=config["train_action_chain_source"],
+            planner_command_mode=config.get("planner_command_mode", "sample"),
+            actor_goal_rep_grad=config.get("actor_goal_rep_grad", True),
         )
         network_info = {
             "goal_rep": (
@@ -752,7 +758,11 @@ class NavigationAgent(flax.struct.PyTreeNode):
 
     def actor_loss(self, batch, grad_params, rng):
         if self.config.get("planner_generation", "autoregressive") == "joint":
-            commands = self.command_labels(batch, grad_params)
+            commands = (
+                self.command_labels(batch, grad_params)
+                if self.config["train_action_chain_source"] == "teacher"
+                else None
+            )
             final_only = (
                 self.config.get("joint_plan_objective", "endpoint_deep")
                 == "waypoint_final"
@@ -1196,6 +1206,13 @@ def get_legacy_navigation_config():
 
 def get_config(profile=None):
     """Native method defaults; historical profiles are explicit compatibility inputs."""
+    if profile == "joint_planner_v1":
+        config = get_config("joint_planner")
+        config.train_action_chain_source = "predicted"
+        config.planner_command_mode = "mean"
+        config.actor_goal_rep_grad = False
+        config.navigation_protocol = "joint_planner_v1_predicted_value_only"
+        return config
     if profile in ("joint_planner", "joint_planner_pilot"):
         config = get_config()
         config.planner_generation = "joint"
@@ -1234,6 +1251,7 @@ def get_config(profile=None):
             "action_hrm_norm_eps": 1e-06,
             "action_hrm_num_layers": 1,
             "actor_geom_sample": False,
+            "actor_goal_rep_grad": True,
             "actor_hidden_dims": (512, 512, 512),
             "actor_p_curgoal": 0.0,
             "actor_p_randomgoal": 0.0,
@@ -1279,6 +1297,7 @@ def get_config(profile=None):
             "p_aug": 0.0,
             "planner_block_type": "swiglu_rmsnorm",
             "planner_bptt": True,
+            "planner_command_mode": "sample",
             "planner_core_type": "matched_feedforward",
             "planner_generation": "autoregressive",
             "planner_refinement_steps": 1,

@@ -1,0 +1,17 @@
+{
+  "snapshot_time": "2026-10-31T17:34:53.609068+08:00",
+  "diagnostic_agents_updated": false,
+  "training_schedule_changed": false,
+  "completed_v1_models": 5,
+  "paired_offline_queries": 2048,
+  "probed_checkpoints": 21,
+  "local_rollouts": 448,
+  "gradient_batches": 20,
+  "code_sha256": {
+    "analyze_joint_planner_attribution.py": "5acfd993fee2c1f6494d740bf1fda04562c089f818f6940e35d2b21463f776ce",
+    "probe_joint_planner_attribution.py": "a2b71e0d3c8f95a225562b612ba9490ffe9b7bbc8b3f88cc924ac1827fb03ba7",
+    "audit_joint_planner_attribution_gradients.py": "847574e75943fd2c04773415971c532bac39cb05a7c0ff38cdd1078acbd54fab",
+    "probe_joint_planner_rollouts.py": "5d2c9c0853325fd0eac9ef4e2994da7a01a72f6103307b7bba8161fb55b64e90",
+    "analyze_joint_planner_v0.py": "7555b11928963276a862fa6f7e65c0afa905b18f6ff0c7a209df58cd6fba20c3"
+  }
+}

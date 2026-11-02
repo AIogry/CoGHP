@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-10-30T11:13:02.359344+08:00",
+  "campaign": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029",
+  "source_signature": "bae29f550ea14a5ab516164ed3dbd321c4b06f85a90e9c3b7e354e3071a678e3",
+  "original_snapshot_files_unchanged": true,
+  "verified_original_files": 84,
+  "counts": {
+    "completed_runs": 12,
+    "training_log_rows": 2400,
+    "evaluation_log_rows": 120,
+    "checkpoint_probes": 36,
+    "shared_offline_queries": 2048,
+    "local_rollout_episodes": 1152,
+    "official_task_subset_episodes": 96,
+    "reproduction_episodes": 50
+  },
+  "code_sha256": {
+    "analyze_joint_planner_v0.py": "7555b11928963276a862fa6f7e65c0afa905b18f6ff0c7a209df58cd6fba20c3",
+    "probe_joint_planner_checkpoints.py": "cfc7771bde75b4a6a3c998047602fcf5121656ab3adf22c557ec0f3bd57f9088",
+    "probe_joint_planner_rollouts.py": "5d2c9c0853325fd0eac9ef4e2994da7a01a72f6103307b7bba8161fb55b64e90",
+    "probe_joint_planner_task_paths.py": "42a8f58978bf959e6ddf44f51a42262c07075838f016be71535c3183162db8e7",
+    "summarize_joint_planner_diagnostics.py": "224701ac50c17eae8f80fdfcce22b4b026c703eeeff6d962aad4307a61c090d7"
+  },
+  "notes": [
+    "All diagnostics used frozen source and checkpoint metadata.",
+    "No parameters were updated and no training jobs were launched.",
+    "Original evaluation also requested CPU execution. One full 50-episode task replay matched the logged score.",
+    "Formal metrics remain the exact 800k/900k/1M means; diagnostic subsets do not replace them."
+  ],
+  "corrections_20261030": [
+    "Planner tokens are M+3, including one query not directly decoded.",
+    "Logged grad/norm is the sum of per-tensor L2 norms, not global flattened L2."
+  ]
+}

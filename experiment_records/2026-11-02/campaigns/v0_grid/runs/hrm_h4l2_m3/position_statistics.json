@@ -1,0 +1,12 @@
+{
+  "mean": [
+    24.527586438726583,
+    17.189863381626253
+  ],
+  "scale": [
+    14.898652238057617,
+    11.688295987887928
+  ],
+  "count": 1000500,
+  "rule": "population std of all training observations; floor=1e-6"
+}

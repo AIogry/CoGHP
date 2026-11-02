@@ -1,0 +1,10 @@
+{
+  "allowed_gpu_processes": {},
+  "launcher_pid": 3136901,
+  "max_concurrent_runs": 2,
+  "physical_gpus": [
+    "1"
+  ],
+  "started_at": "2026-10-29T12:35:08.330943+00:00",
+  "workers_per_gpu": 2
+}

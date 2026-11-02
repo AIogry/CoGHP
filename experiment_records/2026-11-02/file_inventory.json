@@ -1,0 +1,2347 @@
+{
+  "campaigns/v0_grid/campaign.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/campaign.json",
+    "sha256": "0f71484980925a1692980ebb4b4deef12f4c44db3fdbbd8d7f90915d390786de",
+    "bytes": 28114
+  },
+  "campaigns/v0_grid/results.txt": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/results.txt",
+    "sha256": "9fa1f368d905b8a29326d2257cf1962a693dce0838b5259e808e394ca871ad24",
+    "bytes": 1980
+  },
+  "campaigns/v0_grid/launcher_runtime.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/launcher_runtime.json",
+    "sha256": "3c44bbe7d21463d571f1a2417f0553152e7daab3538b344a918fb9e4beeefe65",
+    "bytes": 199
+  },
+  "campaigns/v0_grid/launcher_process.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/launcher_process.json",
+    "sha256": "42a3396c757d4d3ce6b97e2b42e91d4089444762502542339930343bfa36e8a5",
+    "bytes": 632
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "81aace11069e28bf3d8e7ba8ee7d6c721d19b90fa334ea85b45a21f47774a706",
+    "bytes": 5990
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "e1157fcbf6eb9cdbb886054c710b6263c04e81bcaa9a5899ff2689e108bf2c4f",
+    "bytes": 126556
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "667337cfb8a1faabcc65b757229e852fd5e39098bb95510b0093147c83a05f13",
+    "bytes": 596
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "46117f7bcb611657f0dcc0452c0e23e498f54ce2e5d045aed07e5af28cefb1da",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "93e8583c7d6bdd1cce6862c58d42451b620256462d3ad0edc80914960895cc8a",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "8cf82042e6ddf5c5e874231cdfb04244efcd8e2bfb89d2b5db6743765cc974e2",
+    "bytes": 6006
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "5bb5d7c9e0e113bf6d16b020087d0d57be64d1963244ab7fb3e26b1bd7c8e157",
+    "bytes": 166326
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "4a013eeaf0933ffd9a8a3126b2c5a092fb2b250b9393aefd117a7114ff16fe6a",
+    "bytes": 581
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "ba96973e5ebb532eb2f8071d13acac0d0cac3ca2c6f2b4d601b1ab7e8f360977",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "282c0b3d9f4dad7abc67fc1aac02468256d7de7e954436eadce58a709b6e49f7",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l1_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "71d7bda9757cab747d4cbb85d44c2a609ea126c41d2d8f2436734185c3298415",
+    "bytes": 5991
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "5b3c33d7e96a3410ebfbcd594bdd4d186bfe00d575e22aa5204c34c5bca8434b",
+    "bytes": 126108
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "034fc7a121c6ea52cf1a7acaaa88fca5135da2f10cd18746171b5f963d1d4435",
+    "bytes": 562
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "7d952d435dea019498f5e02ac7c1731b59d93d77aa2a81485e6bdac54776d409",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "b3f2471d82efe54a2f875ad0ac7f434e316212ad98c658a1f45d96e213929fc6",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "a12be39bce20df891eb7eec45f1ea9f1748cc7d08993328f9bd85683a641ceda",
+    "bytes": 6005
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "ec2d3c273e907f2b5c967201ca7489b87e3d1b16fa5ac70bb39bcee332e16862",
+    "bytes": 166520
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "17b673a9f36108a259860cd89245faa33acc854b1c195c61ad1e36e243351986",
+    "bytes": 539
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "2fadb35a865942c65e7fa46689baee5a5d20c475007004e18e83650b888ae107",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "47ed14158d005ab4ba03537acf125650382f8bc965cefcaf37db72b2764184e7",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h1l2_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h1l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "15653053b4e09b0bafa13dfacfed6c566b8745ce52012699793521940e610d5d",
+    "bytes": 6002
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "87b6115dc1785a009f9105829518ff047ac30a5b69c0ce84241f4e8268e78d70",
+    "bytes": 126354
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "9f751c94df8de034419a371aa953db8917e3274fd85d5f1ca948ece434863258",
+    "bytes": 557
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "4b379ac4572f43234f01f71c2fb7cd5d471420e2b911c32ce1ea7f60180c66b6",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "48bb6e6f073c92e6181faefec795c3c8424e3876bc6b42c65b743cb866b2d37f",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "6c5b3080c7fcfc9f7d53051e9e47d759b271727a418b89f6212d6039d70378ae",
+    "bytes": 5991
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "f7b98b4a7dd90ce4b9bc9537c2ae4889b293d4ce2017ab2ac097ca7f60a3a4b0",
+    "bytes": 166367
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "37eb9f93c06ca1b540a86711a53a74fbb3805659e5dc091cf9e62bf81f577394",
+    "bytes": 583
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "b8581f0353d203201413be6fd20aa012c83cf3eabf1714fbd76d24c79e4d02f7",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "ba4035305e72d88dcfc741cbf906c5011d4f926f395ba9035b14f0537291da81",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l1_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "35e47f80ba7c3d8fe4c83aa0c756fc55d7ad5ce47c5adc9239538249179a0aeb",
+    "bytes": 6017
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "24bb774061a820e23b7ce4f66b26eda9b10f05b3b0ff696de3f1114a04909931",
+    "bytes": 126474
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "bc3509802b18ecaa0cd2e21f3269c9ed7b6c4a4f4b73c224f507865a1d62c0fd",
+    "bytes": 597
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "d6dbfddc02c8db6b4c84934b052406b072a67e48c76c4862b0e8cc49ef15f8d1",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "d8a70b51bcfdd999cbbbd39a26cba19fde37061992715dddf4f9d7910050de4c",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "4376ad5fff4b943cb3524e75dd2508d13176430ee2530baf64b6d1b9d7634aec",
+    "bytes": 6015
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "6a97da35669cf538bfbae8eb3bbaa79e645d6fe88c869b771090ef25a313d832",
+    "bytes": 166331
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "ad91aa030eb1c1a101c056496d96e235565784f1126aa5b859c396a54eb6b8ca",
+    "bytes": 578
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "71e2e65cbe7d8f7197eba9d18db97f050d7797eadb0a6afddeffa597387a1c74",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "b85a41692910af7af6857f37f3e07c34c1a0110d2653de5e64c3b7452d4b32d9",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h2l2_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "5e45809fd9f631c1e2173cf4f2aae9dd2e3b7ed2d23fe0216d9c6195909c5bbc",
+    "bytes": 6030
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "4bf4ab5d872d40ac3acdfbe827796c52cdda1bbc380a7652cc5be0c374823f20",
+    "bytes": 126645
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "bf40b1b67f91bc2711bc28929571f2cbb41d741495b5ed36627195d5ba897245",
+    "bytes": 579
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "c189a3ec1820ec1218fb856922d034b92dccc4bb50aac402bc92c74abbbbcfa7",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "1181bf536eaa41aeacf1a017fc37083e5e4f9b61143c800369b962f4cd2cfc51",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "c66858487359e200e51a34f1d65939dcb2c2d10a8d6d1dbfe6375ca13eed4cf3",
+    "bytes": 6003
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "2ee5813ea81250b2a3760bf30f6e5c6d20cdddab57ffb1668b161273fae393be",
+    "bytes": 166235
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "8652c3abbd2d2be7b3864bf93f9c0d8612c5e4bfd6981e4f735ed6f7f846c6da",
+    "bytes": 580
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "9e833c275e91fcac6d1ddc2510c277fc8cff49a3a30d5855d815686a9687520e",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "00c5646abfad7ecb2c004bd147824f3c1ae911c616224cd908b901f455441b61",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l1_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "b5f5dc4a9b551e1e0abf5b89d6cd0ecd58941c8e2f2588befab97365d8ee7ebb",
+    "bytes": 6003
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "3b5e4fa691dcf972294a0bf04758f305ccad4ff76b5e493639cac73b4521f81f",
+    "bytes": 126535
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "da5511e829127dfe6626c70fd4f549cccece0b5de54fc52f96c5182c4db130fe",
+    "bytes": 558
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "144167fa21a4675da5051573b0e952ddcb434f90722ea0641428e275f569c1e8",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "8d9a119a8c12858b70e093866bfa720b9dd2b0587b11f527632d2ba93c4b2d92",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "ed4b549c795c4625d442a0f8c1eea852c3fb907b3674ef5dbff48bedb81a8ac5",
+    "bytes": 6016
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "c9d82a1f8ea6cbf1607e9889a25debc799a397069f4f88e861267b51d664e536",
+    "bytes": 166199
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "2c5be8a907ee22bb6be396145c7fb5378da1b5556823f46deaf4ba4409c6c1b2",
+    "bytes": 641
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "9b04d9450b876336b7db7373128050c6fe91ec9fffb715cf5a77295a971760c2",
+    "bytes": 4174
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "313b3e1beb4951f93e1ace5c44a25aac946297bed69f9b794c2a4df92f66b9f2",
+    "bytes": 2302
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v0_grid/runs/hrm_h4l2_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/campaign.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/campaign.json",
+    "sha256": "105f669471027bd0e4383b7bb4e0384512d878a4b0487beeee4842c507a5ec07",
+    "bytes": 28270
+  },
+  "campaigns/v1_beta05_10_20/results.txt": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/results.txt",
+    "sha256": "960a92bedb3cc1af8c726892c0cdc6e8a67f874c1507bc5c00d236cb2dea9ce6",
+    "bytes": 1129
+  },
+  "campaigns/v1_beta05_10_20/launcher_runtime.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/launcher_runtime.json",
+    "sha256": "3d8af88ee35993c41a4540127d5d97e40c371215b9601823e6cbf0af61d6258f",
+    "bytes": 198
+  },
+  "campaigns/v1_beta05_10_20/launcher_process.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/launcher_process.json",
+    "sha256": "08121c15879055ebcb0ab8bad42c934d2cc72e8dcfb695688985134900ceb3e0",
+    "bytes": 853
+  },
+  "campaigns/v1_beta05_10_20/launch_verification.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/launch_verification.json",
+    "sha256": "996ca8023e4adc092570d7999f4e2eb73f66db3e49570948d2d8317f9861d1d1",
+    "bytes": 843
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "5924b2751c68e914a53062e15c811b05a1dbb097dee9568b7faf6f5202b2ecbc",
+    "bytes": 6333
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "457f84eded7c1c907360ba60124cdb0c87608eab0c686c70950710cc24f11c27",
+    "bytes": 125749
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "79b9b3e9ea9585f337794b76694be5ae0b071c54fcf53c2885bda8f01781b87d",
+    "bytes": 511
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "225c2d8255267e41b6f7ea6b216d6d4d228e798c7ac254370d65d4d7184786e5",
+    "bytes": 4312
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "695ed7152bba95afb3ab7e7d508917795ba9b896f544f2736e54bcb601683a7a",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h2l1_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "4e305f767a1b0f07a02af4631ac50317b8c2d7d06e3f9a258a91f4fa370a4f76",
+    "bytes": 6303
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "54de05da558fb99e98eeb74c6688ee34ea0746c69e2c46fc75388debe4e9a1ac",
+    "bytes": 166134
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "fe74f4e2596d531663773d30c7ab4f55a30f84bd7969fd3f02261837f2de73b2",
+    "bytes": 568
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "b65f6649fd4751085b946c9e67180d4613af03a98956dfe3024cc86b8d264469",
+    "bytes": 4312
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "3a053111fe4bc975502f31cd48f4b58166eb13716deccfff112aeb5fcdff4fed",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta05_h4l2_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta05_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "d8c3025eddba3443901735321c861ebab04eac9ebb3b654d2d47ae10bf9d1984",
+    "bytes": 6316
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "bdc235c6c8f4cc130e5a16f8280ef6c80660c4df39cdd7808205059693bc395b",
+    "bytes": 126273
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "5929218beeb38acf9a342b0409a69007a90aa6eca74a0b9bdc80c566022668ad",
+    "bytes": 520
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "49cdda109bcf79ece23ae4e0010906ffca8c1ac24c9250bd92223bdf329a5b19",
+    "bytes": 4312
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "7e9e641e8b72fa3c1c4b5d8168707326569e8bcca909b51d2923514cd5fa741b",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h2l1_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "8ccf95d69ac71d9cffb3ac3d388dedb2636f63891950a715f28bc314628b486b",
+    "bytes": 6303
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "396cf20600593254f577bd3803675761b0398f0a138ab26c7ea048fb6f8b4277",
+    "bytes": 166114
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "0363d30951e390f8d9c3cdb6bfe5650b37a9f4301b62af388916322f9d9610bd",
+    "bytes": 547
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "f32f16fbb041722f70e6dc9f97c107f00ec4ba174b16d9f62af27784665b43a7",
+    "bytes": 4312
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "52156addb39f8c6ec00b1733bc44beb2e9324e2ea7f1403a053fbd8a460ab002",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta10_h4l2_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta10_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "cc99c94b4b6f281010c0f6fa9aabf1e76e1471640a1556715535d97aeb294795",
+    "bytes": 6331
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "4ee1d11d853c404b38a0785cf4da838df7be8f5f744882c0a5e1644cbad7042b",
+    "bytes": 126487
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "a0e58fb6c65d2e7f8935314a7000bddc44dc81140c28f3624fc0a796b8bf382e",
+    "bytes": 544
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "7a1ab82c2394da74cb48a6b3857616d24a4243746163a567062b9a22be8ec00e",
+    "bytes": 4312
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "3076ff590dac24896db82a8cc7dcb3255ce2b165194aa23bb23661d3f8cc0aec",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h2l1_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "331859d337fe48e43c3edf2b0b278a60b7ab47986fab2a5ad4e4a4dc2667b891",
+    "bytes": 6345
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "750ae517b1687ea3a18dc0495ab72cdeb59d21911b2e5757c0eb7d85b0d15698",
+    "bytes": 166192
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "221ca769bc7d1da46e22c9e22a130db85bbdf549af5c0c8052bde71c7b86856f",
+    "bytes": 566
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "6902074d47fd67c0460f4bf7c93c4ea0dd617b2c2814f4c52dcf519a41f9bba7",
+    "bytes": 4312
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "d70acd011a42a596befb90399353e2553d73aa373a55e6bb69f32b8358041a30",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta05_10_20/runs/hrm_beta20_h4l2_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031/runs/hrm_beta20_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/campaign.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/campaign.json",
+    "sha256": "5bdcde316ead4014cd3a9b7deb891b42363650289b0cd83abd5a2d1b8966e64d",
+    "bytes": 28277
+  },
+  "campaigns/v1_beta25_30_35/results.txt": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/results.txt",
+    "sha256": "e34f559e8d88ad2abd72900a42f9db04e67f289b2b5f468fea07a89095a81f77",
+    "bytes": 1136
+  },
+  "campaigns/v1_beta25_30_35/launcher_runtime.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/launcher_runtime.json",
+    "sha256": "c864ddc31cd0b7124d02141c53ea2420045bedea2d1e57f7ebe4c952bc2ba358",
+    "bytes": 198
+  },
+  "campaigns/v1_beta25_30_35/launcher_process.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/launcher_process.json",
+    "sha256": "4e15ae8c0edb06d3f2839ee1a3a20e305f4493dcfd09929e1074bba19afc2c4d",
+    "bytes": 935
+  },
+  "campaigns/v1_beta25_30_35/launch_verification.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/launch_verification.json",
+    "sha256": "b8b4d60d0e6d6efb40468ff37db147d489e064b1ce7a2999e1f456a24a456e3f",
+    "bytes": 522
+  },
+  "campaigns/v1_beta25_30_35/deferred_launch_request.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/deferred_launch_request.json",
+    "sha256": "c27e89777c7edfd75a54a0b256dd04f939a8224cad26747472e29d25a24b0669",
+    "bytes": 1347
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "13b2da16abe73bb3f0052df36fecb6104999085a00c4304557a1a11e54fb2d54",
+    "bytes": 6378
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "cdc1776574cd8ec7908d915c8cf3eb6286a833b3693473634fa5c2c79b954589",
+    "bytes": 126533
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "1cbc170b05156cfe03a9b9b3a6c88d7525af98524cf99f58f693d7c77c02ec04",
+    "bytes": 539
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "8f83da070074ded943a99442f47e376cff68bc80571e827e576a8f250a589a72",
+    "bytes": 4328
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "a45a5e251dfa1fcc9419902cc8f54c87c6bcaf61aab7c13713e484e85525aa2f",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h2l1_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "82e13eb16f6786e4d389919a1a2d6a1fddb299ffd98b9b11e522f45fab2ec056",
+    "bytes": 6377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "41bf99f02fa97d92f9e8b9d7f8ccf7899e0761c014e123f76e1b1c4114117913",
+    "bytes": 165980
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "1f8680ed9c35e25c9d4ac377356c10e43452e52d0c1be8537b7ee9fae2ff52a3",
+    "bytes": 592
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "2ae2df039b5c1a3c9db64a260ae675e71e36953aedeee2d881da427439e3df16",
+    "bytes": 4328
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "e760ac29320bd26e2c1a0d2eeecca1f21021236b2fc424f90edfcf5eb4a9ecc7",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta25_h4l2_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta25_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "9a73498b81d78d9ed7977c008fa984c6cbf2055bf5e8f9d60304189365c1f91e",
+    "bytes": 6365
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "3f1929881ea17e91930889d42ab59898617d3da7e6eea5e7dc9b3baf4d60b5af",
+    "bytes": 126434
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "10103aaa98bd501155d8e82257a0d3eb982515dbc4df3b72c7897bd058d16e32",
+    "bytes": 531
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "fb871f14daba30c421e2b26d672b1e85d2aef5ae4f76c51890526c8c4d7364f3",
+    "bytes": 4328
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "f25637c79968c703b53c83fbe928202de34ddfa11f708fd943a4b6c4221e6a93",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h2l1_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "9ac581e9e65f0963bbfe5d177b6265fc11e8a8a3ad1a1c68a97fe0af5abdd045",
+    "bytes": 6351
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "05b16ebf16c59f7c5aec165d4df37610cd1f86c6e6d1799455f096f8e5c272db",
+    "bytes": 165960
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "3f9cc3dd5f0cd3c5483bcffe9b80dc7d3fae52ea337920942e67265cbeb156a5",
+    "bytes": 582
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "991f512830f69056ac0caee3071947e9575cd02ed15b02ac4b884d997d5641ca",
+    "bytes": 4328
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "3308d15ad61f2d093fcd19fedf5bcb5264c4fc66a4dff4a48fc5b62709e4e5a9",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta30_h4l2_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta30_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "fe7c0c7cef9cebc3f748cef89152e97e15c25268cdaae2f87593cbd22abecc3e",
+    "bytes": 6407
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "d10a5c274599bfe791a767727cabd382b284fe16f002feab7f88e6c6d415eb05",
+    "bytes": 126382
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "3a4a8b2e4555b432443928ab572f4bcad8f5c60d2e90c2b7c6267bc24fdd1b74",
+    "bytes": 567
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "29f1c6390ff39def9843dc7ec10d76351756c2e89dc1359c9f1dd5d6e883d6c0",
+    "bytes": 4328
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "b4dbfe6a1b386c6838a3276934a1d1048a27e7aaf8edad875fc2f57a6ca6945d",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h2l1_m1/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/run.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/run.json",
+    "sha256": "20b82cca22839ac4b4438f484b74279f881b7a63153028e4e23fae64ab5c3981",
+    "bytes": 6379
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/train.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv",
+    "sha256": "642cb17b5bc7dcdc81769b51f4bac9d8da370710e845ac37d92fb33adb462a80",
+    "bytes": 166205
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/eval.csv": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/eval.csv",
+    "sha256": "94a97f0606dc0124768ca5f17fe40d51834c9aa6d0647306740091624ca0d391",
+    "bytes": 574
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/flags.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+    "sha256": "8a48f0c2072952a38941b726cdc9db9405997a2adc7853f86e6463d4f86d7e14",
+    "bytes": 4328
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/reproducibility.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/checkpoint_metadata.json",
+    "sha256": "a918e64520012b55d39f04c7bc998cae1897d740dcb856cceda5150fcc9d9f74",
+    "bytes": 2395
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/model_parameter_counts.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/position_statistics.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/position_statistics.json",
+    "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4",
+    "bytes": 220
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/training_state_800000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_800000.json",
+    "sha256": "ca550fed9c2b56b246e404891a6f43965675e335ea30687d8da40955273d0076",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/training_state_900000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_900000.json",
+    "sha256": "a6e671be3fbd0682d0fd09a5d83fae97276e8274d662750789f39a1ebe1f1930",
+    "bytes": 377
+  },
+  "campaigns/v1_beta25_30_35/runs/hrm_beta35_h4l2_m3/training_state_1000000.json": {
+    "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031/runs/hrm_beta35_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/training_state_1000000.json",
+    "sha256": "8487ec5a32203cec432d8066455634948ab7bd4ef5b928a5619e43f6aa6fbd4b",
+    "bytes": 377
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/analysis.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/analysis.json",
+    "sha256": "f7953e99f1db8b89c771c5ac40a5980169bd29ded9b16fb86d5ea1ef363b1565",
+    "bytes": 11069658
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/analysis_code/analyze_joint_planner_v0.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/analysis_code/analyze_joint_planner_v0.py",
+    "sha256": "7555b11928963276a862fa6f7e65c0afa905b18f6ff0c7a209df58cd6fba20c3",
+    "bytes": 22192
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/analysis_code/probe_joint_planner_checkpoints.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/analysis_code/probe_joint_planner_checkpoints.py",
+    "sha256": "cfc7771bde75b4a6a3c998047602fcf5121656ab3adf22c557ec0f3bd57f9088",
+    "bytes": 13245
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/analysis_code/probe_joint_planner_rollouts.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/analysis_code/probe_joint_planner_rollouts.py",
+    "sha256": "5d2c9c0853325fd0eac9ef4e2994da7a01a72f6103307b7bba8161fb55b64e90",
+    "bytes": 11292
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/analysis_code/probe_joint_planner_task_paths.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/analysis_code/probe_joint_planner_task_paths.py",
+    "sha256": "42a8f58978bf959e6ddf44f51a42262c07075838f016be71535c3183162db8e7",
+    "bytes": 7421
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/analysis_code/summarize_joint_planner_diagnostics.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/analysis_code/summarize_joint_planner_diagnostics.py",
+    "sha256": "224701ac50c17eae8f80fdfcce22b4b026c703eeeff6d962aad4307a61c090d7",
+    "bytes": 15352
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/analysis_provenance.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/analysis_provenance.json",
+    "sha256": "5fefcaf86ebcaf60d2832ac793eeeacf00069f3b32228046d17028f5bef0638d",
+    "bytes": 1738
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/checkpoint_diagnostics.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/checkpoint_diagnostics.png",
+    "sha256": "7545a69d7cd7cf5b141718b087a92509fd0b4f15d7b504d69895df90919dc11e",
+    "bytes": 191147
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/checkpoint_probes.log": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/checkpoint_probes.log",
+    "sha256": "405a7ed7f49f1c4f46b4cc88655e512bc14a76cef022b398e698382e7ef3437a",
+    "bytes": 27131
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/checkpoint_probes_extended.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/checkpoint_probes_extended.json",
+    "sha256": "4c4b03e5392981ea4f9a8581e2a381745aa22ddf5885526dd08c51c239231b4f",
+    "bytes": 95217
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/completed_comparison.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/completed_comparison.png",
+    "sha256": "1876498ad6e70dbf32beefa59482e0a6f877b048bf0d8a0883328d27e6d50468",
+    "bytes": 205936
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/diagnostic_sections.html": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/diagnostic_sections.html",
+    "sha256": "04745c3e99976824caa2d593c290c7e087738ebb277a15b4e79ea729541422cd",
+    "bytes": 10110
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/diagnostic_summary.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/diagnostic_summary.json",
+    "sha256": "633a20346726c6c764e0ab39c79901a701e7b34bd74e66dce4fd170903bd1f22",
+    "bytes": 27184
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/interaction.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/interaction.png",
+    "sha256": "83349a29c5130e8233920d1dc5464c97ddb122999426e4e2a56701701503bd2f",
+    "bytes": 122570
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/interpretation.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/interpretation.json",
+    "sha256": "03789ed796c97dc9d9c3f7a5833a5d8e8808bed5cee07f7fea2d5c8af340c866",
+    "bytes": 5695
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/learning_curves.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/learning_curves.png",
+    "sha256": "6bf92947df9e525022b419b587b3094ecce634812ac8899c34b7326a5685790a",
+    "bytes": 212039
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/local_interventions.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/local_interventions.png",
+    "sha256": "35491bda0915293fca0aa019fe89f4d0ea589f83014de622a1a7a9223590c155",
+    "bytes": 247170
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/local_rollout_probes.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/local_rollout_probes.json",
+    "sha256": "133abc242b878e069e682498c2e7a62c7f3d6dee1ae63d09c8311f7adbd80259",
+    "bytes": 8424378
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/local_rollout_probes.log": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/local_rollout_probes.log",
+    "sha256": "e4ffa4b715dd3860291b9aa4ba40779a3117a5e40a005d8d43d793e503d571f3",
+    "bytes": 13402
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/official_task1_reproduction.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/official_task1_reproduction.json",
+    "sha256": "db8f2a1a1726648b83a7a0f776c46a4a6d3527b735837b8c7e8a83aa6eb9a10f",
+    "bytes": 5294625
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/official_task1_reproduction.log": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/official_task1_reproduction.log",
+    "sha256": "0de2a3a3c511f8776be32d0f54bc7d243320f7c9bb1599351b4b494be1747399",
+    "bytes": 490
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/official_task_paths.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/official_task_paths.json",
+    "sha256": "72448e7d449891a442a202cbe6d4de0cc409633cf21c97675f130144d0befc80",
+    "bytes": 9442356
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/official_task_paths.log": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/official_task_paths.log",
+    "sha256": "f2ed2467b4862cb8f1a77691fa3143246d6ec976e7ace35e832c2849b7839ee0",
+    "bytes": 3131
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/report.html": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/report.html",
+    "sha256": "cb78c5b1100eba0b0eb1bbc8d39c4306ab727c628f1eefd0644110dd69d5b560",
+    "bytes": 22626
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/report_render.log": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/report_render.log",
+    "sha256": "06263be943e1ec44509d60e66e774d35fcbb12b36e4a99917add824ce5cfebda",
+    "bytes": 2903
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/campaign.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/campaign.json",
+    "sha256": "0f71484980925a1692980ebb4b4deef12f4c44db3fdbbd8d7f90915d390786de",
+    "bytes": 28114
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/captured_at.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/captured_at.json",
+    "sha256": "641551b07c3c22b121e98567433c0585e2428accba67553a480bed8b8a0ba202",
+    "bytes": 411
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/launcher_process.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/launcher_process.json",
+    "sha256": "42a3396c757d4d3ce6b97e2b42e91d4089444762502542339930343bfa36e8a5",
+    "bytes": 632
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/launcher_runtime.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/launcher_runtime.json",
+    "sha256": "3c44bbe7d21463d571f1a2417f0553152e7daab3538b344a918fb9e4beeefe65",
+    "bytes": 199
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/checkpoint_metadata.json",
+    "sha256": "93e8583c7d6bdd1cce6862c58d42451b620256462d3ad0edc80914960895cc8a",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/eval.csv",
+    "sha256": "667337cfb8a1faabcc65b757229e852fd5e39098bb95510b0093147c83a05f13",
+    "bytes": 596
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/flags.json",
+    "sha256": "46117f7bcb611657f0dcc0452c0e23e498f54ce2e5d045aed07e5af28cefb1da",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/run.json",
+    "sha256": "81aace11069e28bf3d8e7ba8ee7d6c721d19b90fa334ea85b45a21f47774a706",
+    "bytes": 5990
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m1/train.csv",
+    "sha256": "e1157fcbf6eb9cdbb886054c710b6263c04e81bcaa9a5899ff2689e108bf2c4f",
+    "bytes": 126556
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/checkpoint_metadata.json",
+    "sha256": "282c0b3d9f4dad7abc67fc1aac02468256d7de7e954436eadce58a709b6e49f7",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/eval.csv",
+    "sha256": "4a013eeaf0933ffd9a8a3126b2c5a092fb2b250b9393aefd117a7114ff16fe6a",
+    "bytes": 581
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/flags.json",
+    "sha256": "ba96973e5ebb532eb2f8071d13acac0d0cac3ca2c6f2b4d601b1ab7e8f360977",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/run.json",
+    "sha256": "8cf82042e6ddf5c5e874231cdfb04244efcd8e2bfb89d2b5db6743765cc974e2",
+    "bytes": 6006
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l1_m3/train.csv",
+    "sha256": "5bb5d7c9e0e113bf6d16b020087d0d57be64d1963244ab7fb3e26b1bd7c8e157",
+    "bytes": 166326
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/checkpoint_metadata.json",
+    "sha256": "b3f2471d82efe54a2f875ad0ac7f434e316212ad98c658a1f45d96e213929fc6",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/eval.csv",
+    "sha256": "034fc7a121c6ea52cf1a7acaaa88fca5135da2f10cd18746171b5f963d1d4435",
+    "bytes": 562
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/flags.json",
+    "sha256": "7d952d435dea019498f5e02ac7c1731b59d93d77aa2a81485e6bdac54776d409",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/run.json",
+    "sha256": "71d7bda9757cab747d4cbb85d44c2a609ea126c41d2d8f2436734185c3298415",
+    "bytes": 5991
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m1/train.csv",
+    "sha256": "5b3c33d7e96a3410ebfbcd594bdd4d186bfe00d575e22aa5204c34c5bca8434b",
+    "bytes": 126108
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/checkpoint_metadata.json",
+    "sha256": "47ed14158d005ab4ba03537acf125650382f8bc965cefcaf37db72b2764184e7",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/eval.csv",
+    "sha256": "17b673a9f36108a259860cd89245faa33acc854b1c195c61ad1e36e243351986",
+    "bytes": 539
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/flags.json",
+    "sha256": "2fadb35a865942c65e7fa46689baee5a5d20c475007004e18e83650b888ae107",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/run.json",
+    "sha256": "a12be39bce20df891eb7eec45f1ea9f1748cc7d08993328f9bd85683a641ceda",
+    "bytes": 6005
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h1l2_m3/train.csv",
+    "sha256": "ec2d3c273e907f2b5c967201ca7489b87e3d1b16fa5ac70bb39bcee332e16862",
+    "bytes": 166520
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/checkpoint_metadata.json",
+    "sha256": "48bb6e6f073c92e6181faefec795c3c8424e3876bc6b42c65b743cb866b2d37f",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/eval.csv",
+    "sha256": "9f751c94df8de034419a371aa953db8917e3274fd85d5f1ca948ece434863258",
+    "bytes": 557
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/flags.json",
+    "sha256": "4b379ac4572f43234f01f71c2fb7cd5d471420e2b911c32ce1ea7f60180c66b6",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/run.json",
+    "sha256": "15653053b4e09b0bafa13dfacfed6c566b8745ce52012699793521940e610d5d",
+    "bytes": 6002
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m1/train.csv",
+    "sha256": "87b6115dc1785a009f9105829518ff047ac30a5b69c0ce84241f4e8268e78d70",
+    "bytes": 126354
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/checkpoint_metadata.json",
+    "sha256": "ba4035305e72d88dcfc741cbf906c5011d4f926f395ba9035b14f0537291da81",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/eval.csv",
+    "sha256": "37eb9f93c06ca1b540a86711a53a74fbb3805659e5dc091cf9e62bf81f577394",
+    "bytes": 583
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/flags.json",
+    "sha256": "b8581f0353d203201413be6fd20aa012c83cf3eabf1714fbd76d24c79e4d02f7",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/run.json",
+    "sha256": "6c5b3080c7fcfc9f7d53051e9e47d759b271727a418b89f6212d6039d70378ae",
+    "bytes": 5991
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l1_m3/train.csv",
+    "sha256": "f7b98b4a7dd90ce4b9bc9537c2ae4889b293d4ce2017ab2ac097ca7f60a3a4b0",
+    "bytes": 166367
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/checkpoint_metadata.json",
+    "sha256": "d8a70b51bcfdd999cbbbd39a26cba19fde37061992715dddf4f9d7910050de4c",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/eval.csv",
+    "sha256": "bc3509802b18ecaa0cd2e21f3269c9ed7b6c4a4f4b73c224f507865a1d62c0fd",
+    "bytes": 597
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/flags.json",
+    "sha256": "d6dbfddc02c8db6b4c84934b052406b072a67e48c76c4862b0e8cc49ef15f8d1",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/run.json",
+    "sha256": "35e47f80ba7c3d8fe4c83aa0c756fc55d7ad5ce47c5adc9239538249179a0aeb",
+    "bytes": 6017
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m1/train.csv",
+    "sha256": "24bb774061a820e23b7ce4f66b26eda9b10f05b3b0ff696de3f1114a04909931",
+    "bytes": 126474
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/checkpoint_metadata.json",
+    "sha256": "b85a41692910af7af6857f37f3e07c34c1a0110d2653de5e64c3b7452d4b32d9",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/eval.csv",
+    "sha256": "ad91aa030eb1c1a101c056496d96e235565784f1126aa5b859c396a54eb6b8ca",
+    "bytes": 578
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/flags.json",
+    "sha256": "71e2e65cbe7d8f7197eba9d18db97f050d7797eadb0a6afddeffa597387a1c74",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/run.json",
+    "sha256": "4376ad5fff4b943cb3524e75dd2508d13176430ee2530baf64b6d1b9d7634aec",
+    "bytes": 6015
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h2l2_m3/train.csv",
+    "sha256": "6a97da35669cf538bfbae8eb3bbaa79e645d6fe88c869b771090ef25a313d832",
+    "bytes": 166331
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/checkpoint_metadata.json",
+    "sha256": "1181bf536eaa41aeacf1a017fc37083e5e4f9b61143c800369b962f4cd2cfc51",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/eval.csv",
+    "sha256": "bf40b1b67f91bc2711bc28929571f2cbb41d741495b5ed36627195d5ba897245",
+    "bytes": 579
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/flags.json",
+    "sha256": "c189a3ec1820ec1218fb856922d034b92dccc4bb50aac402bc92c74abbbbcfa7",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/run.json",
+    "sha256": "5e45809fd9f631c1e2173cf4f2aae9dd2e3b7ed2d23fe0216d9c6195909c5bbc",
+    "bytes": 6030
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m1/train.csv",
+    "sha256": "4bf4ab5d872d40ac3acdfbe827796c52cdda1bbc380a7652cc5be0c374823f20",
+    "bytes": 126645
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/checkpoint_metadata.json",
+    "sha256": "00c5646abfad7ecb2c004bd147824f3c1ae911c616224cd908b901f455441b61",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/eval.csv",
+    "sha256": "8652c3abbd2d2be7b3864bf93f9c0d8612c5e4bfd6981e4f735ed6f7f846c6da",
+    "bytes": 580
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/flags.json",
+    "sha256": "9e833c275e91fcac6d1ddc2510c277fc8cff49a3a30d5855d815686a9687520e",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/run.json",
+    "sha256": "c66858487359e200e51a34f1d65939dcb2c2d10a8d6d1dbfe6375ca13eed4cf3",
+    "bytes": 6003
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l1_m3/train.csv",
+    "sha256": "2ee5813ea81250b2a3760bf30f6e5c6d20cdddab57ffb1668b161273fae393be",
+    "bytes": 166235
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/checkpoint_metadata.json",
+    "sha256": "8d9a119a8c12858b70e093866bfa720b9dd2b0587b11f527632d2ba93c4b2d92",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/eval.csv",
+    "sha256": "da5511e829127dfe6626c70fd4f549cccece0b5de54fc52f96c5182c4db130fe",
+    "bytes": 558
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/flags.json",
+    "sha256": "144167fa21a4675da5051573b0e952ddcb434f90722ea0641428e275f569c1e8",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/run.json",
+    "sha256": "b5f5dc4a9b551e1e0abf5b89d6cd0ecd58941c8e2f2588befab97365d8ee7ebb",
+    "bytes": 6003
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m1/train.csv",
+    "sha256": "3b5e4fa691dcf972294a0bf04758f305ccad4ff76b5e493639cac73b4521f81f",
+    "bytes": 126535
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/checkpoint_metadata.json",
+    "sha256": "313b3e1beb4951f93e1ace5c44a25aac946297bed69f9b794c2a4df92f66b9f2",
+    "bytes": 2302
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/eval.csv",
+    "sha256": "2c5be8a907ee22bb6be396145c7fb5378da1b5556823f46deaf4ba4409c6c1b2",
+    "bytes": 641
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/flags.json",
+    "sha256": "9b04d9450b876336b7db7373128050c6fe91ec9fffb715cf5a77295a971760c2",
+    "bytes": 4174
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/run.json",
+    "sha256": "ed4b549c795c4625d442a0f8c1eea852c3fb907b3674ef5dbff48bedb81a8ac5",
+    "bytes": 6016
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/runs/hrm_h4l2_m3/train.csv",
+    "sha256": "c9d82a1f8ea6cbf1607e9889a25debc799a397069f4f88e861267b51d664e536",
+    "bytes": 166199
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/snapshot/snapshot_inventory.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/snapshot/snapshot_inventory.json",
+    "sha256": "06b1bd949d39a9bf7dcdbf255f4e50e07f7dc7d27df890e623f079335c391c71",
+    "bytes": 27291
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/task1_paths.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/task1_paths.png",
+    "sha256": "2a05e5e08e79b3b3039fc096e4b08c7a513f0b7372249f347cca984eb9d39d56",
+    "bytes": 580739
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/task5_paths.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/task5_paths.png",
+    "sha256": "1473e02b68d3dded2f05321b9e5577a225f0ef446487d0e2b7598c6114060a9a",
+    "bytes": 358934
+  },
+  "analyses/antmaze_giant_v0_final_analysis_20261030/training_diagnostics.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/training_diagnostics.png",
+    "sha256": "053ae8d834843e8a606498d7c99fd8055fd1608440fdcb0416937e6a4332cc25",
+    "bytes": 1004326
+  },
+  "analyses/antmaze_giant_v0_theory_audit_20261030/analysis_code/audit_joint_planner_mechanisms.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_theory_audit_20261030/analysis_code/audit_joint_planner_mechanisms.py",
+    "sha256": "e3ae9ecbf20f940d405d1043f5c30955083b031c3109d6152819e80b4c34bde9",
+    "bytes": 10463
+  },
+  "analyses/antmaze_giant_v0_theory_audit_20261030/audit.log": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_theory_audit_20261030/audit.log",
+    "sha256": "74efacfba21b874a2fd49cad6e52917935e0553a1279a4429f1e8e9417374dd0",
+    "bytes": 12165
+  },
+  "analyses/antmaze_giant_v0_theory_audit_20261030/mechanism_probes.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_theory_audit_20261030/mechanism_probes.json",
+    "sha256": "4d5d6592b12f442966c4a2da74c833d2ed324c9e5f9a1489e2f5b4a72942fb3c",
+    "bytes": 48422
+  },
+  "analyses/antmaze_giant_v0_theory_audit_20261030/provenance.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_theory_audit_20261030/provenance.json",
+    "sha256": "1d6a476cd1c81172f686b0405d56413e3e4c667d342a5b88c686afb0c6870424",
+    "bytes": 1665
+  },
+  "analyses/antmaze_giant_v0_theory_audit_20261030/recurrent_readout_audit.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_theory_audit_20261030/recurrent_readout_audit.png",
+    "sha256": "ddec6dd221dc0ee004b3dd053fbc710c505cf811fd4458eaa2e3b8dd856483c3",
+    "bytes": 202121
+  },
+  "analyses/antmaze_giant_v0_theory_audit_20261030/report.html": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_theory_audit_20261030/report.html",
+    "sha256": "ca532a4c2932724b3f68134f7bc9a8c3997bf6349b5b1c337496596badebfa6f",
+    "bytes": 16643
+  },
+  "analyses/antmaze_giant_weight_discussion_20261031/analysis_code/reweighting_probe.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_weight_discussion_20261031/analysis_code/reweighting_probe.py",
+    "sha256": "27ebe72f7c64f4ee463ad3b5cf53f408592b5f69ec9f626a7b7fa3cf4a76d68e",
+    "bytes": 3729
+  },
+  "analyses/antmaze_giant_weight_discussion_20261031/nearest_beta_sweep.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_weight_discussion_20261031/nearest_beta_sweep.json",
+    "sha256": "8061cdd3d1c23121330d0dc1558128b085d1759b99d784d8d472d36e8c059c21",
+    "bytes": 671
+  },
+  "analyses/antmaze_giant_weight_discussion_20261031/route_trace_example.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_weight_discussion_20261031/route_trace_example.json",
+    "sha256": "15d272d922ab5d8f6b13c71e0cf45dfc632a55c4f3f6fd9eccbf806b05be4712",
+    "bytes": 26679
+  },
+  "analyses/antmaze_giant_weight_discussion_20261031/single_episode_routes.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_weight_discussion_20261031/single_episode_routes.png",
+    "sha256": "9d88a573a2c66c51c72308142ed9c1c01522948df467bdbb3afc8dfea5d45916",
+    "bytes": 184518
+  },
+  "analyses/antmaze_giant_weight_discussion_20261031/weight_forms.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_weight_discussion_20261031/weight_forms.json",
+    "sha256": "de3fc90230c6806762e116fb68748b2c1c71a8c4ab7585c98f51b50897dc97b8",
+    "bytes": 10792
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/analysis_code/analyze_joint_planner_attribution.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/analysis_code/analyze_joint_planner_attribution.py",
+    "sha256": "5acfd993fee2c1f6494d740bf1fda04562c089f818f6940e35d2b21463f776ce",
+    "bytes": 18992
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/analysis_code/analyze_joint_planner_v0.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/analysis_code/analyze_joint_planner_v0.py",
+    "sha256": "7555b11928963276a862fa6f7e65c0afa905b18f6ff0c7a209df58cd6fba20c3",
+    "bytes": 22192
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/analysis_code/audit_joint_planner_attribution_gradients.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/analysis_code/audit_joint_planner_attribution_gradients.py",
+    "sha256": "847574e75943fd2c04773415971c532bac39cb05a7c0ff38cdd1078acbd54fab",
+    "bytes": 10590
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/analysis_code/probe_joint_planner_attribution.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/analysis_code/probe_joint_planner_attribution.py",
+    "sha256": "a2b71e0d3c8f95a225562b612ba9490ffe9b7bbc8b3f88cc924ac1827fb03ba7",
+    "bytes": 13852
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/analysis_code/probe_joint_planner_rollouts.py": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/analysis_code/probe_joint_planner_rollouts.py",
+    "sha256": "5d2c9c0853325fd0eac9ef4e2994da7a01a72f6103307b7bba8161fb55b64e90",
+    "bytes": 11292
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/attribution_summary.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/attribution_summary.json",
+    "sha256": "9019f314c9580e1cbce47183b0e2819db4b3b724d490879bf17353cd71fcd582",
+    "bytes": 38806
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/context.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/context.json",
+    "sha256": "51a4551af0ac355eba2d82e122c2d15d770748c904016507b5b6c196a0d2ed26",
+    "bytes": 316
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/gradient_probes/mechanism_probes.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/gradient_probes/mechanism_probes.json",
+    "sha256": "df89f54736eeaf4c41d244c2c3d8c4b18372150140d86e2860441740435b2226",
+    "bytes": 42199
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/mechanism_comparison.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/mechanism_comparison.png",
+    "sha256": "85e8197f70c0f722891ca1d3e3c8e107b421e112000373588fd6de20a88090dc",
+    "bytes": 165497
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/provenance.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/provenance.json",
+    "sha256": "4646887c64151987e1e31299d71b89040887507fc4856e39804137b52fcad23a",
+    "bytes": 850
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/report.html": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/report.html",
+    "sha256": "58d666725e67d018a3f987372cf29a716af4b42acdd43ce0f5c2ecb9811c5c93",
+    "bytes": 9911
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/success_comparison.png": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/success_comparison.png",
+    "sha256": "0e0ffa0cf8f819323d6ff177604608b0f31e0ce9bca46f2d329845a69c6e4e57",
+    "bytes": 172885
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v0_checkpoint_probes.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v0_checkpoint_probes.json",
+    "sha256": "8ba57f36c06b20f6516618aec13a97b72bbd7bf8d9d699bd7bab06b3fd40195f",
+    "bytes": 16666
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/campaign.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/campaign.json",
+    "sha256": "105f669471027bd0e4383b7bb4e0384512d878a4b0487beeee4842c507a5ec07",
+    "bytes": 28270
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/captured_at.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/captured_at.json",
+    "sha256": "a9e4c94cc605a007281fa6ff3d883f251ff20b731f84e040a726c95003bf156c",
+    "bytes": 427
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/launcher_process.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/launcher_process.json",
+    "sha256": "08121c15879055ebcb0ab8bad42c934d2cc72e8dcfb695688985134900ceb3e0",
+    "bytes": 853
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/launcher_runtime.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/launcher_runtime.json",
+    "sha256": "3d8af88ee35993c41a4540127d5d97e40c371215b9601823e6cbf0af61d6258f",
+    "bytes": 198
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/checkpoint_metadata.json",
+    "sha256": "695ed7152bba95afb3ab7e7d508917795ba9b896f544f2736e54bcb601683a7a",
+    "bytes": 2395
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/eval.csv",
+    "sha256": "79b9b3e9ea9585f337794b76694be5ae0b071c54fcf53c2885bda8f01781b87d",
+    "bytes": 511
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/flags.json",
+    "sha256": "225c2d8255267e41b6f7ea6b216d6d4d228e798c7ac254370d65d4d7184786e5",
+    "bytes": 4312
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/run.json",
+    "sha256": "5924b2751c68e914a53062e15c811b05a1dbb097dee9568b7faf6f5202b2ecbc",
+    "bytes": 6333
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h2l1_m1/train.csv",
+    "sha256": "457f84eded7c1c907360ba60124cdb0c87608eab0c686c70950710cc24f11c27",
+    "bytes": 125749
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/checkpoint_metadata.json",
+    "sha256": "3a053111fe4bc975502f31cd48f4b58166eb13716deccfff112aeb5fcdff4fed",
+    "bytes": 2395
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/eval.csv",
+    "sha256": "fe74f4e2596d531663773d30c7ab4f55a30f84bd7969fd3f02261837f2de73b2",
+    "bytes": 568
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/flags.json",
+    "sha256": "b65f6649fd4751085b946c9e67180d4613af03a98956dfe3024cc86b8d264469",
+    "bytes": 4312
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/run.json",
+    "sha256": "4e305f767a1b0f07a02af4631ac50317b8c2d7d06e3f9a258a91f4fa370a4f76",
+    "bytes": 6303
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta05_h4l2_m3/train.csv",
+    "sha256": "54de05da558fb99e98eeb74c6688ee34ea0746c69e2c46fc75388debe4e9a1ac",
+    "bytes": 166134
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/checkpoint_metadata.json",
+    "sha256": "7e9e641e8b72fa3c1c4b5d8168707326569e8bcca909b51d2923514cd5fa741b",
+    "bytes": 2395
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/eval.csv",
+    "sha256": "5929218beeb38acf9a342b0409a69007a90aa6eca74a0b9bdc80c566022668ad",
+    "bytes": 520
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/flags.json",
+    "sha256": "49cdda109bcf79ece23ae4e0010906ffca8c1ac24c9250bd92223bdf329a5b19",
+    "bytes": 4312
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/run.json",
+    "sha256": "d8c3025eddba3443901735321c861ebab04eac9ebb3b654d2d47ae10bf9d1984",
+    "bytes": 6316
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h2l1_m1/train.csv",
+    "sha256": "bdc235c6c8f4cc130e5a16f8280ef6c80660c4df39cdd7808205059693bc395b",
+    "bytes": 126273
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/checkpoint_metadata.json",
+    "sha256": "52156addb39f8c6ec00b1733bc44beb2e9324e2ea7f1403a053fbd8a460ab002",
+    "bytes": 2395
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/eval.csv",
+    "sha256": "0363d30951e390f8d9c3cdb6bfe5650b37a9f4301b62af388916322f9d9610bd",
+    "bytes": 547
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/flags.json",
+    "sha256": "f32f16fbb041722f70e6dc9f97c107f00ec4ba174b16d9f62af27784665b43a7",
+    "bytes": 4312
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/run.json",
+    "sha256": "8ccf95d69ac71d9cffb3ac3d388dedb2636f63891950a715f28bc314628b486b",
+    "bytes": 6303
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta10_h4l2_m3/train.csv",
+    "sha256": "396cf20600593254f577bd3803675761b0398f0a138ab26c7ea048fb6f8b4277",
+    "bytes": 166114
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/checkpoint_metadata.json",
+    "sha256": "3076ff590dac24896db82a8cc7dcb3255ce2b165194aa23bb23661d3f8cc0aec",
+    "bytes": 2395
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/eval.csv",
+    "sha256": "a0e58fb6c65d2e7f8935314a7000bddc44dc81140c28f3624fc0a796b8bf382e",
+    "bytes": 544
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/flags.json",
+    "sha256": "7a1ab82c2394da74cb48a6b3857616d24a4243746163a567062b9a22be8ec00e",
+    "bytes": 4312
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/model_parameter_counts.json",
+    "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/run.json",
+    "sha256": "cc99c94b4b6f281010c0f6fa9aabf1e76e1471640a1556715535d97aeb294795",
+    "bytes": 6331
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h2l1_m1/train.csv",
+    "sha256": "4ee1d11d853c404b38a0785cf4da838df7be8f5f744882c0a5e1644cbad7042b",
+    "bytes": 126487
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/checkpoint_metadata.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/checkpoint_metadata.json",
+    "sha256": "d70acd011a42a596befb90399353e2553d73aa373a55e6bb69f32b8358041a30",
+    "bytes": 2395
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/eval.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/eval.csv",
+    "sha256": "58c16b9463c8bf76ca32f9968fa2cb6289826ad631e681ba69a79b095c1bd9c0",
+    "bytes": 391
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/flags.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/flags.json",
+    "sha256": "6902074d47fd67c0460f4bf7c93c4ea0dd617b2c2814f4c52dcf519a41f9bba7",
+    "bytes": 4312
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/model_parameter_counts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/model_parameter_counts.json",
+    "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f",
+    "bytes": 293
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/reproducibility.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/reproducibility.json",
+    "sha256": "7b25ab8fa0c2c09d1844cba0efd38673e6b0a7c62d7bfb81ff36088bd218c474",
+    "bytes": 752
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/run.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/run.json",
+    "sha256": "73819767133a6a93b3f776d03c1781820f616ff005e6e5200a79024e6e11c148",
+    "bytes": 5984
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/train.csv": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/runs/hrm_beta20_h4l2_m3/train.csv",
+    "sha256": "77de09d5fdc7978134cbf89245e6b893dd407d9c1a8313deca832ae35aa34978",
+    "bytes": 114609
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1/snapshot/snapshot_inventory.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1/snapshot/snapshot_inventory.json",
+    "sha256": "5e37a1f53ed0cf9481dd5a7c7c39ddb929821ba5ffbd66aa82691e7b301b40e2",
+    "bytes": 14907
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1_checkpoint_probes.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1_checkpoint_probes.json",
+    "sha256": "9119f4f85a017eca684add003b0c97193f1b9623ec1d9561d75204c8012f0aed",
+    "bytes": 37434
+  },
+  "analyses/antmaze_giant_v1_attribution_20261031/v1_local_rollouts.json": {
+    "original": "/home/eai/Research/CoGHP/impls/exp/antmaze_giant_v1_attribution_20261031/v1_local_rollouts.json",
+    "sha256": "c7ed927ffcff5f6cbf3d82f91848133b83fa3feafb887779224007075631ffe0",
+    "bytes": 3868831
+  }
+}

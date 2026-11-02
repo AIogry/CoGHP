@@ -1,0 +1,7 @@
+{
+  "time": "2026-10-31T17:34:53.609068+08:00",
+  "campaign": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta_seed0_20261031",
+  "source_signature": "f94d946fad012955571648dbe0f813b4529ca62abff1988fca37c6bd95379718",
+  "source_hashes_verified": true,
+  "note": "Logs captured once per file; active runs may advance after this snapshot. Incomplete trailing CSV rows are excluded."
+}

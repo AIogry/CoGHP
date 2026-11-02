@@ -1,0 +1,4 @@
+Creating navigation agent
+Restored from /data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/params_1000000.pkl
+{"method": "hrm_h2l1_m1", "task": 1, "success_count": 28, "count": 50, "mean_best_distance_cells": 4.02, "mean_final_distance_cells": 4.1}
+Saved task paths: /home/eai/Research/CoGHP/impls/exp/antmaze_giant_v0_final_analysis_20261030/official_task1_reproduction.json

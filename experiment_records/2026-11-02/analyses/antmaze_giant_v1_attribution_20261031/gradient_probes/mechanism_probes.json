@@ -1,0 +1,1310 @@
+{
+  "protocol": "frozen-mechanism-audit-v1",
+  "checkpoint": 1000000,
+  "backend": "cpu",
+  "complete": true,
+  "source_signature": "f94d946fad012955571648dbe0f813b4529ca62abff1988fca37c6bd95379718",
+  "samples": 256,
+  "batch_size": 64,
+  "query_description": "First 256 of the exact 2048 paired raw-state queries used in the final analysis.",
+  "caveats": [
+    "Intermediate H states use the final shared head, which was trained only at the final H state.",
+    "Gradient statistics are four fixed validation batches at one checkpoint, not training history.",
+    "Normalized-command probes are offline action agreement only, not policy evaluation.",
+    "Action agreement uses raw deterministic Gaussian means before environment clipping.",
+    "No parameters, training code, or optimizer state are updated."
+  ],
+  "runs": {
+    "hrm_beta05_h2l1_m1": {
+      "h": 2,
+      "l": 1,
+      "M": 1,
+      "planner_tokens": 4,
+      "actor_parameter_keys": [
+        "planner_query_tokens",
+        "action_query_token",
+        "feature_embed",
+        "planner_core",
+        "high_actor_head",
+        "action_mixer_blocks_0",
+        "low_actor_head"
+      ],
+      "shared_head_final_matches_native_max_error": 0.0,
+      "stages": [
+        {
+          "H": 1,
+          "mse_by_waypoint": [
+            9.558323860168457
+          ],
+          "weighted_mse_by_waypoint": [
+            6.6340089196657654
+          ],
+          "predicted_norm_by_waypoint": [
+            23.993980407714844
+          ],
+          "hidden_change_mean": 15.141599655151367,
+          "action_data_mse": 0.10989247262477875,
+          "action_teacher_mse": 0.04343132674694061,
+          "normalized_command_action_data_mse": 0.09109698235988617,
+          "normalized_command_action_teacher_mse": 0.010980581864714622
+        },
+        {
+          "H": 2,
+          "mse_by_waypoint": [
+            0.1282009482383728
+          ],
+          "weighted_mse_by_waypoint": [
+            0.03936044916674494
+          ],
+          "predicted_norm_by_waypoint": [
+            11.003636360168457
+          ],
+          "hidden_change_mean": 3.9128189086914062,
+          "action_data_mse": 0.08565258979797363,
+          "action_teacher_mse": 0.0013530333526432514,
+          "normalized_command_action_data_mse": 0.08561822772026062,
+          "normalized_command_action_teacher_mse": 0.001396487932652235
+        }
+      ],
+      "gradients": [
+        {
+          "batch_start": 0,
+          "loss": {
+            "value": 1.3632721900939941,
+            "high": 64.4268798828125,
+            "low": 147.24087524414062
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 44.801848017726705,
+              "value": 7.440339811175652,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 8.671984173404322,
+              "executor": 0.0,
+              "feature_embed": 16.072848597863217,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 13.248041564283564,
+              "executor": 37.87269096131555,
+              "feature_embed": 104.39977195315882,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": -0.10989121468777079,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": 0.019725054050446382
+          }
+        },
+        {
+          "batch_start": 64,
+          "loss": {
+            "value": 0.8617826700210571,
+            "high": 67.96806335449219,
+            "low": 166.20449829101562
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 58.599397740880924,
+              "value": 5.814624150621251,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 7.670787697417618,
+              "executor": 0.0,
+              "feature_embed": 11.645947601059014,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 6.924664804037681,
+              "executor": 56.67063407072408,
+              "feature_embed": 75.04009568057651,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.01473488368051254,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.07956097249356976
+          }
+        },
+        {
+          "batch_start": 128,
+          "loss": {
+            "value": 1.0556433200836182,
+            "high": 60.971073150634766,
+            "low": 199.32192993164062
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 87.02439653896256,
+              "value": 15.617436452791008,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 10.16030860693897,
+              "executor": 0.0,
+              "feature_embed": 8.887714017196275,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 7.284104093226386,
+              "executor": 48.40121985567483,
+              "feature_embed": 121.0028789137501,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.1332948867522418,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": 0.10622357443911278
+          }
+        },
+        {
+          "batch_start": 192,
+          "loss": {
+            "value": 0.7597458958625793,
+            "high": 102.38514709472656,
+            "low": 91.83367919921875
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 32.94887451215073,
+              "value": 2.9233107160029443,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 7.767759504223751,
+              "executor": 0.0,
+              "feature_embed": 6.206470552408534,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 11.701012966822786,
+              "executor": 43.98603348080651,
+              "feature_embed": 81.82035880496306,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": -0.18399018574336873,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": 0.015953091030535806
+          }
+        }
+      ],
+      "teacher_action_data_mse": 0.08340340107679367
+    },
+    "hrm_beta10_h2l1_m1": {
+      "h": 2,
+      "l": 1,
+      "M": 1,
+      "planner_tokens": 4,
+      "actor_parameter_keys": [
+        "planner_query_tokens",
+        "action_query_token",
+        "feature_embed",
+        "planner_core",
+        "high_actor_head",
+        "action_mixer_blocks_0",
+        "low_actor_head"
+      ],
+      "shared_head_final_matches_native_max_error": 0.0,
+      "stages": [
+        {
+          "H": 1,
+          "mse_by_waypoint": [
+            0.4640267491340637
+          ],
+          "weighted_mse_by_waypoint": [
+            0.3884793393761508
+          ],
+          "predicted_norm_by_waypoint": [
+            9.113667488098145
+          ],
+          "hidden_change_mean": 14.236612319946289,
+          "action_data_mse": 0.0971892923116684,
+          "action_teacher_mse": 0.00894087366759777,
+          "normalized_command_action_data_mse": 0.09762891381978989,
+          "normalized_command_action_teacher_mse": 0.010624360293149948
+        },
+        {
+          "H": 2,
+          "mse_by_waypoint": [
+            0.12917578220367432
+          ],
+          "weighted_mse_by_waypoint": [
+            0.046193569491060196
+          ],
+          "predicted_norm_by_waypoint": [
+            11.016916275024414
+          ],
+          "hidden_change_mean": 5.742980003356934,
+          "action_data_mse": 0.091620072722435,
+          "action_teacher_mse": 0.004574902821332216,
+          "normalized_command_action_data_mse": 0.09179860353469849,
+          "normalized_command_action_teacher_mse": 0.004817485809326172
+        }
+      ],
+      "gradients": [
+        {
+          "batch_start": 0,
+          "loss": {
+            "value": 1.3632721900939941,
+            "high": 102.0219497680664,
+            "low": 148.682861328125
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 44.801848017726705,
+              "value": 7.440339811175652,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 18.60089784154616,
+              "executor": 0.0,
+              "feature_embed": 54.04099646544477,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 18.56964714410642,
+              "executor": 52.47858582878976,
+              "feature_embed": 112.06640105960192,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": -0.07018217643686012,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": 0.004772868573337008
+          }
+        },
+        {
+          "batch_start": 64,
+          "loss": {
+            "value": 0.8617826700210571,
+            "high": 89.52220153808594,
+            "low": 175.11309814453125
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 58.599397740880924,
+              "value": 5.814624150621251,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 13.044444109021802,
+              "executor": 0.0,
+              "feature_embed": 15.30829292611573,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 16.405160820178473,
+              "executor": 75.01640109513221,
+              "feature_embed": 204.4404248659478,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": -0.0358350870155612,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.020375526649126223
+          }
+        },
+        {
+          "batch_start": 128,
+          "loss": {
+            "value": 1.0556433200836182,
+            "high": 82.67766571044922,
+            "low": 198.48922729492188
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 87.02439653896256,
+              "value": 15.617436452791008,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 14.850979482314104,
+              "executor": 0.0,
+              "feature_embed": 16.3593321235294,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 7.162530096277132,
+              "executor": 44.74552369043843,
+              "feature_embed": 141.5343316150097,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.01517765402874633,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": 0.07475153629172575
+          }
+        },
+        {
+          "batch_start": 192,
+          "loss": {
+            "value": 0.7597458958625793,
+            "high": 126.08136749267578,
+            "low": 90.21073913574219
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 32.94887451215073,
+              "value": 2.9233107160029443,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 12.617398331516691,
+              "executor": 0.0,
+              "feature_embed": 18.732943243051363,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 9.529762349376316,
+              "executor": 36.27014065924375,
+              "feature_embed": 79.86510111117202,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": -0.044614221315464504,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": 0.11398523746978989
+          }
+        }
+      ],
+      "teacher_action_data_mse": 0.09257863461971283
+    },
+    "hrm_beta20_h2l1_m1": {
+      "h": 2,
+      "l": 1,
+      "M": 1,
+      "planner_tokens": 4,
+      "actor_parameter_keys": [
+        "planner_query_tokens",
+        "action_query_token",
+        "feature_embed",
+        "planner_core",
+        "high_actor_head",
+        "action_mixer_blocks_0",
+        "low_actor_head"
+      ],
+      "shared_head_final_matches_native_max_error": 0.0,
+      "stages": [
+        {
+          "H": 1,
+          "mse_by_waypoint": [
+            5.604039669036865
+          ],
+          "weighted_mse_by_waypoint": [
+            5.048790652067757
+          ],
+          "predicted_norm_by_waypoint": [
+            26.353965759277344
+          ],
+          "hidden_change_mean": 12.721309661865234,
+          "action_data_mse": 0.12075437605381012,
+          "action_teacher_mse": 0.05006790906190872,
+          "normalized_command_action_data_mse": 0.10058169066905975,
+          "normalized_command_action_teacher_mse": 0.02306455187499523
+        },
+        {
+          "H": 2,
+          "mse_by_waypoint": [
+            0.12245956063270569
+          ],
+          "weighted_mse_by_waypoint": [
+            0.0620383952590184
+          ],
+          "predicted_norm_by_waypoint": [
+            10.99134635925293
+          ],
+          "hidden_change_mean": 6.387075424194336,
+          "action_data_mse": 0.09323753416538239,
+          "action_teacher_mse": 0.006795080378651619,
+          "normalized_command_action_data_mse": 0.09395511448383331,
+          "normalized_command_action_teacher_mse": 0.0072772810235619545
+        }
+      ],
+      "gradients": [
+        {
+          "batch_start": 0,
+          "loss": {
+            "value": 1.3632721900939941,
+            "high": 125.84815979003906,
+            "low": 150.02882385253906
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 44.801848017726705,
+              "value": 7.440339811175652,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 44.04180831654106,
+              "executor": 0.0,
+              "feature_embed": 76.60290558756087,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 9.146405697533478,
+              "executor": 49.36813158010272,
+              "feature_embed": 96.80322161828913,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": -0.016283147226151058,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.0034530268442081796
+          }
+        },
+        {
+          "batch_start": 64,
+          "loss": {
+            "value": 0.8617826700210571,
+            "high": 100.78759765625,
+            "low": 174.0319366455078
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 58.599397740880924,
+              "value": 5.814624150621251,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 14.306870037794251,
+              "executor": 0.0,
+              "feature_embed": 20.525489199277693,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 28.55054986286797,
+              "executor": 78.2788989413932,
+              "feature_embed": 275.82701150309487,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.19342365717975277,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.21054039739097605
+          }
+        },
+        {
+          "batch_start": 128,
+          "loss": {
+            "value": 1.0556433200836182,
+            "high": 100.87876892089844,
+            "low": 196.6337890625
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 87.02439653896256,
+              "value": 15.617436452791008,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 25.983391458474973,
+              "executor": 0.0,
+              "feature_embed": 30.799339092903242,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 10.294445802698363,
+              "executor": 52.97101786408849,
+              "feature_embed": 107.45315177975758,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.38184900212758416,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.05401064271853902
+          }
+        },
+        {
+          "batch_start": 192,
+          "loss": {
+            "value": 0.7597458958625793,
+            "high": 152.1923065185547,
+            "low": 90.781005859375
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 32.94887451215073,
+              "value": 2.9233107160029443,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 26.891834402039024,
+              "executor": 0.0,
+              "feature_embed": 57.83665806333034,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 5.4402404228243775,
+              "executor": 37.97632347316379,
+              "feature_embed": 56.348251477328596,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.2005254543281849,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": 0.22259886606348683
+          }
+        }
+      ],
+      "teacher_action_data_mse": 0.09029004722833633
+    },
+    "hrm_beta05_h4l2_m3": {
+      "h": 4,
+      "l": 2,
+      "M": 3,
+      "planner_tokens": 6,
+      "actor_parameter_keys": [
+        "planner_query_tokens",
+        "action_query_token",
+        "feature_embed",
+        "planner_core",
+        "high_actor_head",
+        "action_mixer_blocks_0",
+        "low_actor_head"
+      ],
+      "shared_head_final_matches_native_max_error": 0.0,
+      "stages": [
+        {
+          "H": 1,
+          "mse_by_waypoint": [
+            6014.6875,
+            3284.1259765625,
+            4167.66552734375
+          ],
+          "weighted_mse_by_waypoint": [
+            5759.453945518156,
+            2701.129756032992,
+            3357.287060973091
+          ],
+          "predicted_norm_by_waypoint": [
+            866.6815185546875,
+            629.5294799804688,
+            704.6312866210938
+          ],
+          "hidden_change_mean": 14.10169506072998,
+          "action_data_mse": 1771.0731201171875,
+          "action_teacher_mse": 1772.4605712890625,
+          "normalized_command_action_data_mse": 0.2035316526889801,
+          "normalized_command_action_teacher_mse": 0.13194742798805237
+        },
+        {
+          "H": 2,
+          "mse_by_waypoint": [
+            4987.98779296875,
+            1422.711669921875,
+            2919.545654296875
+          ],
+          "weighted_mse_by_waypoint": [
+            5247.316559351589,
+            1227.118486127686,
+            2691.720383650545
+          ],
+          "predicted_norm_by_waypoint": [
+            789.977294921875,
+            404.1484375,
+            597.46630859375
+          ],
+          "hidden_change_mean": 10.40796184539795,
+          "action_data_mse": 2326.842529296875,
+          "action_teacher_mse": 2326.33349609375,
+          "normalized_command_action_data_mse": 0.26096418499946594,
+          "normalized_command_action_teacher_mse": 0.18662792444229126
+        },
+        {
+          "H": 3,
+          "mse_by_waypoint": [
+            1551.9217529296875,
+            100.70647430419922,
+            317.37884521484375
+          ],
+          "weighted_mse_by_waypoint": [
+            1593.7123520052965,
+            76.2521316421769,
+            271.49686184106395
+          ],
+          "predicted_norm_by_waypoint": [
+            426.26068115234375,
+            83.69915008544922,
+            140.66400146484375
+          ],
+          "hidden_change_mean": 8.068212509155273,
+          "action_data_mse": 939.3040771484375,
+          "action_teacher_mse": 939.4653930664062,
+          "normalized_command_action_data_mse": 0.4754346013069153,
+          "normalized_command_action_teacher_mse": 0.4097147285938263
+        },
+        {
+          "H": 4,
+          "mse_by_waypoint": [
+            0.1465056985616684,
+            0.1450549215078354,
+            0.13325990736484528
+          ],
+          "weighted_mse_by_waypoint": [
+            0.024655004886178826,
+            0.028836893102722177,
+            0.0394016053929012
+          ],
+          "predicted_norm_by_waypoint": [
+            11.135560989379883,
+            11.107028007507324,
+            11.031441688537598
+          ],
+          "hidden_change_mean": 7.000957489013672,
+          "action_data_mse": 0.08446251600980759,
+          "action_teacher_mse": 0.022228239104151726,
+          "normalized_command_action_data_mse": 0.08459368348121643,
+          "normalized_command_action_teacher_mse": 0.022436203435063362
+        }
+      ],
+      "gradients": [
+        {
+          "batch_start": 0,
+          "loss": {
+            "value": 1.3632721900939941,
+            "high": 64.86981964111328,
+            "low": 148.73931884765625
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 44.801848017726705,
+              "value": 7.440339811175652,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 10.582580469451077,
+              "executor": 0.0,
+              "feature_embed": 10.415602627368768,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 49.24042852954409,
+              "executor": 58.33825227266672,
+              "feature_embed": 173.13116040218435,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": -0.09347095504375459,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.034115643615709075
+          }
+        },
+        {
+          "batch_start": 64,
+          "loss": {
+            "value": 0.8617826700210571,
+            "high": 67.60537719726562,
+            "low": 165.73423767089844
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 58.599397740880924,
+              "value": 5.814624150621251,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 3.387904148909341,
+              "executor": 0.0,
+              "feature_embed": 3.7680681674673653,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 21.42357685990699,
+              "executor": 49.498602477804894,
+              "feature_embed": 115.30875651982117,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.18540389546416353,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": 0.03220645145710497
+          }
+        },
+        {
+          "batch_start": 128,
+          "loss": {
+            "value": 1.0556433200836182,
+            "high": 54.75946807861328,
+            "low": 195.59365844726562
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 87.02439653896256,
+              "value": 15.617436452791008,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 4.566670889603909,
+              "executor": 0.0,
+              "feature_embed": 6.373634083582149,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 17.835364369313286,
+              "executor": 41.179341478016006,
+              "feature_embed": 73.84589796564755,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": -0.02685317015660177,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.18058450291502984
+          }
+        },
+        {
+          "batch_start": 192,
+          "loss": {
+            "value": 0.7597458958625793,
+            "high": 93.41912841796875,
+            "low": 91.03372192382812
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 32.94887451215073,
+              "value": 2.9233107160029443,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 4.966017311450145,
+              "executor": 0.0,
+              "feature_embed": 5.343079889604286,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 25.74595143156316,
+              "executor": 38.642069473598454,
+              "feature_embed": 131.75916320381765,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.022657011362272033,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": 0.14242839877418506
+          }
+        }
+      ],
+      "teacher_action_data_mse": 0.0998382419347763
+    },
+    "hrm_beta10_h4l2_m3": {
+      "h": 4,
+      "l": 2,
+      "M": 3,
+      "planner_tokens": 6,
+      "actor_parameter_keys": [
+        "planner_query_tokens",
+        "action_query_token",
+        "feature_embed",
+        "planner_core",
+        "high_actor_head",
+        "action_mixer_blocks_0",
+        "low_actor_head"
+      ],
+      "shared_head_final_matches_native_max_error": 0.0,
+      "stages": [
+        {
+          "H": 1,
+          "mse_by_waypoint": [
+            374.55682373046875,
+            222.63299560546875,
+            281.5860290527344
+          ],
+          "weighted_mse_by_waypoint": [
+            388.19767737076586,
+            211.52401825768447,
+            260.6140401563744
+          ],
+          "predicted_norm_by_waypoint": [
+            212.46121215820312,
+            162.52587890625,
+            180.64210510253906
+          ],
+          "hidden_change_mean": 14.252290725708008,
+          "action_data_mse": 22.981582641601562,
+          "action_teacher_mse": 22.988845825195312,
+          "normalized_command_action_data_mse": 0.23082667589187622,
+          "normalized_command_action_teacher_mse": 0.17886286973953247
+        },
+        {
+          "H": 2,
+          "mse_by_waypoint": [
+            223.77369689941406,
+            55.918251037597656,
+            150.69566345214844
+          ],
+          "weighted_mse_by_waypoint": [
+            221.56453422092147,
+            49.1084551821605,
+            168.10855505943948
+          ],
+          "predicted_norm_by_waypoint": [
+            165.51071166992188,
+            78.38312530517578,
+            127.89457702636719
+          ],
+          "hidden_change_mean": 10.591392517089844,
+          "action_data_mse": 16.845638275146484,
+          "action_teacher_mse": 16.82866096496582,
+          "normalized_command_action_data_mse": 0.47711724042892456,
+          "normalized_command_action_teacher_mse": 0.40371888875961304
+        },
+        {
+          "H": 3,
+          "mse_by_waypoint": [
+            0.8278378844261169,
+            8.184103965759277,
+            1.0224947929382324
+          ],
+          "weighted_mse_by_waypoint": [
+            0.7397322011333475,
+            5.902209290665604,
+            0.984264964819863
+          ],
+          "predicted_norm_by_waypoint": [
+            9.44933795928955,
+            25.66054344177246,
+            12.223098754882812
+          ],
+          "hidden_change_mean": 6.205097198486328,
+          "action_data_mse": 0.974709153175354,
+          "action_teacher_mse": 0.9350559711456299,
+          "normalized_command_action_data_mse": 0.26376211643218994,
+          "normalized_command_action_teacher_mse": 0.20617446303367615
+        },
+        {
+          "H": 4,
+          "mse_by_waypoint": [
+            0.14830546081066132,
+            0.1538519561290741,
+            0.12777777016162872
+          ],
+          "weighted_mse_by_waypoint": [
+            0.04277694020963862,
+            0.047183040350337706,
+            0.045600163858045814
+          ],
+          "predicted_norm_by_waypoint": [
+            11.054394721984863,
+            11.051750183105469,
+            10.990493774414062
+          ],
+          "hidden_change_mean": 5.2166948318481445,
+          "action_data_mse": 0.08334238082170486,
+          "action_teacher_mse": 0.011982258409261703,
+          "normalized_command_action_data_mse": 0.08339855074882507,
+          "normalized_command_action_teacher_mse": 0.01210030261427164
+        }
+      ],
+      "gradients": [
+        {
+          "batch_start": 0,
+          "loss": {
+            "value": 1.3632721900939941,
+            "high": 89.51973724365234,
+            "low": 146.69668579101562
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 44.801848017726705,
+              "value": 7.440339811175652,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 10.39352618380432,
+              "executor": 0.0,
+              "feature_embed": 13.057939652204432,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 12.006156257998718,
+              "executor": 30.580306568157578,
+              "feature_embed": 65.37971096277265,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.0495681292832937,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.021762220407268315
+          }
+        },
+        {
+          "batch_start": 64,
+          "loss": {
+            "value": 0.8617826700210571,
+            "high": 82.92951202392578,
+            "low": 164.7069091796875
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 58.599397740880924,
+              "value": 5.814624150621251,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 8.237131446279754,
+              "executor": 0.0,
+              "feature_embed": 8.582928073853678,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 42.76938021116155,
+              "executor": 57.86556470085244,
+              "feature_embed": 155.4545721604973,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.0841691472028326,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.06402781961807728
+          }
+        },
+        {
+          "batch_start": 128,
+          "loss": {
+            "value": 1.0556433200836182,
+            "high": 71.5122299194336,
+            "low": 197.25067138671875
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 87.02439653896256,
+              "value": 15.617436452791008,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 9.583872601076596,
+              "executor": 0.0,
+              "feature_embed": 7.297042078980759,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 21.76237943876706,
+              "executor": 39.46374667701765,
+              "feature_embed": 121.27071378836048,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": -0.008785787292113621,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.04542539160034947
+          }
+        },
+        {
+          "batch_start": 192,
+          "loss": {
+            "value": 0.7597458958625793,
+            "high": 109.34239959716797,
+            "low": 92.54121398925781
+          },
+          "l2_norm_by_group": {
+            "value": {
+              "goal_rep": 32.94887451215073,
+              "value": 2.9233107160029443,
+              "planner": 0.0,
+              "executor": 0.0,
+              "feature_embed": 0.0,
+              "target_value": 0.0
+            },
+            "high": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 14.477368107418323,
+              "executor": 0.0,
+              "feature_embed": 15.203802527936022,
+              "target_value": 0.0
+            },
+            "low": {
+              "goal_rep": 0.0,
+              "value": 0.0,
+              "planner": 4.921506292212323,
+              "executor": 41.324929491775656,
+              "feature_embed": 46.97030040867113,
+              "target_value": 0.0
+            }
+          },
+          "cosine": {
+            "goal_rep:value:high": null,
+            "goal_rep:value:low": null,
+            "goal_rep:high:low": null,
+            "feature_embed:value:high": null,
+            "feature_embed:value:low": null,
+            "feature_embed:high:low": 0.05804563026038577,
+            "planner:value:high": null,
+            "planner:value:low": null,
+            "planner:high:low": -0.014022026386543195
+          }
+        }
+      ],
+      "teacher_action_data_mse": 0.08716273307800293
+    }
+  }
+}
