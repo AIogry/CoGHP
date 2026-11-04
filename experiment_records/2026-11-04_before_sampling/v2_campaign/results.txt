@@ -1,0 +1,7 @@
+method | environment | seed | 800000 | 900000 | 1000000 | mean (%)
+hrm_beta30_h2l1_m1 | antmaze-giant-navigate-v0 | 0 | 3.20 | 2.40 | 6.80 | 4.13
+hrm_beta30_h4l2_m3 | antmaze-giant-navigate-v0 | 0 | 4.00 | 6.00 | 4.40 | 4.80
+
+Across-seed summaries (sample standard deviation; no SD for a single seed):
+hrm_beta30_h2l1_m1 | antmaze-giant-navigate-v0 | n=1 | 4.13 | SD=N/A (single seed)
+hrm_beta30_h4l2_m3 | antmaze-giant-navigate-v0 | n=1 | 4.80 | SD=N/A (single seed)

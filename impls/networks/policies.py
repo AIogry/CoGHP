@@ -89,10 +89,10 @@ class NavigationPolicy(nn.Module):
     action_hrm_rope_theta: float = 10000.0
     action_hrm_forward_dtype: str = "float32"
     train_action_chain_source: str = "teacher"
-    # Keep legacy sampling and actor/representation gradients unless the
-    # experiment explicitly selects the predicted-mean, value-only protocol.
+    # Keep legacy sampling and gradient routes unless explicitly overridden.
     planner_command_mode: str = "sample"
     actor_goal_rep_grad: bool = True
+    executor_command_stop_grad: bool = False
 
     def setup(self):
         if self.state_dim < 1:
@@ -105,6 +105,8 @@ class NavigationPolicy(nn.Module):
             raise ValueError("planner_command_mode must be sample or mean.")
         if not isinstance(self.actor_goal_rep_grad, bool):
             raise ValueError("actor_goal_rep_grad must be a bool.")
+        if not isinstance(self.executor_command_stop_grad, bool):
+            raise ValueError("executor_command_stop_grad must be a bool.")
         if self.planner_generation not in ("autoregressive", "joint"):
             raise ValueError("planner_generation must be autoregressive or joint.")
         if self.planner_refinement_steps < 1:
@@ -450,8 +452,8 @@ class NavigationPolicy(nn.Module):
         """Separate executor command generation from training NLL temperature.
 
         Mean commands match deterministic inference while preserving a unit
-        training density. They remain differentiable so the executor loss can
-        train the planner through the command input.
+        training density. Commands remain differentiable here; the executor
+        interface independently controls whether its loss reaches the planner.
         """
         if self.planner_command_mode == "mean":
             return distribution.mode()
@@ -560,8 +562,8 @@ class NavigationPolicy(nn.Module):
         """
         del action_seq
         if subgoal_reps is not None and not self.actor_goal_rep_grad:
-            # Only externally supplied data commands are detached. Predicted
-            # commands below keep their path to the planner parameters.
+            # Encoder isolation applies to externally supplied data commands.
+            # The executor interface separately controls predicted-command gradients.
             subgoal_reps = jax.lax.stop_gradient(subgoal_reps)
         if seed is None:
             seed = jax.random.PRNGKey(0)
@@ -611,6 +613,11 @@ class NavigationPolicy(nn.Module):
             action_chain_source,
             free_planner_seed,
         )
+        if self.executor_command_stop_grad:
+            # Isolate only the executor's command input. Keep the original
+            # planner distributions and predictions attached for high loss and
+            # full recurrent BPTT; direct observation/goal features stay attached.
+            action_chain = jax.lax.stop_gradient(action_chain)
         batch_size = features.shape[0]
         action_query = jnp.tile(self.action_query_token, (batch_size, 1, 1))
         action_tokens = jnp.concatenate([features, action_chain, action_query], axis=1)

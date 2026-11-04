@@ -1,0 +1,117 @@
+{
+  "common_agent": {
+    "action_block_type": "coghp_gelu",
+    "action_core_type": "vanilla_coghp",
+    "actor_goal_rep_grad": true,
+    "actor_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "awr_max_weight": 100,
+    "batch_size": 256,
+    "causal_mixer": true,
+    "command_content": "full_state",
+    "discount": 0.99,
+    "enable_action_hrm_validation": true,
+    "enc_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "expectile": 0.7,
+    "feature_dim": 128,
+    "gc_enc": "concat",
+    "high_const_std": true,
+    "high_discount": 0.8,
+    "high_weight_source": "detail_value",
+    "hrm_mixer_intermediate_size": 32,
+    "joint_plan_objective": "waypoint_final",
+    "layer_norm": true,
+    "low_alpha": 3,
+    "low_const_std": true,
+    "lr": 0.0003,
+    "mixer_hidden": 32,
+    "navigation_protocol": "joint_planner_v2_predicted_detached_joint_encoder",
+    "network_backbone": "mlp",
+    "num_mixer_blocks": 1,
+    "planner_block_type": "swiglu_rmsnorm",
+    "planner_bptt": true,
+    "planner_command_mode": "mean",
+    "planner_core_type": "hrm",
+    "planner_forward_dtype": "float32",
+    "planner_generation": "joint",
+    "planner_mixer_intermediate_size": 32,
+    "planner_norm_eps": 1e-06,
+    "planner_num_layers": 1,
+    "planner_refinement_steps": 1,
+    "share_actor_core": false,
+    "tau": 0.005,
+    "train_action_chain_source": "predicted",
+    "value_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "executor_command_stop_grad": true
+  },
+  "environments": {
+    "antmaze-giant-navigate-v0": {
+      "subgoal_steps": 50
+    }
+  },
+  "interpretation": "Two seed-0 runs: H2/L1/M1 and H4/L2/M3 at fixed high_alpha=3.0 and low_alpha=3. Training and inference retain predicted mean commands. Stop gradients only where the executor receives the predicted command; high loss retains the original planner output and full recurrent BPTT. High, low and value losses update the shared goal encoder through their remaining paths: the low loss reaches the directly supplied final-goal representation, but its path through predicted planner commands is detached. Shared observation features still receive low-loss gradients. All other architecture, waypoint-final high loss, cumulative-from-current-state weighting, subgoal sampling interval (50), optimizer, data, evaluation and checkpoint settings match the beta-3 v1 runs. No beta schedule, adjacent-difference weights, intermediate supervision or horizon changes. Use physical GPU 1 with two concurrent training processes in a separate frozen campaign.",
+  "methods": {
+    "hrm_beta30_h2l1_m1": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 2,
+        "planner_l_cycles": 1,
+        "num_subgoals": 1,
+        "high_alpha": 3.0
+      }
+    },
+    "hrm_beta30_h4l2_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0
+      ],
+      "overrides": {
+        "planner_h_cycles": 4,
+        "planner_l_cycles": 2,
+        "num_subgoals": 3,
+        "high_alpha": 3.0
+      }
+    }
+  },
+  "metric": {
+    "column": "evaluation/overall_success",
+    "steps": [
+      800000,
+      900000,
+      1000000
+    ]
+  },
+  "protocol": {
+    "eval_episodes": 50,
+    "eval_interval": 100000,
+    "eval_on_cpu": 1,
+    "eval_temperature": 0,
+    "fixed_validation_batch": true,
+    "log_interval": 5000,
+    "require_deterministic_gpu": true,
+    "save_interval": 1000000,
+    "save_steps": [
+      800000,
+      900000,
+      1000000
+    ],
+    "train_steps": 1000000,
+    "video_episodes": 0
+  },
+  "question": "With predicted mean commands retained, does stopping executor gradients through those commands and restoring actor gradients to the goal encoder recover performance at fixed high beta 3?",
+  "study_id": "joint_planner_v2_antmaze_giant_predmean_detached_jointencoder_beta3_seed0"
+}

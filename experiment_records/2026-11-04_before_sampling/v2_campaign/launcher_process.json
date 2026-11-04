@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/eai/Tools/miniforge3/envs/brain_nav/bin/python",
+    "-u",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v2_antmaze_giant_predmean_detached_jointencoder_beta3_seed0_20261103/source/scripts/run_study.py",
+    "--run-root",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v2_antmaze_giant_predmean_detached_jointencoder_beta3_seed0_20261103",
+    "--gpus",
+    "1",
+    "--workers-per-gpu",
+    "2",
+    "--wandb-mode",
+    "offline",
+    "--execute"
+  ],
+  "dependency": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v1_antmaze_giant_predmean_valueonly_beta25_30_35_seed0_20261031",
+  "dependency_source_signature": "0b2c531bdcd5154003a618b816876743578160d569819d2fc5649ec7a5ceff0b",
+  "physical_gpus": [
+    "1"
+  ],
+  "pid": 1804738,
+  "source_signature": "3a0f6ba83f9506180cff692e2c6277b50e2a9c537396b71d2304e2c0b6081246",
+  "started_at": "2026-11-02T16:18:50.769045+00:00",
+  "workers_per_gpu": 2
+}

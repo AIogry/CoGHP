@@ -305,6 +305,8 @@ class NavigationAgent(flax.struct.PyTreeNode):
             raise ValueError("Navigation requires num_subgoals >= 1.")
         if not isinstance(config.get("actor_goal_rep_grad", True), bool):
             raise ValueError("actor_goal_rep_grad must be a bool.")
+        if not isinstance(config.get("executor_command_stop_grad", False), bool):
+            raise ValueError("executor_command_stop_grad must be a bool.")
         if config.get("planner_command_mode", "sample") not in ("sample", "mean"):
             raise ValueError("planner_command_mode must be sample or mean.")
         joint_objective = config.get("joint_plan_objective", "endpoint_deep")
@@ -490,6 +492,7 @@ class NavigationAgent(flax.struct.PyTreeNode):
             train_action_chain_source=config["train_action_chain_source"],
             planner_command_mode=config.get("planner_command_mode", "sample"),
             actor_goal_rep_grad=config.get("actor_goal_rep_grad", True),
+            executor_command_stop_grad=config.get("executor_command_stop_grad", False),
         )
         network_info = {
             "goal_rep": (
@@ -1206,6 +1209,12 @@ def get_legacy_navigation_config():
 
 def get_config(profile=None):
     """Native method defaults; historical profiles are explicit compatibility inputs."""
+    if profile == "joint_planner_v2":
+        config = get_config("joint_planner_v1")
+        config.actor_goal_rep_grad = True
+        config.executor_command_stop_grad = True
+        config.navigation_protocol = "joint_planner_v2_predicted_detached_joint_encoder"
+        return config
     if profile == "joint_planner_v1":
         config = get_config("joint_planner")
         config.train_action_chain_source = "predicted"
@@ -1265,6 +1274,7 @@ def get_config(profile=None):
             "discount": 0.99,
             "discrete": False,
             "enable_action_hrm_validation": True,
+            "executor_command_stop_grad": False,
             "enc_hidden_dims": (512, 512, 512),
             "encoder": ml_collections.config_dict.placeholder(str),
             "expected_action_core_params": -1,

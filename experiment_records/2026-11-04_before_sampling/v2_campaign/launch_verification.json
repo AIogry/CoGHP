@@ -1,0 +1,70 @@
+{
+  "base_git_commit": "41b3d7dc104114652c7f2bb83631c1bc82bb2be9",
+  "new_gradient_tests_passed": 6,
+  "physical_gpu": 1,
+  "regression_tests_passed": 91,
+  "runs": [
+    {
+      "all_recorded_metrics_finite": true,
+      "first_step": "5000",
+      "latest_losses": {
+        "training/high_actor/actor_loss": "109.73245",
+        "training/high_actor/joint_plan_loss": "109.73245",
+        "training/low_actor/actor_loss": "127.249435",
+        "training/value/value_loss": "0.6175042"
+      },
+      "latest_step": "15000",
+      "method": "hrm_beta30_h2l1_m1",
+      "pid": 1804876,
+      "resolved_agent_diff": {
+        "actor_goal_rep_grad": [
+          false,
+          true
+        ],
+        "executor_command_stop_grad": [
+          null,
+          true
+        ],
+        "navigation_protocol": [
+          "joint_planner_v1_predicted_value_only",
+          "joint_planner_v2_predicted_detached_joint_encoder"
+        ]
+      },
+      "status": "running",
+      "train_rows": 3
+    },
+    {
+      "all_recorded_metrics_finite": true,
+      "first_step": "5000",
+      "latest_losses": {
+        "training/high_actor/actor_loss": "165.85901",
+        "training/high_actor/joint_plan_loss": "55.28634",
+        "training/low_actor/actor_loss": "118.9222",
+        "training/value/value_loss": "0.516383"
+      },
+      "latest_step": "5000",
+      "method": "hrm_beta30_h4l2_m3",
+      "pid": 1804871,
+      "resolved_agent_diff": {
+        "actor_goal_rep_grad": [
+          false,
+          true
+        ],
+        "executor_command_stop_grad": [
+          null,
+          true
+        ],
+        "navigation_protocol": [
+          "joint_planner_v1_predicted_value_only",
+          "joint_planner_v2_predicted_detached_joint_encoder"
+        ]
+      },
+      "status": "running",
+      "train_rows": 1
+    }
+  ],
+  "source_contains_recorded_uncommitted_changes": true,
+  "source_signature": "3a0f6ba83f9506180cff692e2c6277b50e2a9c537396b71d2304e2c0b6081246",
+  "verified_at": "2026-11-02T16:20:33.698355+00:00",
+  "workers": 2
+}

@@ -348,6 +348,10 @@ def build_checkpoint_metadata(
             actor_goal_rep_grad=config.get('actor_goal_rep_grad', True),
             planner_command_mode=config.get('planner_command_mode', 'sample'),
         )
+    # Default/missing preserves archived signatures; detached executor commands
+    # change training semantics and must not silently resume an attached run.
+    if config.get('executor_command_stop_grad', False):
+        signature['executor_command_stop_grad'] = True
     if 'network_backbone' in config:
         for key in ('network_backbone', 'actor_hidden_dims', 'value_hidden_dims', 'enc_hidden_dims'):
             value = config.get(key)
