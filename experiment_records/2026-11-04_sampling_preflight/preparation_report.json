@@ -1,0 +1,1490 @@
+{
+  "protocol": "junction_soft_v1",
+  "dataset": "/data/qijunrong/06-RL/offline-rl/data/raw_ogbench/antmaze-giant-navigate-v0.npz",
+  "dataset_sha256": "387791c414cfba2d77eda64a47f3b6db7950bdf146ae901e4f08c2c2f9e0f3aa",
+  "frozen_sampler_source": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/source",
+  "flags": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_antmaze_giant_width32_seed0_20261029/runs/hrm_h4l2_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/flags.json",
+  "index_signature": "ad5dd149c6c6884af9456db13076b2ea242bf5f8e56b70fe94ed9d72be795c43",
+  "index": {
+    "schema_version": 1,
+    "frames": 1000500,
+    "episodes": 500,
+    "physical_visits": 4661,
+    "occupied_cells": 86,
+    "junctions": 10,
+    "core_junction_frames": 136302,
+    "donor_segments": 71602,
+    "donor_candidate_records": 118682,
+    "signature": "ad5dd149c6c6884af9456db13076b2ea242bf5f8e56b70fe94ed9d72be795c43",
+    "offset_bin_edges": [
+      0,
+      50,
+      100,
+      150,
+      300,
+      600,
+      1200,
+      2147483647
+    ],
+    "build_seconds": 2.200881042983383,
+    "source": "training observations and raw episode boundaries only",
+    "goal_rule": "selected actual goal index lies after first exit and before first return",
+    "start_rule": "core frame with nearest50 label at/after first exit",
+    "effective_episode_end": "raw final observation index minus one, matching compact sampler"
+  },
+  "geometry": {
+    "cell_width": 4.0,
+    "origin_xy": [
+      -4.0,
+      -4.0
+    ],
+    "core_half_width": 1.6,
+    "free_cells": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        1,
+        7
+      ],
+      [
+        1,
+        8
+      ],
+      [
+        1,
+        11
+      ],
+      [
+        1,
+        12
+      ],
+      [
+        1,
+        13
+      ],
+      [
+        1,
+        14
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        2,
+        8
+      ],
+      [
+        2,
+        10
+      ],
+      [
+        2,
+        11
+      ],
+      [
+        2,
+        14
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        3,
+        8
+      ],
+      [
+        3,
+        9
+      ],
+      [
+        3,
+        10
+      ],
+      [
+        3,
+        12
+      ],
+      [
+        3,
+        13
+      ],
+      [
+        3,
+        14
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        4,
+        12
+      ],
+      [
+        4,
+        14
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        5,
+        5
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        5,
+        9
+      ],
+      [
+        5,
+        10
+      ],
+      [
+        5,
+        11
+      ],
+      [
+        5,
+        12
+      ],
+      [
+        5,
+        14
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        6,
+        5
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        6,
+        8
+      ],
+      [
+        6,
+        10
+      ],
+      [
+        6,
+        12
+      ],
+      [
+        7,
+        1
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        7,
+        3
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        7,
+        6
+      ],
+      [
+        7,
+        8
+      ],
+      [
+        7,
+        9
+      ],
+      [
+        7,
+        10
+      ],
+      [
+        7,
+        12
+      ],
+      [
+        7,
+        13
+      ],
+      [
+        7,
+        14
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        8,
+        3
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        8,
+        12
+      ],
+      [
+        8,
+        14
+      ],
+      [
+        9,
+        1
+      ],
+      [
+        9,
+        5
+      ],
+      [
+        9,
+        6
+      ],
+      [
+        9,
+        7
+      ],
+      [
+        9,
+        9
+      ],
+      [
+        9,
+        10
+      ],
+      [
+        9,
+        11
+      ],
+      [
+        9,
+        14
+      ],
+      [
+        10,
+        1
+      ],
+      [
+        10,
+        2
+      ],
+      [
+        10,
+        3
+      ],
+      [
+        10,
+        4
+      ],
+      [
+        10,
+        5
+      ],
+      [
+        10,
+        7
+      ],
+      [
+        10,
+        8
+      ],
+      [
+        10,
+        9
+      ],
+      [
+        10,
+        11
+      ],
+      [
+        10,
+        12
+      ],
+      [
+        10,
+        13
+      ],
+      [
+        10,
+        14
+      ]
+    ],
+    "junction_cells": [
+      [
+        1,
+        6
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        14
+      ],
+      [
+        5,
+        5
+      ],
+      [
+        5,
+        10
+      ],
+      [
+        5,
+        12
+      ],
+      [
+        7,
+        3
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        7,
+        12
+      ],
+      [
+        9,
+        5
+      ]
+    ],
+    "adjacency": {
+      "1,1": [
+        [
+          2,
+          1
+        ]
+      ],
+      "1,3": [
+        [
+          2,
+          3
+        ],
+        [
+          1,
+          4
+        ]
+      ],
+      "1,4": [
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "1,5": [
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          6
+        ]
+      ],
+      "1,6": [
+        [
+          2,
+          6
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          7
+        ]
+      ],
+      "1,7": [
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          8
+        ]
+      ],
+      "1,8": [
+        [
+          2,
+          8
+        ],
+        [
+          1,
+          7
+        ]
+      ],
+      "1,11": [
+        [
+          2,
+          11
+        ],
+        [
+          1,
+          12
+        ]
+      ],
+      "1,12": [
+        [
+          1,
+          11
+        ],
+        [
+          1,
+          13
+        ]
+      ],
+      "1,13": [
+        [
+          1,
+          12
+        ],
+        [
+          1,
+          14
+        ]
+      ],
+      "1,14": [
+        [
+          2,
+          14
+        ],
+        [
+          1,
+          13
+        ]
+      ],
+      "2,1": [
+        [
+          1,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "2,3": [
+        [
+          1,
+          3
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "2,6": [
+        [
+          1,
+          6
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "2,8": [
+        [
+          1,
+          8
+        ],
+        [
+          3,
+          8
+        ]
+      ],
+      "2,10": [
+        [
+          3,
+          10
+        ],
+        [
+          2,
+          11
+        ]
+      ],
+      "2,11": [
+        [
+          1,
+          11
+        ],
+        [
+          2,
+          10
+        ]
+      ],
+      "2,14": [
+        [
+          1,
+          14
+        ],
+        [
+          3,
+          14
+        ]
+      ],
+      "3,1": [
+        [
+          2,
+          1
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          3,
+          2
+        ]
+      ],
+      "3,2": [
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "3,3": [
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          2
+        ]
+      ],
+      "3,5": [
+        [
+          4,
+          5
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "3,6": [
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          5
+        ]
+      ],
+      "3,8": [
+        [
+          2,
+          8
+        ],
+        [
+          3,
+          9
+        ]
+      ],
+      "3,9": [
+        [
+          3,
+          8
+        ],
+        [
+          3,
+          10
+        ]
+      ],
+      "3,10": [
+        [
+          2,
+          10
+        ],
+        [
+          3,
+          9
+        ]
+      ],
+      "3,12": [
+        [
+          4,
+          12
+        ],
+        [
+          3,
+          13
+        ]
+      ],
+      "3,13": [
+        [
+          3,
+          12
+        ],
+        [
+          3,
+          14
+        ]
+      ],
+      "3,14": [
+        [
+          2,
+          14
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          3,
+          13
+        ]
+      ],
+      "4,1": [
+        [
+          3,
+          1
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "4,5": [
+        [
+          3,
+          5
+        ],
+        [
+          5,
+          5
+        ]
+      ],
+      "4,12": [
+        [
+          3,
+          12
+        ],
+        [
+          5,
+          12
+        ]
+      ],
+      "4,14": [
+        [
+          3,
+          14
+        ],
+        [
+          5,
+          14
+        ]
+      ],
+      "5,1": [
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "5,2": [
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          3
+        ]
+      ],
+      "5,3": [
+        [
+          6,
+          3
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "5,5": [
+        [
+          4,
+          5
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "5,6": [
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          7
+        ]
+      ],
+      "5,7": [
+        [
+          6,
+          7
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "5,9": [
+        [
+          5,
+          10
+        ]
+      ],
+      "5,10": [
+        [
+          6,
+          10
+        ],
+        [
+          5,
+          9
+        ],
+        [
+          5,
+          11
+        ]
+      ],
+      "5,11": [
+        [
+          5,
+          10
+        ],
+        [
+          5,
+          12
+        ]
+      ],
+      "5,12": [
+        [
+          4,
+          12
+        ],
+        [
+          6,
+          12
+        ],
+        [
+          5,
+          11
+        ]
+      ],
+      "5,14": [
+        [
+          4,
+          14
+        ]
+      ],
+      "6,3": [
+        [
+          5,
+          3
+        ],
+        [
+          7,
+          3
+        ]
+      ],
+      "6,5": [
+        [
+          5,
+          5
+        ],
+        [
+          7,
+          5
+        ]
+      ],
+      "6,7": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          8
+        ]
+      ],
+      "6,8": [
+        [
+          7,
+          8
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "6,10": [
+        [
+          5,
+          10
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "6,12": [
+        [
+          5,
+          12
+        ],
+        [
+          7,
+          12
+        ]
+      ],
+      "7,1": [
+        [
+          8,
+          1
+        ],
+        [
+          7,
+          2
+        ]
+      ],
+      "7,2": [
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ]
+      ],
+      "7,3": [
+        [
+          6,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          7,
+          2
+        ]
+      ],
+      "7,5": [
+        [
+          6,
+          5
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          7,
+          6
+        ]
+      ],
+      "7,6": [
+        [
+          7,
+          5
+        ]
+      ],
+      "7,8": [
+        [
+          6,
+          8
+        ],
+        [
+          7,
+          9
+        ]
+      ],
+      "7,9": [
+        [
+          7,
+          8
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "7,10": [
+        [
+          6,
+          10
+        ],
+        [
+          7,
+          9
+        ]
+      ],
+      "7,12": [
+        [
+          6,
+          12
+        ],
+        [
+          8,
+          12
+        ],
+        [
+          7,
+          13
+        ]
+      ],
+      "7,13": [
+        [
+          7,
+          12
+        ],
+        [
+          7,
+          14
+        ]
+      ],
+      "7,14": [
+        [
+          8,
+          14
+        ],
+        [
+          7,
+          13
+        ]
+      ],
+      "8,1": [
+        [
+          7,
+          1
+        ],
+        [
+          9,
+          1
+        ]
+      ],
+      "8,3": [
+        [
+          7,
+          3
+        ]
+      ],
+      "8,5": [
+        [
+          7,
+          5
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      "8,12": [
+        [
+          7,
+          12
+        ]
+      ],
+      "8,14": [
+        [
+          7,
+          14
+        ],
+        [
+          9,
+          14
+        ]
+      ],
+      "9,1": [
+        [
+          8,
+          1
+        ],
+        [
+          10,
+          1
+        ]
+      ],
+      "9,5": [
+        [
+          8,
+          5
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      "9,6": [
+        [
+          9,
+          5
+        ],
+        [
+          9,
+          7
+        ]
+      ],
+      "9,7": [
+        [
+          10,
+          7
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      "9,9": [
+        [
+          10,
+          9
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "9,10": [
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          11
+        ]
+      ],
+      "9,11": [
+        [
+          10,
+          11
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "9,14": [
+        [
+          8,
+          14
+        ],
+        [
+          10,
+          14
+        ]
+      ],
+      "10,1": [
+        [
+          9,
+          1
+        ],
+        [
+          10,
+          2
+        ]
+      ],
+      "10,2": [
+        [
+          10,
+          1
+        ],
+        [
+          10,
+          3
+        ]
+      ],
+      "10,3": [
+        [
+          10,
+          2
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "10,4": [
+        [
+          10,
+          3
+        ],
+        [
+          10,
+          5
+        ]
+      ],
+      "10,5": [
+        [
+          9,
+          5
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "10,7": [
+        [
+          9,
+          7
+        ],
+        [
+          10,
+          8
+        ]
+      ],
+      "10,8": [
+        [
+          10,
+          7
+        ],
+        [
+          10,
+          9
+        ]
+      ],
+      "10,9": [
+        [
+          9,
+          9
+        ],
+        [
+          10,
+          8
+        ]
+      ],
+      "10,11": [
+        [
+          9,
+          11
+        ],
+        [
+          10,
+          12
+        ]
+      ],
+      "10,12": [
+        [
+          10,
+          11
+        ],
+        [
+          10,
+          13
+        ]
+      ],
+      "10,13": [
+        [
+          10,
+          12
+        ],
+        [
+          10,
+          14
+        ]
+      ],
+      "10,14": [
+        [
+          9,
+          14
+        ],
+        [
+          10,
+          13
+        ]
+      ]
+    },
+    "lattice_shape": [
+      12,
+      16
+    ],
+    "provenance": "occupied TRAIN observation XY cells; orthogonal occupied-cell adjacency; no BFS ranking"
+  },
+  "probability": 0.5,
+  "min_visits": 5,
+  "min_episodes": 3,
+  "sampler_seed": 20261105,
+  "replacement_seed": 2026110501,
+  "query_count": 1048576,
+  "triggered_count": 19419,
+  "supported_count": 8156,
+  "replaced_count": 4056,
+  "triggered_fraction": 0.01851940155029297,
+  "supported_fraction": 0.007778167724609375,
+  "replaced_fraction": 0.00386810302734375,
+  "supported_physical_visits": 1145,
+  "supported_episodes": 368,
+  "supported_junctions": 10,
+  "drift": {
+    "start_xy": {
+      "n": 4056,
+      "mean": 1.4763551950454712,
+      "quantiles": {
+        "min": 0.02629578486084938,
+        "q10": 0.5184316039085388,
+        "median": 1.424547255039215,
+        "q90": 2.531242251396179,
+        "max": 3.6819725036621094
+      }
+    },
+    "start_full_state_l2": {
+      "n": 4056,
+      "mean": 10.883359909057617,
+      "quantiles": {
+        "min": 2.599471092224121,
+        "q10": 7.035116910934448,
+        "median": 10.426656723022461,
+        "q90": 15.695177555084229,
+        "max": 24.480514526367188
+      }
+    },
+    "start_xy_velocity": {
+      "n": 4056,
+      "mean": 1.920531988143921,
+      "quantiles": {
+        "min": 0.027998333796858788,
+        "q10": 0.7288467586040497,
+        "median": 1.8486154079437256,
+        "q90": 3.173814535140991,
+        "max": 5.2874250411987305
+      }
+    },
+    "original_goal_offset": {
+      "n": 4056,
+      "mean": 736.0761834319527,
+      "quantiles": {
+        "min": 68.0,
+        "q10": 297.5,
+        "median": 727.0,
+        "q90": 1152.5,
+        "max": 1950.0
+      }
+    },
+    "donor_goal_offset": {
+      "n": 4056,
+      "mean": 700.8237179487179,
+      "quantiles": {
+        "min": 50.0,
+        "q10": 299.0,
+        "median": 681.0,
+        "q90": 1145.0,
+        "max": 1925.0
+      }
+    },
+    "goal_offset_difference": {
+      "n": 4056,
+      "mean": -35.252465483234715,
+      "quantiles": {
+        "min": -664.0,
+        "q10": -304.0,
+        "median": -40.0,
+        "q90": 229.5,
+        "max": 611.0
+      }
+    }
+  },
+  "checks": {
+    "original_low_value_sampler_stream_unchanged": true,
+    "unreplaced_query_indices_unchanged": true,
+    "same_junction_cell": true,
+    "same_goal_cell": true,
+    "same_incoming": true,
+    "different_exit": true,
+    "different_episode": true,
+    "same_temporal_offset_bin": true,
+    "same_50_100_150_clipping": true,
+    "all_donor_targets_real_within_episode": true,
+    "all_donor_goals_before_return": true,
+    "all_donor_nearest50_after_exit": true,
+    "support_meets_independent_threshold": true,
+    "dataset_hash_unchanged": true
+  },
+  "by_temporal_bin": [
+    {
+      "bin": 0,
+      "lower": 0,
+      "upper": 50,
+      "original_queries": 120639,
+      "triggered": 0,
+      "supported": 0,
+      "replaced": 0
+    },
+    {
+      "bin": 1,
+      "lower": 50,
+      "upper": 100,
+      "original_queries": 87010,
+      "triggered": 44,
+      "supported": 44,
+      "replaced": 24
+    },
+    {
+      "bin": 2,
+      "lower": 100,
+      "upper": 150,
+      "original_queries": 72762,
+      "triggered": 272,
+      "supported": 86,
+      "replaced": 44
+    },
+    {
+      "bin": 3,
+      "lower": 150,
+      "upper": 300,
+      "original_queries": 173712,
+      "triggered": 1714,
+      "supported": 719,
+      "replaced": 342
+    },
+    {
+      "bin": 4,
+      "lower": 300,
+      "upper": 600,
+      "original_queries": 238662,
+      "triggered": 4741,
+      "supported": 2120,
+      "replaced": 1069
+    },
+    {
+      "bin": 5,
+      "lower": 600,
+      "upper": 1200,
+      "original_queries": 257351,
+      "triggered": 8311,
+      "supported": 4661,
+      "replaced": 2303
+    },
+    {
+      "bin": 6,
+      "lower": 1200,
+      "upper": 2147483647,
+      "original_queries": 98440,
+      "triggered": 4337,
+      "supported": 526,
+      "replaced": 274
+    }
+  ],
+  "sampling_wall_seconds": 2.211083041038364,
+  "replacement_sampler_seconds": 0.23349596606567502,
+  "replacement_seconds_per1024": 0.00022802340436101076,
+  "support_rule": "clean alternative side >=5 distinct visits and >=3 raw episodes AFTER excluding source episode and source first exit; no bad-side threshold; no spatial caliper",
+  "trigger_rule": "nearest50 label after first exit and before first return; chosen goal at/after return; its cell not reached between first exit and return",
+  "donor_rule": "uniform eligible physical visit, then uniform eligible real core start, then uniform real goal index in same cell and temporal bin before first return",
+  "limitations": [
+    "same incoming and source cell do not fix identical continuous position, posture, or velocity",
+    "same temporal bin preserves clipping and coarse time difficulty, not exact goal offset",
+    "no return is a sampling preference, not a correctness label",
+    "topology inferred from training occupancy only; no shortest-path selection"
+  ]
+}

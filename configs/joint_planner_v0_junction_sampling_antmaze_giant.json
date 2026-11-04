@@ -1,0 +1,203 @@
+{
+  "study_id": "joint_planner_v0_junction_soft_sampling_hlm_seed01",
+  "question": "At unchanged v0 value objective and inference, does train-only alternative-route sampling improve first physical junction exits and reduce unproductive returns?",
+  "interpretation": "16 paired runs: four H/L/M configurations, original sampling vs probability0.5 high-only real-query replacement, seeds0 and1. All v0 value/low batches and RNG streams retained. Donors match junction/incoming/goal cell and goal-time bin; require clean alternative exit evidence from >=5 visits and >=3 other episodes. No shortest-path criterion or new critic. High, low and value continue sharing encoder as in v0, so downstream parameter trajectories may change. Validation sampler untouched. Passive behavior traces from existing evaluations at800k/900k/1M; no altered policy or plan-hold schedule.",
+  "metric": {
+    "column": "evaluation/overall_success",
+    "steps": [
+      800000,
+      900000,
+      1000000
+    ]
+  },
+  "protocol": {
+    "train_steps": 1000000,
+    "log_interval": 5000,
+    "eval_interval": 100000,
+    "save_interval": 1000000,
+    "save_steps": [
+      800000,
+      900000,
+      1000000
+    ],
+    "eval_episodes": 50,
+    "eval_temperature": 0,
+    "video_episodes": 0,
+    "eval_on_cpu": 1,
+    "fixed_validation_batch": true,
+    "require_deterministic_gpu": true,
+    "save_eval_trajectories": true
+  },
+  "common_agent": {
+    "batch_size": 256,
+    "lr": 0.0003,
+    "actor_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "value_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "enc_hidden_dims": [
+      512,
+      512,
+      512
+    ],
+    "feature_dim": 128,
+    "network_backbone": "mlp",
+    "layer_norm": true,
+    "gc_enc": "concat",
+    "command_content": "full_state",
+    "high_weight_source": "detail_value",
+    "navigation_protocol": "joint_planner_v0",
+    "discount": 0.99,
+    "high_discount": 0.8,
+    "low_alpha": 3,
+    "high_alpha": 3,
+    "awr_max_weight": 100,
+    "expectile": 0.7,
+    "tau": 0.005,
+    "high_const_std": true,
+    "low_const_std": true,
+    "planner_generation": "joint",
+    "planner_core_type": "hrm",
+    "planner_block_type": "swiglu_rmsnorm",
+    "planner_num_layers": 1,
+    "planner_mixer_intermediate_size": 32,
+    "planner_refinement_steps": 1,
+    "planner_bptt": true,
+    "joint_plan_objective": "waypoint_final",
+    "planner_norm_eps": 1e-06,
+    "planner_forward_dtype": "float32",
+    "action_core_type": "vanilla_coghp",
+    "action_block_type": "coghp_gelu",
+    "num_mixer_blocks": 1,
+    "mixer_hidden": 32,
+    "hrm_mixer_intermediate_size": 32,
+    "causal_mixer": true,
+    "share_actor_core": false,
+    "train_action_chain_source": "teacher",
+    "enable_action_hrm_validation": true,
+    "actor_goal_rep_grad": true,
+    "planner_command_mode": "sample",
+    "executor_command_stop_grad": false,
+    "high_sampling_protocol": "junction_soft_v1",
+    "high_sampling_min_visits": 5,
+    "high_sampling_min_episodes": 3
+  },
+  "methods": {
+    "original_h2l1_m1": {
+      "agent": "navigation",
+      "seeds": [
+        0,
+        1
+      ],
+      "overrides": {
+        "planner_h_cycles": 2,
+        "planner_l_cycles": 1,
+        "num_subgoals": 1,
+        "high_sampling_probability": 0.0
+      }
+    },
+    "soft_h2l1_m1": {
+      "agent": "navigation",
+      "seeds": [
+        0,
+        1
+      ],
+      "overrides": {
+        "planner_h_cycles": 2,
+        "planner_l_cycles": 1,
+        "num_subgoals": 1,
+        "high_sampling_probability": 0.5
+      }
+    },
+    "original_h2l1_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0,
+        1
+      ],
+      "overrides": {
+        "planner_h_cycles": 2,
+        "planner_l_cycles": 1,
+        "num_subgoals": 3,
+        "high_sampling_probability": 0.0
+      }
+    },
+    "soft_h2l1_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0,
+        1
+      ],
+      "overrides": {
+        "planner_h_cycles": 2,
+        "planner_l_cycles": 1,
+        "num_subgoals": 3,
+        "high_sampling_probability": 0.5
+      }
+    },
+    "original_h4l1_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0,
+        1
+      ],
+      "overrides": {
+        "planner_h_cycles": 4,
+        "planner_l_cycles": 1,
+        "num_subgoals": 3,
+        "high_sampling_probability": 0.0
+      }
+    },
+    "soft_h4l1_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0,
+        1
+      ],
+      "overrides": {
+        "planner_h_cycles": 4,
+        "planner_l_cycles": 1,
+        "num_subgoals": 3,
+        "high_sampling_probability": 0.5
+      }
+    },
+    "original_h4l2_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0,
+        1
+      ],
+      "overrides": {
+        "planner_h_cycles": 4,
+        "planner_l_cycles": 2,
+        "num_subgoals": 3,
+        "high_sampling_probability": 0.0
+      }
+    },
+    "soft_h4l2_m3": {
+      "agent": "navigation",
+      "seeds": [
+        0,
+        1
+      ],
+      "overrides": {
+        "planner_h_cycles": 4,
+        "planner_l_cycles": 2,
+        "num_subgoals": 3,
+        "high_sampling_probability": 0.5
+      }
+    }
+  },
+  "environments": {
+    "antmaze-giant-navigate-v0": {
+      "subgoal_steps": 50
+    }
+  },
+  "seed_major_order": true
+}

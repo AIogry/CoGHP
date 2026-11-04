@@ -307,6 +307,17 @@ class NavigationAgent(flax.struct.PyTreeNode):
             raise ValueError("actor_goal_rep_grad must be a bool.")
         if not isinstance(config.get("executor_command_stop_grad", False), bool):
             raise ValueError("executor_command_stop_grad must be a bool.")
+        sampling_probability = config.get("high_sampling_probability", 0.0)
+        if not 0 <= sampling_probability <= 1:
+            raise ValueError("high_sampling_probability must be in [0, 1].")
+        if sampling_probability > 0 and (
+            config.get("planner_generation") != "joint"
+            or config.get("joint_plan_objective") != "waypoint_final"
+            or config.get("command_content") != "full_state"
+            or config.get("train_action_chain_source") != "teacher"
+            or config.get("high_weight_source") != "detail_value"
+        ):
+            raise ValueError("Junction sampling requires the v0 full-state joint waypoint/teacher protocol.")
         if config.get("planner_command_mode", "sample") not in ("sample", "mean"):
             raise ValueError("planner_command_mode must be sample or mean.")
         joint_objective = config.get("joint_plan_objective", "endpoint_deep")
@@ -779,12 +790,30 @@ class NavigationAgent(flax.struct.PyTreeNode):
                 return_diagnostics=True,
                 return_planner_rounds=not final_only,
             )
+            high_batch = batch
+            if "high_only_observations" in batch:
+                if not final_only:
+                    raise ValueError("Separate high queries require waypoint_final supervision.")
+                # The original forward and original batch remain the executor's
+                # inputs, including its teacher commands and low AWR target.
+                # A complete real high query replaces only the high objective.
+                high_batch = dict(batch)
+                high_batch.update(
+                    observations=batch["high_only_observations"],
+                    high_actor_goals=batch["high_only_goals"],
+                    high_actor_targets=batch["high_only_targets"],
+                )
+                high_commands = self.command_labels(high_batch, grad_params)
+                high, _, _ = self.policy(
+                    high_batch["observations"], high_batch["high_actor_goals"],
+                    rng, high_commands, grad_params,
+                )
             if final_only:
                 # One HRM segment contains all h/ell updates. Its final output
                 # alone is decoded; the per-waypoint objective preserves the
                 # CoGHP weights and scale, without division by h or ell.
                 high_loss, high_info = self.multi_high_actor_loss(
-                    batch, high, None, grad_params
+                    high_batch, high, None, grad_params
                 )
                 high_info["joint_plan_loss"] = high_loss
             else:
@@ -1275,6 +1304,11 @@ def get_config(profile=None):
             "discrete": False,
             "enable_action_hrm_validation": True,
             "executor_command_stop_grad": False,
+            "high_sampling_probability": 0.0,
+            "high_sampling_min_visits": 5,
+            "high_sampling_min_episodes": 3,
+            "high_sampling_protocol": "junction_soft_v1",
+            "high_sampling_index_signature": "",
             "enc_hidden_dims": (512, 512, 512),
             "encoder": ml_collections.config_dict.placeholder(str),
             "expected_action_core_params": -1,

@@ -77,6 +77,8 @@ flags.DEFINE_float('eval_gaussian', None, 'Action Gaussian noise for evaluation.
 flags.DEFINE_integer('video_episodes', 1, 'Number of video episodes for each task.')
 flags.DEFINE_integer('video_frame_skip', 3, 'Frame skip for videos.')
 flags.DEFINE_integer('eval_on_cpu', 1, 'Whether to evaluate on CPU.')
+flags.DEFINE_bool('save_eval_trajectories', False,
+                  'Passively save existing evaluation trajectories at checkpoint steps for junction diagnostics.')
 
 config_flags.DEFINE_config_file('agent', 'agents/navigation.py', lock_config=False)
 
@@ -169,6 +171,40 @@ def main(_):
         frame_stack=config['frame_stack'],
         seed=environment_seed,
     )
+    high_sampler = None
+    sampling_index = None
+    sampling_observations = None
+    sampling_seed = derive_seed(train_dataset_seed, 51004)
+    if config.get('high_sampling_probability', 0.0) > 0 or FLAGS.save_eval_trajectories:
+        from utils.junction_sampling import JunctionRouteIndex, JunctionHighSampler
+        if config.get('high_sampling_probability', 0.0) > 0 and (
+            config['subgoal_steps'] != 50 or config['num_subgoals'] not in (1, 2, 3)
+        ):
+            raise ValueError('junction_soft_v1 is defined for stride50 and M<=3.')
+        if 'valids' not in train_dataset:
+            raise ValueError('Junction sampling requires the original compact dataset and raw terminal markers.')
+        sampling_observations = np.asarray(train_dataset['observations'])
+        # valids was constructed from the RAW terminals, before compact_dataset
+        # duplicates terminal markers. Neither validation data nor test maps are used.
+        raw_episode_ends = np.flatnonzero(np.asarray(train_dataset['valids']) == 0)
+        sampling_index = JunctionRouteIndex.build(sampling_observations, raw_episode_ends)
+        config.high_sampling_index_signature = sampling_index.signature
+        with open(os.path.join(FLAGS.save_dir, 'junction_geometry.json'), 'w') as f:
+            json.dump(sampling_index.geometry, f, indent=2)
+        with open(os.path.join(FLAGS.save_dir, 'high_sampling_protocol.json'), 'w') as f:
+            json.dump(dict(protocol=config.get('high_sampling_protocol'),
+                           probability=config.get('high_sampling_probability', 0.0),
+                           index_signature=sampling_index.signature,
+                           independent_rng_seed=sampling_seed,
+                           source='training observations and raw episode ends only',
+                           minimum_alternative_visits=config.get('high_sampling_min_visits', 5),
+                           minimum_alternative_episodes=config.get('high_sampling_min_episodes', 3)), f, indent=2)
+        if config.get('high_sampling_probability', 0.0) > 0:
+            high_sampler = JunctionHighSampler(
+                sampling_index, sampling_observations,
+                probability=config['high_sampling_probability'], seed=sampling_seed,
+                min_visits=config.get('high_sampling_min_visits', 5),
+                min_episodes=config.get('high_sampling_min_episodes', 3))
     navigation_study = 'command_content' in config
     if navigation_study:
         stats = position_statistics(train_dataset)
@@ -278,6 +314,10 @@ def main(_):
             if int(agent.network.step) != FLAGS.restore_epoch + 1:
                 raise ValueError('Checkpoint update count does not match restore epoch.')
             train_dataset.rng.bit_generator.state = sampler_state['train_rng']
+            if high_sampler is not None:
+                if sampler_state.get('high_sampling_index_signature') != sampling_index.signature:
+                    raise ValueError('Missing or mismatched junction sampling index in resume state.')
+                high_sampler.set_rng_state(sampler_state['high_sampling_rng'])
             if val_dataset is not None:
                 val_dataset.rng.bit_generator.state = sampler_state['validation_rng']
             first_update = FLAGS.restore_epoch + 1
@@ -290,18 +330,51 @@ def main(_):
     # Train agent.
     train_logger = CsvLogger(os.path.join(FLAGS.save_dir, 'train.csv'))
     eval_logger = CsvLogger(os.path.join(FLAGS.save_dir, 'eval.csv'))
+    behavior_logger = (CsvLogger(os.path.join(FLAGS.save_dir, 'behavior.csv'))
+                       if FLAGS.save_eval_trajectories else None)
     first_time = time.time()
     last_time = time.time()
     previous_position_probe = None
+    sampling_totals = defaultdict(float)
+    sampling_batches = 0
     for i in tqdm.tqdm(range(first_update, FLAGS.train_steps + 1), smoothing=0.1, dynamic_ncols=True):
         # Update agent.
         if not FLAGS.eval_only:
             batch = train_dataset.sample(config['batch_size'])
+            if high_sampler is not None:
+                sampled = high_sampler.sample(batch['indices'], batch['high_actor_goal_idxs'],
+                                              batch['high_actor_target_idxs'])
+                batch['high_only_observations'] = sampling_observations[sampled['start_indices']]
+                batch['high_only_goals'] = sampling_observations[sampled['goal_indices']]
+                batch['high_only_targets'] = sampling_observations[sampled['target_indices']]
+                for key, value in sampled['metrics'].items():
+                    if '_drift_' in key and key.endswith('_max_abs'):
+                        sampling_totals[key] = max(sampling_totals[key], float(value))
+                    elif '_drift_' in key and key.endswith('_mean'):
+                        # Do not average conditional batch means: batches with
+                        # zero replacements must not shrink the measured drift.
+                        sampling_totals[key] += float(value) * sampled['metrics']['replacement_count']
+                    else:
+                        sampling_totals[key] += float(value)
+                sampling_batches += 1
             agent, update_info = agent.update(batch)
 
         # Log metrics.
         if not FLAGS.eval_only and i % FLAGS.log_interval == 0:
             train_metrics = {f'training/{k}': v for k, v in update_info.items()}
+            if high_sampler is not None:
+                for key, value in sampling_totals.items():
+                    if '_drift_' in key and key.endswith('_mean'):
+                        denominator = max(sampling_totals['replacement_count'], 1)
+                    elif key.endswith('_max_abs'):
+                        denominator = 1
+                    else:
+                        denominator = max(sampling_batches, 1)
+                    train_metrics[f'sampling/{key}'] = value / denominator
+                train_metrics['sampling/drift_defined'] = float(sampling_totals['replacement_count'] > 0)
+                train_metrics['sampling/interval_replacements'] = sampling_totals['replacement_count']
+                sampling_totals.clear()
+                sampling_batches = 0
             if val_dataset is not None:
                 if FLAGS.fixed_validation_batch:
                     validation_rng = np.random.default_rng(validation_dataset_seed)
@@ -364,8 +437,11 @@ def main(_):
             renders = []
             eval_metrics = {}
             overall_metrics = defaultdict(list)
+            behavior_metrics = {}
             task_infos = env.unwrapped.task_infos if hasattr(env.unwrapped, 'task_infos') else env.task_infos
             num_tasks = FLAGS.eval_tasks if FLAGS.eval_tasks is not None else len(task_infos)
+            record_trajectories = FLAGS.save_eval_trajectories and (
+                i in save_steps or i % FLAGS.save_interval == 0)
             for task_id in tqdm.trange(1, num_tasks + 1):
                 task_name = task_infos[task_id - 1]['task_name']
                 eval_info, trajs, cur_renders = evaluate(
@@ -380,7 +456,17 @@ def main(_):
                     eval_gaussian=FLAGS.eval_gaussian,
                     # Keep every checkpoint on the same task/episode set.
                     seed=derive_seed(eval_seed, task_id),
+                    record_trajectory_metadata=record_trajectories,
                 )
+                if record_trajectories:
+                    from utils.junction_behavior import save_behavior_rollouts
+                    behavior_dir = os.path.join(FLAGS.save_dir, 'behavior', f'step_{i}')
+                    os.makedirs(behavior_dir, exist_ok=True)
+                    current_behavior = save_behavior_rollouts(
+                        os.path.join(behavior_dir, f'task_{task_id}'), trajs,
+                        sampling_index.geometry, task_id=task_id, checkpoint_step=i)
+                    behavior_metrics.update({f'task{task_id}/{key}': value
+                                             for key, value in current_behavior.items()})
                 renders.extend(cur_renders)
                 metric_names = ['success']
                 eval_metrics.update(
@@ -398,6 +484,8 @@ def main(_):
 
             wandb.log(eval_metrics, step=i)
             eval_logger.log(eval_metrics, step=i)
+            if record_trajectories:
+                behavior_logger.log(behavior_metrics, step=i)
 
         # Save agent.
         if not FLAGS.eval_only and (i % FLAGS.save_interval == 0 or i in save_steps):
@@ -410,11 +498,16 @@ def main(_):
             if navigation_study:
                 sampler_state = dict(train_rng=train_dataset.rng.bit_generator.state,
                                      validation_rng=val_dataset.rng.bit_generator.state if val_dataset is not None else None)
+                if high_sampler is not None:
+                    sampler_state.update(high_sampling_rng=high_sampler.get_rng_state(),
+                                         high_sampling_index_signature=sampling_index.signature)
                 with open(os.path.join(FLAGS.save_dir, f'training_state_{i}.json'), 'w') as f:
                     json.dump(sampler_state, f)
 
     train_logger.close()
     eval_logger.close()
+    if behavior_logger is not None:
+        behavior_logger.close()
 
 
 if __name__ == '__main__':

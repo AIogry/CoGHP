@@ -52,6 +52,7 @@ def evaluate(
     eval_temperature=0,
     eval_gaussian=None,
     seed=None,
+    record_trajectory_metadata=False,
 ):
     """Evaluate the agent in the environment.
 
@@ -65,6 +66,9 @@ def evaluate(
         video_frame_skip: Number of frames to skip between renders.
         eval_temperature: Action sampling temperature.
         eval_gaussian: Standard deviation of the Gaussian noise to add to the actions.
+        record_trajectory_metadata: Attach goal, reset/policy seeds, and terminal
+            metadata to returned evaluation trajectories. This performs no
+            additional policy or environment calls and consumes no randomness.
 
     Returns:
         A tuple containing the statistics, trajectories, and rendered videos.
@@ -126,6 +130,19 @@ def evaluate(
             observation = next_observation
         if i < num_eval_episodes:
             add_to(stats, flatten(info))
+            if record_trajectory_metadata:
+                traj['_metadata'] = dict(
+                    task_id=task_id,
+                    episode_index=i,
+                    evaluation_seed=int(seed),
+                    episode_seed=int(episode_seed),
+                    actor_seed=int(actor_seed),
+                    noise_seed=int(derive_seed(seed, i, 2)),
+                    goal=None if goal is None else np.asarray(goal).copy(),
+                    success=bool(info.get('success', False)),
+                    terminated=bool(terminated),
+                    truncated=bool(truncated),
+                )
             trajs.append(traj)
         else:
             renders.append(np.array(render))

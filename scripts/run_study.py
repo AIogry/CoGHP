@@ -81,7 +81,7 @@ def load_study(path):
     protocol = study['protocol']
     allowed = {'train_steps', 'log_interval', 'eval_interval', 'save_interval', 'save_steps',
                'eval_episodes', 'eval_temperature', 'video_episodes', 'eval_on_cpu',
-               'fixed_validation_batch', 'require_deterministic_gpu'}
+               'fixed_validation_batch', 'require_deterministic_gpu', 'save_eval_trajectories'}
     if set(protocol) - allowed:
         raise ValueError(f'Unknown protocol fields: {set(protocol) - allowed}')
     for field in ('train_steps', 'log_interval', 'eval_interval', 'save_interval', 'eval_episodes'):

@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "donor_segments_checked": 71602,
+  "physical_visits_checked": 4661,
+  "independent_support_queries_checked": 100,
+  "trigger_goal_protection_queries_checked": 19419,
+  "benchmark_queries": 262144,
+  "benchmark_batch": 256,
+  "seconds": 0.1270887420978397,
+  "milliseconds_per_batch": 0.1241100997049216,
+  "cache": "CacheInfo(hits=675, misses=4180, maxsize=65536, currsize=4180)"
+}

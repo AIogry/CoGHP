@@ -352,6 +352,13 @@ def build_checkpoint_metadata(
     # change training semantics and must not silently resume an attached run.
     if config.get('executor_command_stop_grad', False):
         signature['executor_command_stop_grad'] = True
+    if config.get('high_sampling_probability', 0.0) > 0:
+        # A resume must restore both the intervention semantics and its exact
+        # training-only physical-visit index, not just the network dimensions.
+        for key in ('high_sampling_probability', 'high_sampling_min_visits',
+                    'high_sampling_min_episodes', 'high_sampling_protocol',
+                    'high_sampling_index_signature'):
+            signature[key] = config.get(key)
     if 'network_backbone' in config:
         for key in ('network_backbone', 'actor_hidden_dims', 'value_hidden_dims', 'enc_hidden_dims'):
             value = config.get(key)

@@ -1,0 +1,17 @@
+{
+  "separate_processes": true,
+  "all_exact": true,
+  "nonexact": [],
+  "category_leaf_counts": {
+    "initial_params": 91,
+    "initial_constants": 2,
+    "batch": 18,
+    "checkpoint_params": 91,
+    "losses": 6,
+    "updated_params": 91,
+    "updated_optimizer": 183,
+    "updated_rng": 1,
+    "updated_step": 1,
+    "update_info": 43
+  }
+}

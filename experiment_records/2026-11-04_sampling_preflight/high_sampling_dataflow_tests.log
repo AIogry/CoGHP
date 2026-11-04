@@ -1,0 +1,11 @@
+test_changed_high_payload_leaves_low_value_losses_and_gradients_exact (test_high_sampling_dataflow.HighOnlySamplingDataflowTests.test_changed_high_payload_leaves_low_value_losses_and_gradients_exact) ... ok
+test_high_loss_is_exactly_the_unchanged_v0_formula_on_donor_data (test_high_sampling_dataflow.HighOnlySamplingDataflowTests.test_high_loss_is_exactly_the_unchanged_v0_formula_on_donor_data) ... ok
+test_identical_high_payload_preserves_all_loss_values_and_total_gradient (test_high_sampling_dataflow.HighOnlySamplingDataflowTests.test_identical_high_payload_preserves_all_loss_values_and_total_gradient) ... ok
+test_sampling_controls_do_not_change_parameters_or_no_fields_behavior (test_high_sampling_dataflow.HighOnlySamplingDataflowTests.test_sampling_controls_do_not_change_parameters_or_no_fields_behavior) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 30.833s
+
+OK
+Creating navigation agent
+Creating navigation agent
