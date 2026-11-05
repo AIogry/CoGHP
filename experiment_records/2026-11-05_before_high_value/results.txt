@@ -1,0 +1,27 @@
+method | environment | seed | 800000 | 900000 | 1000000 | mean (%)
+original_h2l1_m1 | antmaze-giant-navigate-v0 | 0 | 59.60 | 61.20 | 70.00 | 63.60
+original_h2l1_m1 | antmaze-giant-navigate-v0 | 1 | INCOMPLETE: status=running
+original_h2l1_m3 | antmaze-giant-navigate-v0 | 0 | 50.80 | 58.80 | 51.60 | 53.73
+original_h2l1_m3 | antmaze-giant-navigate-v0 | 1 | INCOMPLETE: [Errno 2] No such file or directory: '/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/run.json'
+original_h4l1_m3 | antmaze-giant-navigate-v0 | 0 | 42.00 | 48.80 | 49.20 | 46.67
+original_h4l1_m3 | antmaze-giant-navigate-v0 | 1 | INCOMPLETE: [Errno 2] No such file or directory: '/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h4l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/run.json'
+original_h4l2_m3 | antmaze-giant-navigate-v0 | 0 | 46.80 | 60.40 | 62.80 | 56.67
+original_h4l2_m3 | antmaze-giant-navigate-v0 | 1 | INCOMPLETE: [Errno 2] No such file or directory: '/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h4l2_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/run.json'
+soft_h2l1_m1 | antmaze-giant-navigate-v0 | 0 | 58.00 | 61.20 | 57.60 | 58.93
+soft_h2l1_m1 | antmaze-giant-navigate-v0 | 1 | INCOMPLETE: [Errno 2] No such file or directory: '/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/soft_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/run.json'
+soft_h2l1_m3 | antmaze-giant-navigate-v0 | 0 | 47.60 | 51.20 | 56.40 | 51.73
+soft_h2l1_m3 | antmaze-giant-navigate-v0 | 1 | INCOMPLETE: [Errno 2] No such file or directory: '/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/soft_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/run.json'
+soft_h4l1_m3 | antmaze-giant-navigate-v0 | 0 | 48.00 | 57.20 | 66.80 | 57.33
+soft_h4l1_m3 | antmaze-giant-navigate-v0 | 1 | INCOMPLETE: [Errno 2] No such file or directory: '/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/soft_h4l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/run.json'
+soft_h4l2_m3 | antmaze-giant-navigate-v0 | 0 | 31.60 | 39.60 | 40.80 | 37.33
+soft_h4l2_m3 | antmaze-giant-navigate-v0 | 1 | INCOMPLETE: [Errno 2] No such file or directory: '/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/soft_h4l2_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/run.json'
+
+Across-seed summaries (sample standard deviation; no SD for a single seed):
+original_h2l1_m1 | antmaze-giant-navigate-v0 | INCOMPLETE seeds=1/2
+original_h2l1_m3 | antmaze-giant-navigate-v0 | INCOMPLETE seeds=1/2
+original_h4l1_m3 | antmaze-giant-navigate-v0 | INCOMPLETE seeds=1/2
+original_h4l2_m3 | antmaze-giant-navigate-v0 | INCOMPLETE seeds=1/2
+soft_h2l1_m1 | antmaze-giant-navigate-v0 | INCOMPLETE seeds=1/2
+soft_h2l1_m3 | antmaze-giant-navigate-v0 | INCOMPLETE seeds=1/2
+soft_h4l1_m3 | antmaze-giant-navigate-v0 | INCOMPLETE seeds=1/2
+soft_h4l2_m3 | antmaze-giant-navigate-v0 | INCOMPLETE seeds=1/2

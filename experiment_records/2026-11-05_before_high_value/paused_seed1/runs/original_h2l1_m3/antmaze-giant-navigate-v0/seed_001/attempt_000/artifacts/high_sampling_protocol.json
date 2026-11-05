@@ -1,0 +1,9 @@
+{
+  "protocol": "junction_soft_v1",
+  "probability": 0.0,
+  "index_signature": "ad5dd149c6c6884af9456db13076b2ea242bf5f8e56b70fe94ed9d72be795c43",
+  "independent_rng_seed": 1217340864,
+  "source": "training observations and raw episode ends only",
+  "minimum_alternative_visits": 5,
+  "minimum_alternative_episodes": 3
+}

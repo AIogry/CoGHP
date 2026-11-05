@@ -1,0 +1,28 @@
+{
+  "seed": 1,
+  "train_dataset_seed": 1189033389,
+  "validation_dataset_seed": 1596810411,
+  "environment_seed": 4010755824,
+  "eval_seed": 3549136632,
+  "fixed_validation_batch": true,
+  "require_deterministic_gpu": true,
+  "python_version": "3.11.15",
+  "numpy_version": "2.4.6",
+  "jax_version": "0.10.2",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "jax_devices": [
+    "cuda:0"
+  ],
+  "pythonhashseed": "1",
+  "xla_flags": "--xla_gpu_deterministic_ops",
+  "cuda_visible_devices": "1",
+  "dataset_dir": "/data/qijunrong/06-RL/offline-rl/data/raw_ogbench",
+  "jax_backend": "gpu",
+  "package_versions": {
+    "jaxlib": "0.10.2",
+    "flax": "0.12.7",
+    "optax": "0.2.8",
+    "mujoco": "3.10.0",
+    "gymnasium": "1.3.0"
+  }
+}

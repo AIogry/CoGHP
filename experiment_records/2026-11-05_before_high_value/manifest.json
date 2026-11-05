@@ -1,0 +1,149 @@
+{
+  "purpose": "Preserve completed sampling study analysis and paused seed1 records before separate-high-value changes.",
+  "source_commit": "27f8b0db04642a6bee6fb80c6f408eeb32f272f5",
+  "analysis_archive": {
+    "path": "analysis_materials.tar.gz",
+    "bytes": 16313287,
+    "sha256": "cd2107cfca79c5dcf688cc44d4844eb1c7c99c6212ef140f6637d25e45307086"
+  },
+  "files": [
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/eval.csv",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/eval.csv",
+      "sha256": "ac1c9a13b5e16407912d9b35b376301adcb9791dfd4abb1f4d4ea1fca7897795"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/position_statistics.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/position_statistics.json",
+      "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/high_sampling_protocol.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/high_sampling_protocol.json",
+      "sha256": "1dd351f60f9eb28217cdfb0be6a984a7d482ae81a220d757bc164dddd831620c"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/checkpoint_metadata.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/checkpoint_metadata.json",
+      "sha256": "36497b3944aaede1d4938f3d4c2051276c7b1fad5c54ab83ff7ba21de0b46291"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/junction_geometry.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/junction_geometry.json",
+      "sha256": "bd57ce1ca47f6b636280b00642ee46560d6c21bcd38f0838f3769fd18b876ca7"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/model_parameter_counts.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/model_parameter_counts.json",
+      "sha256": "63210832c80bdea4597cc9628d50ebc6ede9b7ac6de13912e9b6681f04e5034f"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/reproducibility.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/reproducibility.json",
+      "sha256": "a489df8f90db89d2835d5f64d87bd6f90a6cdf67693ffa501fc5588cdcd0dd8d"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/flags.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/flags.json",
+      "sha256": "c2aea970b8be293dbde1d2c9513c8fe910892bc3c5fc637638eb052ad1f943fd"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/train.csv",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/train.csv",
+      "sha256": "fd88ba84dff2d01b52e0e314306ccec2092c1715162eaf822a678963c29fa165"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/behavior.csv",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/behavior.csv",
+      "sha256": "209c939f2e6ca2b2cc5756d07b76a2451f00b6ff27dd008d3e5aad66340a7475"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/eval.csv",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/eval.csv",
+      "sha256": "f23e2fe3d82822c28e8bf02c1254792fe3f9663a846d20098dba3c4ccf7f80e6"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/training_state_800000.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/training_state_800000.json",
+      "sha256": "7a848f0f765a25996d085bef889049db4d6d9bc71747fa3d68a2afc1eb72bb96"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/position_statistics.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/position_statistics.json",
+      "sha256": "a7d9b5edd79e1a99f12acc17f875cb6d7389c490fa5da975a062561faa3d52a4"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/high_sampling_protocol.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/high_sampling_protocol.json",
+      "sha256": "1dd351f60f9eb28217cdfb0be6a984a7d482ae81a220d757bc164dddd831620c"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/checkpoint_metadata.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/checkpoint_metadata.json",
+      "sha256": "b4df774354cc7f45fe068519a841ddd31bc6e086f9f5d7bd355d4bac752407fc"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/junction_geometry.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/junction_geometry.json",
+      "sha256": "bd57ce1ca47f6b636280b00642ee46560d6c21bcd38f0838f3769fd18b876ca7"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/model_parameter_counts.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/model_parameter_counts.json",
+      "sha256": "5970be59e33a8bddc330845e646580fbbecb85fff234c3829c569c93f3ed92ef"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/reproducibility.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/reproducibility.json",
+      "sha256": "a489df8f90db89d2835d5f64d87bd6f90a6cdf67693ffa501fc5588cdcd0dd8d"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/flags.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/flags.json",
+      "sha256": "683757fa3916dc1d7a1f268e49820ae43534f6741360d6951c511477e3cf3320"
+    },
+    {
+      "saved": "paused_seed1/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/train.csv",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/train.csv",
+      "sha256": "04bc92c19d6aff60b560d450d979d6297d73e5067cc364950f6ca43885965e68"
+    },
+    {
+      "saved": "pause_record_20261105.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/pause_record_20261105.json",
+      "sha256": "a44db621fbddbfafd006a1c75fdbfbf10d0d795ce87e6bf5c8645fc094184542"
+    },
+    {
+      "saved": "launcher_process.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/launcher_process.json",
+      "sha256": "a4ae5b35caf86e86bf9c6ade843be326dbc4c50489e0eeb65e03a08cd173d482"
+    },
+    {
+      "saved": "launcher_runtime.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/launcher_runtime.json",
+      "sha256": "1dd29c98557cbac0a981f9f22ca5db28e1e6fcdd53866fe975dccf5e34515b41"
+    },
+    {
+      "saved": "campaign.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/campaign.json",
+      "sha256": "0186b0708885340eb9fb97ee24220d298a0932627c6c39417a86f56201fc4f74"
+    },
+    {
+      "saved": "launch_verification.json",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/launch_verification.json",
+      "sha256": "0f14a5a6bf7093bca351da0c6f2c26aaee2bba4f184303746c37efa60953f903"
+    },
+    {
+      "saved": "results.txt",
+      "original": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/results.txt",
+      "sha256": "f72dba3bec10ce83937f19f7b403d8c297f6b0f988ef7d5ac9a97b33a65ea34f"
+    }
+  ],
+  "paused_checkpoint_index": [
+    {
+      "path": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_001/attempt_000/artifacts/params_800000.pkl",
+      "bytes": 59535925,
+      "sha256": "be81fc666fb1d96c495eaac8c07184be11bdac93e67b9911c03390a2bbb2e39f"
+    }
+  ],
+  "note": "Paused run.json can retain running because processes are SIGSTOP. pause_record is authoritative. No process resumed or terminated. Rawdata and fullcheckpoints remain in frozen campaigns."
+}

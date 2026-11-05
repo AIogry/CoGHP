@@ -1,0 +1,25 @@
+{
+  "pid": 550672,
+  "command": [
+    "/home/eai/Tools/miniforge3/envs/brain_nav/bin/python",
+    "-u",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/source/scripts/run_study.py",
+    "--run-root",
+    "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104",
+    "--gpus",
+    "1",
+    "--workers-per-gpu",
+    "2",
+    "--wandb-mode",
+    "offline",
+    "--execute"
+  ],
+  "started_at": "2026-11-04T13:55:32.896645+00:00",
+  "physical_gpus": [
+    1
+  ],
+  "workers_per_gpu": 2,
+  "source_commit": "27f8b0db04642a6bee6fb80c6f408eeb32f272f5",
+  "source_signature": "f6b2b52b374d1acdd3a812fffe6e164e3721aaf3c847a3cd8e708edf9181b821",
+  "formal_run_count": 16
+}

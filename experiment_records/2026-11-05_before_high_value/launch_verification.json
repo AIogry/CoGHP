@@ -1,0 +1,113 @@
+{
+  "verified_at": "2026-11-04T13:58:56.080920+00:00",
+  "backup_commit": "7b021e039bd0f463690653560f3d485f206a07d6",
+  "implementation_commit": "27f8b0db04642a6bee6fb80c6f408eeb32f272f5",
+  "source_signature": "f6b2b52b374d1acdd3a812fffe6e164e3721aaf3c847a3cd8e708edf9181b821",
+  "physical_gpu": 1,
+  "gpu_uuid": "GPU-8c1feab3-0fcf-396d-1a2e-f12af187f066",
+  "concurrent_training_processes": 2,
+  "total_planned_runs": 16,
+  "running": [
+    {
+      "method": "original_h2l1_m3",
+      "seed": 0,
+      "pid": 550810,
+      "physical_gpu": 1,
+      "latest_logged_step": 20000,
+      "all_logged_metrics_finite": true,
+      "train_log": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m3/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv"
+    },
+    {
+      "method": "original_h2l1_m1",
+      "seed": 0,
+      "pid": 550805,
+      "physical_gpu": 1,
+      "latest_logged_step": 30000,
+      "all_logged_metrics_finite": true,
+      "train_log": "/data/qijunrong/06-RL/offline-rl/exp/joint_planner_v0_junction_sampling_hlm_seed01_20261104/runs/original_h2l1_m1/antmaze-giant-navigate-v0/seed_000/attempt_000/artifacts/train.csv"
+    }
+  ],
+  "dispatch_order": [
+    {
+      "method": "original_h2l1_m1",
+      "seed": 0,
+      "probability": 0.0
+    },
+    {
+      "method": "original_h2l1_m3",
+      "seed": 0,
+      "probability": 0.0
+    },
+    {
+      "method": "original_h4l1_m3",
+      "seed": 0,
+      "probability": 0.0
+    },
+    {
+      "method": "original_h4l2_m3",
+      "seed": 0,
+      "probability": 0.0
+    },
+    {
+      "method": "soft_h2l1_m1",
+      "seed": 0,
+      "probability": 0.5
+    },
+    {
+      "method": "soft_h2l1_m3",
+      "seed": 0,
+      "probability": 0.5
+    },
+    {
+      "method": "soft_h4l1_m3",
+      "seed": 0,
+      "probability": 0.5
+    },
+    {
+      "method": "soft_h4l2_m3",
+      "seed": 0,
+      "probability": 0.5
+    },
+    {
+      "method": "original_h2l1_m1",
+      "seed": 1,
+      "probability": 0.0
+    },
+    {
+      "method": "original_h2l1_m3",
+      "seed": 1,
+      "probability": 0.0
+    },
+    {
+      "method": "original_h4l1_m3",
+      "seed": 1,
+      "probability": 0.0
+    },
+    {
+      "method": "original_h4l2_m3",
+      "seed": 1,
+      "probability": 0.0
+    },
+    {
+      "method": "soft_h2l1_m1",
+      "seed": 1,
+      "probability": 0.5
+    },
+    {
+      "method": "soft_h2l1_m3",
+      "seed": 1,
+      "probability": 0.5
+    },
+    {
+      "method": "soft_h4l1_m3",
+      "seed": 1,
+      "probability": 0.5
+    },
+    {
+      "method": "soft_h4l2_m3",
+      "seed": 1,
+      "probability": 0.5
+    }
+  ],
+  "queue_order_note": "Frozen study JSON has sorted method keys. Per seed, original methods dispatch before soft methods; config/seed matching remains the planned paired comparison. Early commentary about the first concurrent original/soft pair was corrected before delivery."
+}
